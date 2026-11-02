@@ -28,7 +28,8 @@ class Command(BaseCommand):
             "",
             "## 1. Objetivos COBIT 2019",
             "",
-            "| Objetivo | Fase de IA (ISACA) | IA confiável | Fonte / páginas | Requisitos (template vigente) | Funcionalidades |",
+            "| Objetivo | Fase de IA (ISACA) | IA confiável | Fonte / páginas | Requisitos (template vigente) "
+            "| Funcionalidades |",
             "|---|---|---|---|---|---|",
         ]
         for o in GovernanceObjective.objects.all():
@@ -49,7 +50,8 @@ class Command(BaseCommand):
             maps = sorted({m.requirement_template.code if m.requirement_template else m.feature
                            for m in r.mappings.all()})
             lines.append(f"| {r.section} | {r.title} | {r.part} · p. {r.pages} | {r.analysis} | {'; '.join(maps) or '—'} |")
-        lines += ["", "## 3. Requisitos do template vigente", "", "| Fase | Código | Requisito | Obrig. | Evidência | Legal | COBIT |",
+        lines += ["", "## 3. Requisitos do template vigente", "",
+                  "| Fase | Código | Requisito | Obrig. | Evidência | Legal | COBIT |",
                   "|---|---|---|---|---|---|---|"]
         if version:
             for st in version.stages.order_by("order").prefetch_related("requirements"):
