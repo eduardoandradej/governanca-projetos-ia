@@ -1,76 +1,66 @@
 # Resultados de testes efetivamente executados
 
-Somente execuções reais são registradas aqui. Ambiente de cada rodada indicado.
+## Rodada final — 2026-11-02
 
-## Rodada M2 — 2026-11-02
+- Ambiente: container Ubuntu 24.04; Python 3.12.3; Django 5.2.18; djangorestframework 3.18.3; PostgreSQL 16.15;
+  psycopg 3.2.13; pytest 9.2.0; pytest-django 4.14.0; Chromium/Playwright pré-instalados.
+- Comando: `./scripts/test.sh` (ruff → `manage.py check` → migrações pendentes → pytest em `test_govia`).
+- Resultado: **138 testes, 138 aprovados, 0 falhas** (≈ 39 s). Lint sem erros; nenhuma migração pendente.
 
-- Ambiente: Ubuntu 24.04 (container de desenvolvimento), Python 3.12.3, Django 5.2.18, PostgreSQL 16.15,
-  psycopg 3.2.13, pytest 9.2.0, pytest-django 4.14.0.
-- Banco: PostgreSQL de teste isolado `test_govia` (criado/destruído pelo pytest-django).
-- Comando: `.venv/bin/pytest -v`
-- Resultado: **44 testes, 44 aprovados, 0 falhas** (8,07 s).
-- Defeito encontrado e corrigido durante a rodada: eventos de auditoria de negação eram desfeitos pelo
-  rollback da transação (ver ADR-004). Teste que detectou: `test_no_self_elevation_even_for_org_admin`.
+| Arquivo | Testes |
+|---|---:|
+| accounts/test_auth.py | 8 |
+| organizations/test_rbac.py | 14 |
+| projects/test_projects.py | 12 |
+| lifecycle/test_lifecycle.py | 10 |
+| evidence/test_evidence.py | 15 |
+| governance/test_gates.py | 19 |
+| governance/test_concurrency.py | 1 (repetido 5×: 5/5) |
+| risks/test_risks.py | 25 |
+| analytics/test_dik.py | 12 |
+| api/test_api_export.py | 19 |
+| core/test_seed_demo.py | 3 |
 
-Teste de fumaça manual automatizado (Playwright + Chromium, servidor `runserver` local, dados de `seed_demo`):
+### Avaliação por critério do protocolo
+
+| Critério | Resultado observado | Situação |
+|---|---|---|
+| C1 | `test_T024_full_flow_reaches_operation`: 6 gates aprovados, fase 7 em andamento; E2E aprovou gate 1 pela interface | Atendido |
+| C2 | Gate recusado com lista exata de bloqueios (requisitos, evidência, risco crítico) — teste e E2E passo 2/4a | Atendido |
+| C3 | Autoaprovação recusada (gate, requisito, evidência, decisão, insight); API recusa decisão sem papel (403) | Atendido |
+| C4 | Duas aprovações simultâneas: 1 sucesso, 1 `DomainError`; 1 decisão, 1 transição, 1 evento | Atendido |
+| C5 | 404 para outra organização em telas, API, download e exportação; E2E: usuário Beta → HTTP 404 | Atendido |
+| C6 | `UPDATE`/`DELETE` em `auditlog_auditevent` recusados pelo gatilho; negações preservadas após rollback | Atendido |
+| C7 | K02 = 16,7% (1/6) recalculado após validação; insight I02 com parâmetros e IDs; lição aprovada | Atendido |
+| C8 | 7 uploads maliciosos recusados sem gravar arquivo; 8 casos de CSV neutralizados | Atendido |
+| C9 | 22 objetivos COBIT (105 mapeamentos, 52 citados no white paper ISACA) e 26 referências PMBOK 8 | Atendido |
+| C10 | `check --deploy`: 1 aviso intencional (HSTS preload); `pip-audit`: 5 CVEs no DRF 3.16.1 → atualizado, 0 restantes; backup restaurado com contagens idênticas | Atendido (laboratório) |
+
+### Defeitos reais encontrados e corrigidos pelos testes
+1. Evento de negação apagado pelo rollback da transação (ADR-004).
+2. Reenvio de solicitação de gate retornava erro em vez de ser idempotente (ordem das verificações).
+3. Revalidação de gate bloqueava a si mesma ao reler o indicador do banco.
+4. `SELECT … FOR UPDATE` com junção externa recusado pelo PostgreSQL ao revisar insight (bloqueio só da linha própria).
+5. Dependência vulnerável (DRF 3.16.1).
+6. Migração histórica quebraria em banco novo ao referenciar campo criado depois (corrigido antes do commit).
+
+## Demonstração E2E (navegador real) — banco `govia_demo` com `seed_demo`
+
+Script: `scripts/demo_e2e.js` (Playwright/Chromium). Log integral: `docs/evidencias/m8/roteiro-log.txt`; capturas
+`docs/evidencias/m8/*.png`; CSV exportado `10-exportacao-projetos.csv`.
 
 | Passo | Resultado observado |
 |---|---|
-| GET /contas/entrar/ | 200 |
-| Login demo.gerente | redirecionado para / |
-| GET /, /projetos/, detalhe IA-2026-01, fase 1, Kanban | 200 em todas |
-| Alterar status de tarefa via HTMX no Kanban | cartão atualizado para "Bloqueada" |
-| demo.beta.gerente acessando projeto da Alfa por URL direta | **404** |
+| 1 | Projeto IA-2026-01 na fase 1 |
+| 2 | Gate recusado: 5 requisitos pendentes, evidência F1-R1 ausente, risco crítico R-001 sem tratamento |
+| 3 | Evidência aprovada pelo aprovador; 6/6 requisitos validados pela segurança (quem atendeu ≠ quem validou) |
+| 4 | Gate ainda bloqueado só pelo risco crítico; tratamento registrado |
+| 5 | Passagem solicitada pelo gerente e aprovada pelo aprovador; fase 2 iniciada |
+| 6 | Custos: orçamento 850.000,00; realizado 165.000,00; execução 19,4% |
+| 7 | K02 = 0,0% (0/11) após avanço — denominador reflete as fases correntes dos 2 projetos |
+| 8 | Insight I02 ("2 riscos… R-001, R-003; limite 2") revisado pelo gerente, aprovado pelo patrocinador; lição aprovada pelo gestor de portfólio |
+| 9 | 4 eventos de gate visíveis ao auditor |
+| 10 | CSV com cabeçalho e 2 projetos da Alfa (sem projeto da Beta) |
+| Isolamento | Usuário da Beta no projeto da Alfa → HTTP 404 |
 
-Capturas: `docs/evidencias/m2/*.png`.
-
-<details><summary>Saída por teste</summary>
-
-```
-apps/accounts/tests/test_auth.py::test_login_success_is_audited PASSED
-apps/accounts/tests/test_auth.py::test_login_failure_is_audited_without_password PASSED
-apps/accounts/tests/test_auth.py::test_brute_force_lock_blocks_even_correct_password PASSED
-apps/accounts/tests/test_auth.py::test_password_reset_sends_token_and_does_not_enumerate PASSED
-apps/accounts/tests/test_auth.py::test_password_policy_rejects_short_password PASSED
-apps/accounts/tests/test_auth.py::test_protected_pages_require_login PASSED
-apps/accounts/tests/test_auth.py::test_healthz_checks_database PASSED
-apps/accounts/tests/test_auth.py::test_logout_requires_post_and_is_audited PASSED
-apps/lifecycle/tests/test_lifecycle.py::test_fulfill_requires_verifiable_note_and_permission PASSED
-apps/lifecycle/tests/test_lifecycle.py::test_validation_requires_segregation_and_comment PASSED
-apps/lifecycle/tests/test_lifecycle.py::test_stage_state_machine_rejects_invalid_transition PASSED
-apps/lifecycle/tests/test_lifecycle.py::test_cannot_fulfill_requirement_of_not_started_stage PASSED
-apps/lifecycle/tests/test_lifecycle.py::test_stage_progress_without_requirements_reports_no_data PASSED
-apps/lifecycle/tests/test_lifecycle.py::test_task_assignment_restricted_to_project_scope PASSED
-apps/lifecycle/tests/test_lifecycle.py::test_task_dependencies_block_completion_and_cycles PASSED
-apps/lifecycle/tests/test_lifecycle.py::test_assignee_can_update_own_task_but_reader_cannot PASSED
-apps/lifecycle/tests/test_lifecycle.py::test_task_status_via_htmx_and_requirement_via_web PASSED
-apps/lifecycle/tests/test_lifecycle.py::test_closed_project_blocks_requirement_and_task_changes PASSED
-apps/organizations/tests/test_rbac.py::test_permission_matrix_scoped_by_organization PASSED
-apps/organizations/tests/test_rbac.py::test_unknown_permission_raises PASSED
-apps/organizations/tests/test_rbac.py::test_suspended_membership_loses_access PASSED
-apps/organizations/tests/test_rbac.py::test_project_scoped_role_only_applies_to_that_project PASSED
-apps/organizations/tests/test_rbac.py::test_platform_admin_has_no_implicit_business_rights PASSED
-apps/organizations/tests/test_rbac.py::test_T014_common_user_cannot_change_roles PASSED
-apps/organizations/tests/test_rbac.py::test_no_self_elevation_even_for_org_admin PASSED
-apps/organizations/tests/test_rbac.py::test_org_admin_assigns_and_revokes_role_with_history PASSED
-apps/organizations/tests/test_rbac.py::test_cannot_assign_role_to_non_member_or_cross_org_project PASSED
-apps/organizations/tests/test_rbac.py::test_T002_org_detail_hidden_from_other_org PASSED
-apps/organizations/tests/test_rbac.py::test_audit_event_append_only_in_application PASSED
-apps/organizations/tests/test_rbac.py::test_audit_event_append_only_in_database_trigger PASSED
-apps/organizations/tests/test_rbac.py::test_T013_auditor_reads_audit_but_cannot_modify_project PASSED
-apps/organizations/tests/test_rbac.py::test_audit_list_restricted_and_scoped PASSED
-apps/projects/tests/test_projects.py::test_T003_project_receives_seven_stages_starting_at_phase_1 PASSED
-apps/projects/tests/test_projects.py::test_code_unique_per_organization_only PASSED
-apps/projects/tests/test_projects.py::test_required_fields_and_people_from_same_org PASSED
-apps/projects/tests/test_projects.py::test_reader_cannot_create_project PASSED
-apps/projects/tests/test_projects.py::test_T002_other_org_user_gets_404_even_with_known_id PASSED
-apps/projects/tests/test_projects.py::test_project_views_render_for_member PASSED
-apps/projects/tests/test_projects.py::test_create_project_via_web_form PASSED
-apps/projects/tests/test_projects.py::test_T022_audit_records_project_creation_without_secrets PASSED
-apps/projects/tests/test_projects.py::test_update_tracks_diff_and_optimistic_version PASSED
-apps/projects/tests/test_projects.py::test_RN011_closed_project_is_read_only_and_reopen_requires_authority PASSED
-apps/projects/tests/test_projects.py::test_T027_new_template_version_does_not_change_started_projects PASSED
-apps/projects/tests/test_projects.py::test_T001_project_persists_after_connection_reset PASSED
-============================== 44 passed in 8.07s ==============================
-```
-</details>
+Rodadas anteriores (M2: 44 testes; M3: 79; M4: 104; M5: 116; M6: 135) estão nos commits correspondentes.

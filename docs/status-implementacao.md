@@ -13,7 +13,7 @@ Atualizado a cada incremento. "Concluído" = implementado **e** coberto por test
 | Incremento PMBOK 8 | Concluído | Referências PMBOK 8 separadas do COBIT (26 seções, título+página), abordagem de desenvolvimento (4.2) e estratégia de adoção de IA (X3.1.1) no projeto, avaliação de uso responsável de IA (X3.3, 8 fatores) bloqueando o gate 6, template v3, KPIs classificados tendência/resultado (2.1.5) |
 | M6 Interface completa e API | Concluído | API `/api/v1/` (DRF, mesma autorização), exportações CSV neutralizadas e auditadas, integrações NoOp, telas para todos os módulos; `test_api_export.py` (navegação por 6 perfis) |
 | M7 Qualidade, segurança e instalação | Concluído (laboratório) | `check --deploy` (1 aviso intencional), `pip-audit` (DRF atualizado; 0 vulnerabilidades conhecidas), backup/restauração verificados, Gunicorn com settings de produção, `deploy/`, `docs/operacao/`, `docs/seguranca/` |
-| M8 Avaliação científica (DSR) | Pendente | — |
+| M8 Avaliação científica (DSR) | Concluído (avaliação funcional sintética) | `docs/pesquisa/` (problema, metodologia, protocolo C1–C10, matriz de rastreabilidade, resultados, limitações, ameaças, subsídios para o artigo); roteiro E2E real em `docs/evidencias/m8/` |
 
 ## Testes do superprompt (T-xxx)
 
@@ -36,7 +36,7 @@ Atualizado a cada incremento. "Concluído" = implementado **e** coberto por test
 | T-012 | Aprovado | `test_T012_concurrent_approvals_single_advance` (threads, conexões PostgreSQL distintas; 5/5 execuções) |
 | T-015 | Aprovado | `test_download_scope_quarantine_and_audit`, `test_T015_export_restricted_and_scoped` |
 | T-021 | Aprovado | `test_T021_invalid_uploads_are_refused_without_storing` (7 casos), `test_T021_oversized_upload_refused` |
-| T-024 | Parcial | `test_T024_full_flow_reaches_operation` (fases 1→7 via gates); riscos/relatório: M4–M6 |
+| T-024 | Aprovado | `test_T024_full_flow_reaches_operation` + roteiro E2E (`docs/evidencias/m8/roteiro-log.txt`) |
 | T-010 | Aprovado | `test_T010_gate_blocked_by_untreated_critical_risk`, `test_T010_exception_can_cover_critical_risk_with_security_ack` |
 | T-016 | Aprovado | `test_T016_costs_use_decimal_and_totals_are_exact` |
 | T-017 | Aprovado | `test_T017_default_policy_classification` (12 casos), `test_T017_policy_configurable_per_organization` |
@@ -47,8 +47,17 @@ Atualizado a cada incremento. "Concluído" = implementado **e** coberto por test
 | T-023 | Aprovado | `test_T023_api_requires_authentication`, `test_T023_api_scope_isolation` |
 | T-027 | Aprovado | `test_T027_new_template_version_does_not_change_started_projects` |
 | T-028 | Aprovado | `test_T028_metrics_report_no_data_instead_of_100`, `test_stage_progress_without_requirements_reports_no_data` |
-| Demais | Pendentes | — |
+| Todos T-001..T-028 | Aprovados | ver linhas acima e `docs/pesquisa/resultados-testes.md` |
 
-## Pendências conhecidas
+## Pendências conhecidas (não bloqueiam o MVP de laboratório)
 - MFA para perfis privilegiados: não implementado (obrigatório antes de produção institucional).
+- Antivírus de anexos: substituído por quarentena com inspeção manual.
 - Telas de administração de templates de ciclo de vida por organização: somente via admin técnico.
+- Nginx/TLS/systemd documentados, não executados neste ambiente.
+- Rotinas automáticas de retenção/anonimização: documentadas, não implementadas.
+- Ver `docs/seguranca/riscos-residuais.md` e `docs/pesquisa/limitacoes.md`.
+
+## Inventário funcional
+138 testes automatizados (PostgreSQL), 37 regras de negócio implementadas, 12 indicadores, 6 regras de insight,
+22 objetivos COBIT e 26 referências PMBOK 8 mapeados, template de 7 fases v3 (41 requisitos), API v1, exportações CSV,
+backup/restauração verificados.

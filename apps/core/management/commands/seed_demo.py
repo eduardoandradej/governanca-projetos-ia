@@ -19,7 +19,7 @@ from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
-from apps.lifecycle import services as lifecycle
+from apps.lifecycle import services as lifecycle  # noqa: I001
 from apps.organizations.models import Membership, Organization, Role
 from apps.organizations.services import bootstrap_role
 from apps.projects.models import Portfolio
@@ -149,3 +149,49 @@ class Command(BaseCommand):
             req.pk, actor=u["demo.gerente"], note="Patrocínio e gerência nomeados no termo de abertura (fictício)."
         )
         lifecycle.validate_requirement(req.pk, actor=u["demo.seguranca"], decision="approved", comment="Conferido no termo.")
+        self._create_governance_data(p1, u, today)
+
+    def _create_governance_data(self, p1, u, today):
+        """Riscos, custos, evidência, decisão, catálogo de dados e insights — todos sintéticos."""
+        from django.core.files.uploadedfile import SimpleUploadedFile
+
+        from apps.analytics import services as analytics
+        from apps.evidence import services as evidence
+        from apps.risks import services as risks
+
+        risks.create_risk(actor=u["demo.gerente"], project=p1, title="Exposição de dados pessoais no treinamento",
+                          category="privacy", ai_category="policy", probability=5, impact=5, owner=u["demo.seguranca"],
+                          cause="Bases de atendimento com dados pessoais", consequence="Sanção e dano reputacional")
+        r2 = risks.create_risk(actor=u["demo.gerente"], project=p1, title="Capacidade de GPU insuficiente",
+                               category="gpu", ai_category="technology", probability=4, impact=3, owner=u["demo.tecnico"])
+        risks.add_treatment(r2.pk, actor=u["demo.gerente"], strategy="mitigate",
+                            description="Reserva de capacidade e fila de priorização de jobs", owner=u["demo.tecnico"],
+                            due_date=today + timedelta(days=20))
+        risks.create_risk(actor=u["demo.gerente"], project=p1, title="Viés nas respostas do assistente",
+                          category="ethics", ai_category="ethical", probability=3, impact=4, owner=u["demo.tecnico"])
+        for cat, kind, amount, just in [("gpu", "planned", "300000.00", "Plano de capacidade (sintético)"),
+                                        ("gpu", "actual", "120000.00", "Nota fiscal sintética 001"),
+                                        ("services", "actual", "45000.00", "Consultoria sintética")]:
+            risks.add_cost(actor=u["demo.gerente"], project=p1, category=cat, kind=kind, amount=Decimal(amount),
+                           entry_date=today - timedelta(days=10), justification=just)
+        req = p1.stages.get(order=1).requirements.get(code="F1-R1")
+        art = evidence.create_evidence(
+            actor=u["demo.tecnico"], project=p1, requirement=req, kind="business_case",
+            title="Caso de negócio v1 (sintético)",
+            uploaded=SimpleUploadedFile("caso-de-negocio.txt", "Caso de negócio sintético para demonstração.\n".encode()),
+        )
+        evidence.inspect_version(art.pk, actor=u["demo.seguranca"], release=True, note="Inspeção manual (demo)")
+        risks.propose_decision(actor=u["demo.gerente"], project=p1, topic="architecture",
+                               agenda="Hospedagem da plataforma de IA", alternatives="Nuvem pública; on-premises; híbrida",
+                               decision="On-premises com GPUs próprias", rationale="Soberania de dados e custo recorrente")
+        raw = analytics.create_asset(actor=u["demo.gerente"], project=p1, name="Base de chamados (sintética)",
+                                     kind="dataset", purpose="Ajuste fino do assistente", owner=u["demo.tecnico"],
+                                     source_system="Sistema de atendimento (fictício)", contains_personal_data=True,
+                                     classification="confidential")
+        model = analytics.create_asset(actor=u["demo.gerente"], project=p1, name="Assistente de triagem v0",
+                                       kind="model", purpose="Classificar chamados", owner=u["demo.tecnico"])
+        analytics.add_lineage(actor=u["demo.gerente"], source=raw, target=model,
+                              transformation="Anonimização e ajuste fino")
+        org = p1.organization
+        analytics.capture_snapshots(actor=u["demo.portfolio"], organization=org)
+        analytics.generate_insights(actor=u["demo.portfolio"], organization=org)

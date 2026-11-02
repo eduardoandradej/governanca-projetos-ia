@@ -8,6 +8,11 @@
 ## Estado
 Ver `docs/status-implementacao.md` (fonte da verdade) e `git log`.
 
+## Estado (2026-11-02)
+M0–M8 concluídos no escopo de laboratório; 138 testes verdes. Banco de demonstração local `govia_demo` (pode ser recriado).
+
 ## Primeira ação inequívoca da retomada
-Executar `./scripts/test.sh`; se verde, continuar pelo primeiro incremento marcado como "Pendente" em
-`docs/status-implementacao.md`.
+Executar `./scripts/test.sh`. Se verde, escolher entre as pendências listadas em `docs/status-implementacao.md`
+(sugestão de ordem: MFA para perfis privilegiados → integração de antivírus nos anexos → tela de administração de
+templates por organização → validação de Nginx/TLS na VM institucional). Para o artigo, partir de
+`docs/pesquisa/subsidios-artigo.md` e verificar as referências marcadas "a verificar".

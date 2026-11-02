@@ -2,6 +2,17 @@
 
 ## [Não publicado]
 
+### M3–M8 + incrementos ISACA/PMBOK — 2026-11-02
+- M3: evidências versionadas com quarentena e revisão segregada; Stage-Gates com bloqueios no servidor, segregação,
+  exceções formais, revalidação e controle de concorrência; catálogo COBIT com base em ISACA (2025); template v2.
+- M4: riscos 5×5 com categorias de risco de IA (ISACA fig. 5), custos Decimal, decisões versionadas; reabertura exige decisão.
+- M5: catálogo/linhagem de dados, 12 KPIs com ficha técnica, 6 regras de insight com revisão humana, lições aprendidas.
+- PMBOK 8: referências por seção/página, abordagem de desenvolvimento, estratégia de adoção de IA, avaliação de uso
+  responsável de IA no gate 6 (template v3), KPIs tendência/resultado.
+- M6: API v1, exportações CSV seguras e auditadas, integrações NoOp.
+- M7: pip-audit (DRF 3.16.1 → 3.18.3), check --deploy, backup/restauração verificados, docs de implantação e segurança.
+- M8: documentação DSR, protocolo, resultados e roteiro E2E executado em navegador; 138 testes.
+
 ### M0–M2 — 2026-11-02
 - Base de segurança do repositório (.gitignore, SECURITY.md, CODEOWNERS, gitleaks).
 - Projeto Django 5.2 + PostgreSQL 16; configurações por ambiente (dev/test/prod) via `.env`.

@@ -6,8 +6,13 @@ A aplicação **não** executa treinamento/inferência nem substitui Kubernetes,
 ferramentas de MLOps: é uma camada independente de fornecedor para responsabilidades, fases, riscos,
 evidências, aprovações, decisões e conhecimento gerencial.
 
-> Situação atual: ver [`docs/status-implementacao.md`](docs/status-implementacao.md). Somente o que está lá
-> marcado como concluído foi implementado **e** testado.
+> Situação atual: incrementos M0–M8 concluídos em laboratório, com **138 testes automatizados aprovados em
+> PostgreSQL** e roteiro de demonstração executado em navegador. Detalhes e pendências em
+> [`docs/status-implementacao.md`](docs/status-implementacao.md).
+
+Referenciais: COBIT 2019 (com o white paper ISACA, *Leveraging COBIT for Effective AI System Governance*, 2025) e PMI
+PMBOK Guide 8ª ed. (2025), incluindo o Apêndice X3 (IA). Rastreabilidade em
+[`docs/governanca/matriz-controles.md`](docs/governanca/matriz-controles.md).
 
 ## Pilha
 
@@ -81,8 +86,21 @@ apps/organizations  organizações, vínculos, papéis com escopo, matriz RBAC
 apps/auditlog       trilha append-only (modelo + gatilho PostgreSQL)
 apps/projects       portfólios, projetos, histórico de status
 apps/lifecycle      templates versionados, 7 fases, requisitos, validações, tarefas, equipes, RACI
-docs/               arquitetura, requisitos, governança, segurança, pesquisa, evidências
+apps/evidence       evidências versionadas, quarentena, revisão, download seguro
+apps/governance     gates, decisões de gate, exceções, catálogo COBIT/PMBOK, uso responsável de IA
+apps/risks          riscos 5×5, tratamentos, custos, decisões, ações
+apps/analytics      catálogo/linhagem de dados, indicadores, insights, lições aprendidas
+apps/api            API REST v1
+apps/integrations   contratos de integração (NoOp)
+deploy/             exemplos systemd e Nginx
+docs/               arquitetura, requisitos, governança, dados, segurança, operação, demo, pesquisa, evidências
 ```
+
+## Demonstração e operação
+
+- Roteiro: [`docs/demo/roteiro-demonstracao.md`](docs/demo/roteiro-demonstracao.md)
+- Implantação: [`docs/operacao/deploy.md`](docs/operacao/deploy.md) · Backup: [`docs/operacao/backup-restore.md`](docs/operacao/backup-restore.md)
+- API: [`docs/architecture/api.md`](docs/architecture/api.md)
 
 ## Limitações
 
