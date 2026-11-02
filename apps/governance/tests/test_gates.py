@@ -155,10 +155,12 @@ def test_T011_exception_rules_and_history(org_a, project_a):
     until = timezone.localdate() + timedelta(days=30)
     with pytest.raises(PermissionDenied):
         gov.grant_exception(stage.pk, actor=org_a.manager, requirement=req, valid_until=until,
-                            justification="Classificação depende de inventário em andamento", residual_risk="Baixo impacto, monitorado")
+                              justification="Classificação depende de inventário em andamento",
+                              residual_risk="Baixo impacto, monitorado")
     with pytest.raises(ValidationError, match="validade"):
         gov.grant_exception(stage.pk, actor=org_a.sponsor, requirement=req, valid_until=timezone.localdate(),
-                            justification="Classificação depende de inventário em andamento", residual_risk="Baixo impacto")
+                              justification="Classificação depende de inventário em andamento",
+                              residual_risk="Baixo impacto")
     exc = gov.grant_exception(stage.pk, actor=org_a.sponsor, requirement=req, valid_until=until,
                               justification="Classificação depende de inventário em andamento",
                               residual_risk="Baixo impacto; revisão na fase 2")
@@ -191,7 +193,8 @@ def test_expired_exception_does_not_unblock(org_a, project_a):
     complete_stage_requirements(org_a, stage, skip=("F1-R4",))
     exc = gov.grant_exception(stage.pk, actor=org_a.sponsor, requirement=stage.requirements.get(code="F1-R4"),
                               valid_until=timezone.localdate() + timedelta(days=5),
-                              justification="Classificação depende de inventário em andamento", residual_risk="Baixo impacto, monitorado")
+                              justification="Classificação depende de inventário em andamento",
+                              residual_risk="Baixo impacto, monitorado")
     type(exc).objects.filter(pk=exc.pk).update(valid_until=timezone.localdate() - timedelta(days=1))
     with pytest.raises(ValidationError, match="F1-R4"):
         gov.request_gate(stage.pk, actor=org_a.manager)
@@ -203,7 +206,8 @@ def test_confidential_project_exception_requires_security_ack(org_a):
     complete_stage_requirements(org_a, stage, skip=("F1-R4",))
     exc = gov.grant_exception(stage.pk, actor=org_a.sponsor, requirement=stage.requirements.get(code="F1-R4"),
                               valid_until=timezone.localdate() + timedelta(days=5),
-                              justification="Classificação depende de inventário em andamento", residual_risk="Médio, com monitoramento")
+                              justification="Classificação depende de inventário em andamento",
+                              residual_risk="Médio, com monitoramento")
     assert exc.status == ExceptionStatus.PENDING_SECURITY
     with pytest.raises(ValidationError):
         gov.request_gate(stage.pk, actor=org_a.manager)
