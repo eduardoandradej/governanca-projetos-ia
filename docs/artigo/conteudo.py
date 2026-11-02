@@ -15,14 +15,15 @@ EIXO = "[Selecionar o eixo temático correspondente]"
 MODALIDADE = "Solução/Inovação em TI."
 
 RESUMO = (
-    "Organizações desenvolvem provas de conceito de inteligência artificial (IA), mas têm dificuldade para levá-las à "
-    "produção com segurança e responsabilização definida. Este trabalho desenvolveu e avaliou o NexFase, plataforma web "
-    "de governança e gestão de projetos de implantação de IA, fundamentada no COBIT 2019, no _white paper_ da ISACA "
-    "sobre governança de IA e no PMBOK® Guide, 8ª edição. Pela _Design Science Research_, o artefato foi desenvolvido "
-    "em Python, Django e PostgreSQL e avaliado em cenário sintético. Ele implementa sete fases com portões de passagem "
-    "verificados no servidor, segregação de funções, auditoria imutável e transformação de dados em conhecimento "
-    "revisado. Os 139 testes automatizados e a demonstração atenderam aos dez critérios do protocolo, indicando que "
-    "controles verificáveis sustentam a transição da experimentação à produção."
+    "A transição de projetos de inteligência artificial (IA) da experimentação para ambientes de produção apresenta "
+    "desafios relacionados à segurança, governança e definição de responsabilidades. Este trabalho desenvolveu e avaliou "
+    "o NexFase, plataforma web de governança e gestão de projetos de implantação de IA, fundamentada no COBIT 2019, no "
+    "_white paper_ da ISACA sobre governança de IA e no PMBOK® Guide, 8ª edição. Pela _Design Science Research_, o "
+    "artefato foi desenvolvido em Python, Django e PostgreSQL e avaliado em cenário sintético. A plataforma implementa "
+    "sete fases com critérios de aprovação verificados no servidor, segregação de funções, auditoria imutável e "
+    "transformação de dados em conhecimento revisado. A avaliação por testes automatizados e demonstração atendeu aos "
+    "dez critérios do protocolo, evidenciando a viabilidade funcional dos controles propostos para a transição da "
+    "experimentação à produção."
 )
 
 PALAVRAS_CHAVE = ("Governança de TI. Gerenciamento de projetos. Inteligência artificial. COBIT 2019. "
