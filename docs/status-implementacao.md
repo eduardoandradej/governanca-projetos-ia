@@ -12,7 +12,7 @@ Atualizado a cada incremento. "Concluído" = implementado **e** coberto por test
 | M5 Dados → informação → conhecimento | Concluído | `apps/analytics`: catálogo e linhagem (D), 12 KPIs com ficha técnica e snapshots (I), 6 regras determinísticas de insight com revisão humana e lições aprendidas com visibilidade controlada (K); `test_dik.py` |
 | Incremento PMBOK 8 | Concluído | Referências PMBOK 8 separadas do COBIT (26 seções, título+página), abordagem de desenvolvimento (4.2) e estratégia de adoção de IA (X3.1.1) no projeto, avaliação de uso responsável de IA (X3.3, 8 fatores) bloqueando o gate 6, template v3, KPIs classificados tendência/resultado (2.1.5) |
 | M6 Interface completa e API | Concluído | API `/api/v1/` (DRF, mesma autorização), exportações CSV neutralizadas e auditadas, integrações NoOp, telas para todos os módulos; `test_api_export.py` (navegação por 6 perfis) |
-| M7 Qualidade, segurança e instalação | Pendente | — |
+| M7 Qualidade, segurança e instalação | Concluído (laboratório) | `check --deploy` (1 aviso intencional), `pip-audit` (DRF atualizado; 0 vulnerabilidades conhecidas), backup/restauração verificados, Gunicorn com settings de produção, `deploy/`, `docs/operacao/`, `docs/seguranca/` |
 | M8 Avaliação científica (DSR) | Pendente | — |
 
 ## Testes do superprompt (T-xxx)

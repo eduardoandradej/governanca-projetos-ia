@@ -1,0 +1,22 @@
+# /etc/systemd/system/govia-gunicorn.service — exemplo; ajuste caminhos e usuário.
+[Unit]
+Description=GovIA (Gunicorn)
+After=network.target postgresql.service
+
+[Service]
+Type=notify
+User=govia
+Group=govia
+WorkingDirectory=/opt/govia
+EnvironmentFile=/etc/govia/govia.env
+Environment=DJANGO_SETTINGS_MODULE=config.settings.prod
+ExecStart=/opt/govia/.venv/bin/gunicorn config.wsgi:application --bind unix:/run/govia/gunicorn.sock --workers 3 --timeout 60 --access-logfile -
+RuntimeDirectory=govia
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/govia
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
