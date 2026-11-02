@@ -167,8 +167,7 @@ APP_SHORT_NAME = env("APP_SHORT_NAME", default="NexFase")
 APP_FULL_NAME = env("APP_FULL_NAME", default="Governança e gestão de projetos de IA")
 APP_TAGLINE = env(
     "APP_TAGLINE",
-    default="Plataforma integrada para conduzir projetos de inteligência artificial da prova de conceito à produção, "
-    "centralizando etapas, pessoas, riscos, evidências, decisões e inteligência gerencial.",
+    default="Plataforma integrada para conduzir projetos de inteligência artificial da prova de conceito à produção.",
 )
 
 # Identificação do ambiente exibida na interface (ex.: "Desenvolvimento", "Demonstração").
