@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Evidências{% endblock %}
+{% block breadcrumb %}{% if project %}<li class="breadcrumb-item"><a href="{% url 'projects:list' %}">Projetos</a></li><li class="breadcrumb-item"><a href="{% url 'projects:detail' project.pk %}">{{ project.code }}</a></li>{% endif %}<li class="breadcrumb-item active">Evidências</li>{% endblock %}
+{% block content %}
+<h1 class="h3">{% if project %}{{ project.code }} — {% endif %}Documentos e evidências</h1>
+{% if project %}{% include "projects/_tabs.html" with tab="evidencias" %}{% endif %}
+<form class="row g-2 mb-3" method="get">
+  <div class="col-md-4"><label class="form-label small" for="eq">Título</label><input id="eq" class="form-control form-control-sm" name="q" value="{{ filters.q }}"></div>
+  <div class="col-md-3"><label class="form-label small" for="es">Status</label><select id="es" class="form-select form-select-sm" name="status"><option value="">Todos</option>{% for v,l in statuses %}<option value="{{ v }}" {% if filters.status == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select></div>
+  <div class="col-md-3"><label class="form-label small" for="et">Tipo</label><select id="et" class="form-select form-select-sm" name="tipo"><option value="">Todos</option>{% for v,l in kinds %}<option value="{{ v }}" {% if filters.tipo == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select></div>
+  <div class="col-md-2 d-flex align-items-end"><button class="btn btn-outline-primary btn-sm w-100" type="submit">Filtrar</button></div>
+</form>
+<div class="card"><div class="table-responsive"><table class="table table-sm mb-0 small">
+  <thead><tr><th>Evidência</th><th>Projeto</th><th>Fase</th><th>Requisito</th><th>Tipo</th><th>Versão</th><th>Status</th><th>Atualizada</th></tr></thead>
+  <tbody>{% for e in page %}<tr><td><a href="{% url 'evidence:detail' e.pk %}">{{ e.title }}</a></td><td>{{ e.project.code }}</td><td>{{ e.stage.order|default:"—" }}</td><td>{{ e.requirement.code|default:"—" }}</td><td>{{ e.get_kind_display }}</td><td>v{{ e.current_version }}</td><td>{{ e.get_status_display }}</td><td>{{ e.updated_at|date:"d/m/Y H:i" }}</td></tr>{% empty %}<tr><td colspan="8" class="text-body-secondary">Nenhuma evidência no seu escopo. Evidências são anexadas na página de cada fase.</td></tr>{% endfor %}</tbody>
+</table></div></div>
+{% include "partials/pagination.html" %}
+{% endblock %}

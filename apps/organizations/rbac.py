@@ -55,6 +55,7 @@ PERMISSIONS: dict[str, frozenset[str]] = {
     "evidence.upload": frozenset({R.PROJECT_MANAGER, R.TECH_EXECUTOR, R.SECURITY_COMPLIANCE}),
     "evidence.review": frozenset({R.SECURITY_COMPLIANCE, R.GATE_APPROVER, R.PROJECT_MANAGER}),
     "evidence.download": ALL_ROLES - {R.READER},
+    "evidence.inspect": frozenset({R.SECURITY_COMPLIANCE}),
     # Riscos, custos e decisões
     "risk.manage": frozenset({R.PROJECT_MANAGER, R.TECH_EXECUTOR, R.SECURITY_COMPLIANCE}),
     "risk.accept_residual": frozenset({R.SPONSOR}),

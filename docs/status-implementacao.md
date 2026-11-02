@@ -7,7 +7,7 @@ Atualizado a cada incremento. "Concluído" = implementado **e** coberto por test
 | M0 Descoberta e desenho | Concluído | ADR-001..004, `docs/architecture/`, este arquivo |
 | M1 Fundação (auth, organizações, RBAC, auditoria, layout, seed) | Concluído | `apps/accounts`, `apps/organizations`, `apps/auditlog`; testes `test_auth.py`, `test_rbac.py` |
 | M2 Projetos e ciclo de vida | Concluído | `apps/projects`, `apps/lifecycle`; testes `test_projects.py`, `test_lifecycle.py`; capturas `docs/evidencias/m2/` |
-| M3 Governança e gates | Pendente | — |
+| M3 Governança e gates | Concluído | `apps/governance`, `apps/evidence`; testes `test_gates.py`, `test_concurrency.py`, `test_evidence.py`; catálogo COBIT com base em ISACA (2025); template v2 |
 | M4 Riscos, custos e decisões | Pendente | — |
 | M5 Dados → informação → conhecimento | Pendente | — |
 | M6 Interface completa e API | Pendente | — |
@@ -24,7 +24,18 @@ Atualizado a cada incremento. "Concluído" = implementado **e** coberto por test
 | T-013 | Aprovado | `test_T013_auditor_reads_audit_but_cannot_modify_project` |
 | T-014 | Aprovado | `test_T014_common_user_cannot_change_roles`, `test_audit_event_append_only_*` |
 | T-022 | Aprovado | `test_T022_audit_records_project_creation_without_secrets` |
-| T-025 | Parcial | idempotência de concessão de papel (`test_org_admin_assigns_and_revokes_role_with_history`) |
+| T-025 | Aprovado | `test_T025_resubmitting_request_does_not_duplicate`, idempotência de papéis |
+| T-004 | Aprovado | `test_T004_gate_blocked_with_pending_mandatory_requirement` |
+| T-005 | Aprovado | `test_T005_evidence_in_review_or_rejected_does_not_satisfy` |
+| T-006 | Aprovado | `test_T006_requester_cannot_approve_own_gate` |
+| T-007 | Aprovado | `test_T007_approval_moves_phase_exactly_once` |
+| T-008 | Aprovado | `test_T008_rejection_returns_stage_with_justification` |
+| T-009 | Aprovado | `test_T009_change_after_approval_requires_revalidation` |
+| T-011 | Aprovado | `test_T011_exception_rules_and_history` (+3 testes de exceção) |
+| T-012 | Aprovado | `test_T012_concurrent_approvals_single_advance` (threads, conexões PostgreSQL distintas; 5/5 execuções) |
+| T-015 | Parcial | download de evidência por outra organização → 404 (`test_download_scope_quarantine_and_audit`); exportação: M6 |
+| T-021 | Aprovado | `test_T021_invalid_uploads_are_refused_without_storing` (7 casos), `test_T021_oversized_upload_refused` |
+| T-024 | Parcial | `test_T024_full_flow_reaches_operation` (fases 1→7 via gates); riscos/relatório: M4–M6 |
 | T-027 | Aprovado | `test_T027_new_template_version_does_not_change_started_projects` |
 | T-028 | Parcial | `test_stage_progress_without_requirements_reports_no_data` |
 | Demais | Pendentes | — |

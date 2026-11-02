@@ -13,6 +13,7 @@ Segregação de funções (solicitante ≠ aprovador; quem atende ≠ quem valid
 | `decision.approve` |  | ✔ | ✔ |  |  |  |  |  |  |
 | `decision.record` |  | ✔ | ✔ | ✔ |  |  |  |  |  |
 | `evidence.download` | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |  |
+| `evidence.inspect` |  |  |  |  |  | ✔ |  |  |  |
 | `evidence.review` |  |  |  | ✔ |  | ✔ | ✔ |  |  |
 | `evidence.upload` |  |  |  | ✔ | ✔ | ✔ |  |  |  |
 | `export.data` | ✔ | ✔ | ✔ | ✔ |  |  |  | ✔ |  |

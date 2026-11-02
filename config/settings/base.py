@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     "apps.organizations",
     "apps.projects",
     "apps.lifecycle",
+    "apps.evidence",
+    "apps.governance",
 ]
 
 MIDDLEWARE = [

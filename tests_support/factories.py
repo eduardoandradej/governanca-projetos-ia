@@ -71,3 +71,43 @@ def make_org_setup(name: str, prefix: str) -> OrgSetup:
     setup.add_user("portfolio", Role.PORTFOLIO_MANAGER)
     setup.add_user("outsider")  # membro sem papel
     return setup
+
+
+def txt_upload(name="evidencia.txt", content=b"Evidencia sintetica de teste.\n"):
+    from django.core.files.uploadedfile import SimpleUploadedFile
+
+    return SimpleUploadedFile(name, content, content_type="text/plain")
+
+
+def approved_evidence(setup: OrgSetup, requirement, *, kind=None):
+    """Evidência aprovada: executor envia, segurança inspeciona/libera, aprovador revisa (segregação)."""
+    from apps.evidence import services as ev
+
+    art = ev.create_evidence(
+        actor=setup.executor, project=requirement.stage.project, requirement=requirement,
+        kind=kind or requirement.evidence_kind or "other", title=f"Evidência {requirement.code}", uploaded=txt_upload(),
+    )
+    ev.inspect_version(art.pk, actor=setup.security, release=True, note="Inspecionado")
+    return ev.review_evidence(art.pk, actor=setup.approver, decision="approved", comment="Conforme critério.")
+
+
+def complete_stage_requirements(setup: OrgSetup, stage, *, skip=()):
+    """Atende e valida todos os requisitos obrigatórios (com evidência aprovada quando exigida)."""
+    from apps.lifecycle import services as lc
+
+    for req in stage.requirements.filter(mandatory=True):
+        if req.code in skip:
+            continue
+        if req.requires_evidence:
+            approved_evidence(setup, req)
+        lc.fulfill_requirement(req.pk, actor=setup.manager, note=f"Atendimento verificável de {req.code}.")
+        lc.validate_requirement(req.pk, actor=setup.security, decision="approved", comment="Validado.")
+
+
+def pass_gate(setup: OrgSetup, stage):
+    from apps.governance import services as gov
+
+    complete_stage_requirements(setup, stage)
+    gate = gov.request_gate(stage.pk, actor=setup.manager)
+    return gov.approve_gate(stage.pk, actor=setup.approver, justification="Critérios atendidos.",
+                            request_number=gate.request_number)

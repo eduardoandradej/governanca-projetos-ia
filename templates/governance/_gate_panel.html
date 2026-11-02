@@ -1,0 +1,103 @@
+<div class="card mb-4 border-primary-subtle">
+  <div class="card-header d-flex flex-wrap justify-content-between gap-2">
+    <span class="fw-semibold">Gate de saída da fase {{ stage.order }}</span>
+    {% if gate %}<span>Status: <span class="badge {% if gate.status == 'approved' %}text-bg-success{% elif gate.status == 'requested' %}text-bg-warning{% elif gate.status == 'rejected' %}text-bg-danger{% else %}text-bg-secondary{% endif %}">{{ gate.get_status_display }}</span>
+      {% if gate.request_number %}<small class="text-body-secondary">· solicitação nº {{ gate.request_number }}{% if gate.requested_by %} por {{ gate.requested_by }}{% endif %}</small>{% endif %}</span>{% endif %}
+  </div>
+  <div class="card-body">
+    {% if not stage.has_exit_gate %}
+      <p class="mb-0 small">Fase de acompanhamento contínuo: não possui gate de saída. A entrada nesta fase exigiu o aceite operacional da fase anterior.</p>
+    {% else %}
+      {% if gate.revalidation_required %}<div class="alert alert-warning small"><strong>Revalidação pendente:</strong> {{ gate.revalidation_cause }}</div>{% endif %}
+      <h3 class="h6">Verificação automática de passagem (no servidor)</h3>
+      {% if evaluation.ok %}
+        <div class="alert alert-success small py-2">Nenhum bloqueio encontrado.</div>
+      {% else %}
+        <ul class="small text-danger mb-2">{% for b in evaluation.blockers %}<li>{{ b }}</li>{% endfor %}</ul>
+      {% endif %}
+      {% if evaluation.exceptions_applied %}<div class="small mb-2"><span class="badge text-bg-warning">Exceções em vigor consideradas</span> {% for e in evaluation.exceptions_applied %}{{ e.requirement|default:"riscos críticos" }} (até {{ e.valid_until }}){% if not forloop.last %}; {% endif %}{% endfor %}</div>{% endif %}
+
+      <div class="d-flex flex-wrap gap-3 align-items-start">
+      {% if can_request and stage.status == 'in_progress' or can_request and stage.status == 'returned' %}
+        <form method="post" action="{% url 'governance:request' project.pk stage.pk %}" class="d-flex gap-2">{% csrf_token %}
+          <label class="visually-hidden" for="gnote">Observação</label>
+          <input id="gnote" name="note" class="form-control form-control-sm" placeholder="Observação (opcional)">
+          <button class="btn btn-primary btn-sm text-nowrap" type="submit">Solicitar passagem</button>
+        </form>
+      {% endif %}
+      {% if gate.status == 'requested' %}
+        {% if can_decide %}
+        <form method="post" class="d-flex flex-wrap gap-2" action="{% url 'governance:approve' project.pk stage.pk %}">{% csrf_token %}
+          <input type="hidden" name="request_number" value="{{ gate.request_number }}">
+          <label class="visually-hidden" for="gjust">Justificativa</label>
+          <input id="gjust" name="justification" class="form-control form-control-sm" style="min-width:18rem" required minlength="10" placeholder="Justificativa da decisão (obrigatória)">
+          <button class="btn btn-success btn-sm" type="submit">Aprovar</button>
+          <button class="btn btn-outline-danger btn-sm" type="submit" formaction="{% url 'governance:reject' project.pk stage.pk %}">Rejeitar e devolver</button>
+        </form>
+        {% endif %}
+        {% if can_request %}
+        <form method="post" action="{% url 'governance:cancel' project.pk stage.pk %}">{% csrf_token %}<input type="hidden" name="reason" value="Cancelada pelo solicitante"><button class="btn btn-link btn-sm" type="submit">Cancelar solicitação</button></form>
+        {% endif %}
+      {% endif %}
+      {% if gate.revalidation_required and can_decide %}
+        <form method="post" class="d-flex gap-2" action="{% url 'governance:revalidate' project.pk stage.pk %}">{% csrf_token %}
+          <input name="justification" class="form-control form-control-sm" required minlength="10" placeholder="Justificativa da revalidação" aria-label="Justificativa da revalidação">
+          <button class="btn btn-warning btn-sm text-nowrap" type="submit">Revalidar gate</button>
+        </form>
+      {% endif %}
+      </div>
+    {% endif %}
+
+    {% if exceptions %}
+    <h3 class="h6 mt-3">Exceções formais</h3>
+    <ul class="list-group small mb-2">
+      {% for e in exceptions %}
+      <li class="list-group-item">
+        <span class="badge {% if e.status == 'active' %}text-bg-warning{% elif e.status == 'revoked' %}text-bg-secondary{% else %}text-bg-info{% endif %}">{{ e.get_status_display }}</span>
+        {% if e.requirement %}{{ e.requirement.code }}{% endif %}{% if e.covers_critical_risks %} riscos críticos{% endif %} · válida até {{ e.valid_until|date:"d/m/Y" }}{% if e.valid_until < today %} <strong class="text-danger">(expirada)</strong>{% endif %}
+        · concedida por {{ e.granted_by }}{% if e.security_ack_by %} · ciência de segurança: {{ e.security_ack_by }}{% endif %}
+        <div>Justificativa: {{ e.justification }} · Risco residual aceito: {{ e.residual_risk }}</div>
+        <div class="d-flex gap-2 mt-1">
+        {% if e.status == 'pending_security' and can_ack %}<form method="post" action="{% url 'governance:exception_ack' e.pk %}">{% csrf_token %}<button class="btn btn-outline-primary btn-sm" type="submit">Registrar ciência de segurança</button></form>{% endif %}
+        {% if e.status != 'revoked' and can_grant_exception %}<form method="post" action="{% url 'governance:exception_revoke' e.pk %}">{% csrf_token %}<input type="hidden" name="reason" value="Revogada pela interface"><button class="btn btn-outline-secondary btn-sm" type="submit">Revogar</button></form>{% endif %}
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% if can_grant_exception and stage.has_exit_gate %}
+    <details class="mt-2"><summary class="small">Registrar exceção formal (autoridade competente)</summary>
+      <form method="post" action="{% url 'governance:exception_create' project.pk stage.pk %}" class="row g-2 mt-1 small">{% csrf_token %}
+        <div class="col-md-4"><label class="form-label" for="ex-req">Requisito (não legal)</label><select id="ex-req" name="requirement" class="form-select form-select-sm"><option value="">—</option>{% for r in exception_requirements %}<option value="{{ r.pk }}">{{ r.code }} {{ r.title }}</option>{% endfor %}</select></div>
+        <div class="col-md-3 d-flex align-items-end"><div class="form-check"><input class="form-check-input" type="checkbox" name="covers_critical_risks" id="ex-risk"><label class="form-check-label" for="ex-risk">Dispensar bloqueio por risco crítico</label></div></div>
+        <div class="col-md-2"><label class="form-label" for="ex-until">Válida até</label><input id="ex-until" type="date" name="valid_until" class="form-control form-control-sm" required></div>
+        <div class="col-md-6"><label class="form-label" for="ex-just">Justificativa (≥ 20)</label><textarea id="ex-just" name="justification" class="form-control form-control-sm" rows="2" required></textarea></div>
+        <div class="col-md-6"><label class="form-label" for="ex-res">Risco residual aceito</label><textarea id="ex-res" name="residual_risk" class="form-control form-control-sm" rows="2" required></textarea></div>
+        <div class="col-12"><button class="btn btn-outline-warning btn-sm" type="submit">Registrar exceção</button> <span class="text-body-secondary">Requisitos legais não admitem exceção. Projetos confidenciais exigem ciência de segurança.</span></div>
+      </form>
+    </details>
+    {% endif %}
+
+    {% if decisions %}
+    <h3 class="h6 mt-3">Histórico de pareceres</h3>
+    <ul class="small mb-0">{% for d in decisions %}<li>{{ d.created_at|date:"d/m/Y H:i" }} · solicitação nº {{ d.request_number }} · <strong>{{ d.get_decision_display }}</strong> por {{ d.decided_by }}: {{ d.justification }}</li>{% endfor %}</ul>
+    {% endif %}
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header fw-semibold">Evidências da fase</div>
+  <div class="table-responsive"><table class="table table-sm mb-0 small">
+    <thead><tr><th>Evidência</th><th>Tipo</th><th>Requisito</th><th>Versão</th><th>Status</th></tr></thead>
+    <tbody>{% for e in stage_evidences %}<tr><td><a href="{% url 'evidence:detail' e.pk %}">{{ e.title }}</a></td><td>{{ e.get_kind_display }}</td><td>{{ e.requirement.code|default:"—" }}</td><td>v{{ e.current_version }}</td><td>{{ e.get_status_display }}</td></tr>{% empty %}<tr><td colspan="5" class="text-body-secondary">Sem evidências vinculadas.</td></tr>{% endfor %}</tbody>
+  </table></div>
+  {% if evidence_form %}
+  <details class="p-3"><summary class="small">Anexar evidência</summary>
+    <form method="post" enctype="multipart/form-data" action="{% url 'evidence:create' project.pk %}" class="row mt-2" novalidate>{% csrf_token %}
+      <input type="hidden" name="stage" value="{{ stage.pk }}">
+      {% with form=evidence_form %}{% include "partials/form_fields.html" with col="col-md-6" %}{% endwith %}
+      <div class="col-12"><button class="btn btn-primary btn-sm" type="submit">Enviar evidência</button></div>
+    </form>
+  </details>
+  {% endif %}
+</div>

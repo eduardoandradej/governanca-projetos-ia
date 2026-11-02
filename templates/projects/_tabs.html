@@ -1,5 +1,6 @@
 <ul class="nav nav-tabs mb-3">
   <li class="nav-item"><a class="nav-link {% if tab == 'resumo' %}active{% endif %}" href="{% url 'projects:detail' project.pk %}">Resumo e fases</a></li>
   <li class="nav-item"><a class="nav-link {% if tab == 'tarefas' %}active{% endif %}" href="{% url 'lifecycle:tasks' project.pk %}">Tarefas</a></li>
+  <li class="nav-item"><a class="nav-link {% if tab == 'evidencias' %}active{% endif %}" href="{% url 'evidence:project' project.pk %}">Evidências</a></li>
   {% for t in PROJECT_TABS %}<li class="nav-item"><a class="nav-link {% if tab == t.key %}active{% endif %}" href="{{ t.url }}">{{ t.label }}</a></li>{% endfor %}
 </ul>

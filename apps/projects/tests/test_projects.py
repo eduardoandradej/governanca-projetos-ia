@@ -30,10 +30,10 @@ def test_T003_project_receives_seven_stages_starting_at_phase_1(project_a):
     assert [s.order for s in stages] == [1, 2, 3, 4, 5, 6, 7]
     assert stages[0].status == StageStatus.IN_PROGRESS
     assert all(s.status == StageStatus.NOT_STARTED for s in stages[1:])
-    assert stages[0].requirements.count() == 4
+    assert stages[0].requirements.count() == 5  # template v2 (inclui F1-R5, ISACA 2025)
     assert stages[6].has_exit_gate is False
     assert project_a.current_stage == stages[0]
-    assert project_a.lifecycle_version.number == 1
+    assert project_a.lifecycle_version.number == 2
 
 
 def test_code_unique_per_organization_only(org_a, org_b):
@@ -135,15 +135,15 @@ def test_T027_new_template_version_does_not_change_started_projects(org_a, proje
     from django.apps import apps as django_apps
 
     original = list(project_a.stages.values_list("name", flat=True))
-    v2 = default_template.install(django_apps, number=2)
+    v2 = default_template.install(django_apps, number=3)
     stage1 = v2.stages.get(order=1)
-    stage1.name = "Fase 1 renomeada na versão 2"
+    stage1.name = "Fase 1 renomeada na versão 3"
     stage1.save()
     stage1.requirements.all().delete()
     project_a.refresh_from_db()
     assert list(project_a.stages.values_list("name", flat=True)) == original
-    assert project_a.stages.get(order=1).requirements.count() == 4
-    assert project_a.lifecycle_version.number == 1
+    assert project_a.stages.get(order=1).requirements.count() == 5
+    assert project_a.lifecycle_version.number == 2
     new_project = org_a.create_project(code="IA-V2")
-    assert new_project.lifecycle_version == LifecycleTemplateVersion.objects.get(number=2)
-    assert new_project.stages.get(order=1).name == "Fase 1 renomeada na versão 2"
+    assert new_project.lifecycle_version == LifecycleTemplateVersion.objects.get(number=3)
+    assert new_project.stages.get(order=1).name == "Fase 1 renomeada na versão 3"

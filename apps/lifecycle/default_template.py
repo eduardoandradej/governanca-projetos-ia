@@ -124,7 +124,59 @@ STAGES = [
 ]
 
 
-def install(apps, *, organization=None, number=1):
+# ---------------------------------------------------------------------------------------------- Versão 2
+# Enriquecida com o white paper ISACA (2025) "Leveraging COBIT for Effective AI System Governance":
+# elementos de IA confiável (p. 11–13), aplicação dos domínios ao ciclo de vida de IA (p. 13–14), categorias de
+# risco de IA (fig. 5, p. 16) e práticas do caso de uso (EDM05.01, BAI03.06, MEA04.06, APO04.04; p. 14–15).
+SOURCE_REFERENCE_V2 = (
+    "Interpretação da equipe: COBIT 2019 e PMBOK 8ª ed.; v2 incorpora ISACA, Leveraging COBIT for Effective "
+    "AI System Governance (2025), p. 11–16."
+)
+
+V2_ADDITIONS = {
+    1: [("F1-R5", "Alinhamento ético e de valor da iniciativa de IA",
+         "Impacto em partes interessadas, sociedade e ambiente avaliado; uso alinhado aos valores da organização.",
+         True, False, "", True, False, "EDM01")],
+    2: [("F2-R5", "Riscos de IA classificados nas cinco categorias ISACA",
+         "Uso ético; política e governança; tecnologia e infraestrutura; operacional e organizacional; emergente "
+         "e estratégico — com probabilidade e impacto considerando controles atuais.", True, False, "", True, False,
+         "APO12")],
+    3: [("F3-R5", "Estrutura de supervisão de IA definida",
+         "Comitê ou fórum multidisciplinar (TI, dados, conformidade/privacidade, negócio) com papéis em RACI.",
+         True, False, "", True, False, "EDM05"),
+        ("F3-R6", "Política de transparência e registro de decisões do sistema de IA",
+         "Como saídas serão explicadas, registradas e comunicadas aos usuários.", True, False, "", True, False,
+         "EDM01")],
+    4: [("F4-R5", "Critérios de qualidade de dados para IA definidos",
+         "Critérios de exatidão, relevância e avaliação periódica de vieses nos dados.", True, False, "", True,
+         False, "APO11"),
+        ("F4-R6", "Ativos que hospedam a plataforma de IA inventariados e protegidos",
+         "Inventário e proteção da infraestrutura de dados, treinamento e operação.", True, False, "", True, False,
+         "BAI09")],
+    5: [("F5-R5", "Explicabilidade das saídas documentada",
+         "Técnicas e limites de explicação das decisões do modelo registrados.", True, False, "", True, False,
+         "EDM01")],
+    6: [("F6-R6", "Processo de atualização e retreinamento controlado do modelo",
+         "Mudanças de modelo/algoritmo passam por gestão de mudanças antes da produção.", True, False, "", True,
+         False, "BAI06")],
+    7: [("F7-R4", "Auditoria periódica de qualidade e equidade dos dados de treinamento",
+         "Avaliação recorrente com registro de resultados e ações.", False, False, "", True, False, "MEA04"),
+        ("F7-R5", "Capacitação contínua das equipes em IA e governança",
+         "Plano de atualização sobre tendências, requisitos de governança e ética.", False, False, "", True, False,
+         "APO04")],
+}
+
+
+def stages_v2():
+    import copy
+
+    stages = copy.deepcopy(STAGES)
+    for st in stages:
+        st["requirements"] = list(st["requirements"]) + V2_ADDITIONS.get(st["order"], [])
+    return stages
+
+
+def install(apps, *, organization=None, number=1, stages=None, source_reference=None, notes=""):
     """Instala o template padrão. Usa `apps.get_model` para ser seguro em migrations. Idempotente."""
     from django.utils import timezone
 
@@ -138,11 +190,12 @@ def install(apps, *, organization=None, number=1):
     )
     version, created = LifecycleTemplateVersion.objects.get_or_create(
         template=template, number=number,
-        defaults={"status": "published", "published_at": timezone.now(), "source_reference": SOURCE_REFERENCE},
+        defaults={"status": "published", "published_at": timezone.now(),
+                  "source_reference": source_reference or SOURCE_REFERENCE, "notes": notes},
     )
     if not created:
         return version
-    for st in STAGES:
+    for st in stages or STAGES:
         stage = StageTemplate.objects.create(
             template_version=version, order=st["order"], code=st["code"], name=st["name"],
             objective=st["objective"], cobit_refs=st["cobit_refs"], pmbok_refs=st["pmbok_refs"],
