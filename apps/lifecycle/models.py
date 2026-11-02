@@ -74,6 +74,10 @@ class StageTemplate(models.Model):
     requires_segregation = models.BooleanField("exige segregação solicitante ≠ aprovador", default=True)
     block_on_critical_risk = models.BooleanField("bloqueia gate com risco crítico não tratado", default=True)
     has_exit_gate = models.BooleanField("possui gate de saída", default=True)
+    requires_responsible_ai = models.BooleanField(
+        "exige avaliação de uso responsável de IA concluída", default=False,
+        help_text="PMBOK 8, Apêndice X3.3; ISACA (2025) elementos de IA confiável.",
+    )
 
     class Meta:
         ordering = ["template_version", "order"]
@@ -160,6 +164,7 @@ class StageInstance(BaseModel):
     requires_segregation = models.BooleanField(default=True)
     block_on_critical_risk = models.BooleanField(default=True)
     has_exit_gate = models.BooleanField(default=True)
+    requires_responsible_ai = models.BooleanField(default=False)
     status = models.CharField(max_length=12, choices=StageStatus.choices, default=StageStatus.NOT_STARTED)
     planned_start = models.DateField("início planejado", null=True, blank=True)
     planned_end = models.DateField("término planejado", null=True, blank=True)

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Conhecimento · {{ project.code }}{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item"><a href="{% url 'projects:list' %}">Projetos</a></li><li class="breadcrumb-item"><a href="{% url 'projects:detail' project.pk %}">{{ project.code }}</a></li><li class="breadcrumb-item active">Conhecimento</li>{% endblock %}
+{% block content %}
+<h1 class="h3">{{ project.code }} — Insights e lições</h1>
+{% include "projects/_tabs.html" with tab="conhecimento" %}
+<div class="row g-3"><div class="col-lg-6"><div class="card"><div class="card-header small fw-semibold">Insights</div><ul class="list-group list-group-flush small">{% for i in insights %}<li class="list-group-item"><a href="{% url 'analytics:insight' i.pk %}">{{ i.title }}</a> · {{ i.get_status_display }}</li>{% empty %}<li class="list-group-item text-body-secondary">Sem insights.</li>{% endfor %}</ul></div></div>
+<div class="col-lg-6"><div class="card"><div class="card-header small fw-semibold">Lições aprendidas</div><ul class="list-group list-group-flush small">{% for l in lessons %}<li class="list-group-item"><strong>{{ l.title }}</strong> · {{ l.get_status_display }} · {{ l.get_visibility_display }}
+  {% if can_approve and l.status == 'draft' %}<form method="post" action="{% url 'analytics:lesson_approve' l.pk %}" class="mt-1">{% csrf_token %}
+    <select name="visibility" class="form-select form-select-sm mb-1" aria-label="Visibilidade">{% for v,lbl in visibilities %}<option value="{{ v }}">{{ lbl }}</option>{% endfor %}</select>
+    <input name="disclosure_justification" class="form-control form-control-sm mb-1" placeholder="Justificativa de divulgação (obrigatória se projeto confidencial)" aria-label="Justificativa de divulgação">
+    <button class="btn btn-success btn-sm" type="submit">Aprovar lição</button></form>{% endif %}</li>{% empty %}<li class="list-group-item text-body-secondary">Sem lições.</li>{% endfor %}</ul></div></div></div>
+{% endblock %}

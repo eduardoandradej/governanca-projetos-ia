@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Uso responsável de IA · {{ project.code }}{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item"><a href="{% url 'projects:list' %}">Projetos</a></li><li class="breadcrumb-item"><a href="{% url 'projects:detail' project.pk %}">{{ project.code }}</a></li><li class="breadcrumb-item active">Uso responsável de IA</li>{% endblock %}
+{% block content %}
+<h1 class="h3">{{ project.code }} — Avaliação de uso responsável de IA</h1>
+{% include "projects/_tabs.html" with tab="rai" %}
+<div class="alert alert-light border small">Fatores de PMI PMBOK Guide 8ª ed., Apêndice X3.3 (p. 238, 242–243), relacionados aos elementos de IA confiável de ISACA (2025, p. 11–13).
+Cada fator tratado exige um <strong>humano responsável</strong>. No template v3, todos os fatores precisam estar tratados ou justificados como não aplicáveis para aprovar o gate da fase 6 (homologação); alterações posteriores exigem revalidação.
+Estratégia de adoção declarada: <strong>{{ project.get_ai_adoption_strategy_display|default:"não informada" }}</strong> · abordagem: <strong>{{ project.get_development_approach_display|default:"não informada" }}</strong>.</div>
+<p class="small">{% if pending %}<span class="badge text-bg-warning">{{ pending }} fator(es) pendente(s)</span>{% else %}<span class="badge text-bg-success">Todos os fatores avaliados</span>{% endif %}</p>
+<div class="row g-3">
+{% for r in rows %}
+  <div class="col-lg-6"><div class="card p-3 h-100 small">
+    <div class="d-flex justify-content-between"><strong>{{ r.get_factor_display }}</strong><span class="badge {% if r.status == 'pending' %}text-bg-warning{% else %}text-bg-success{% endif %}">{{ r.get_status_display }}</span></div>
+    <div class="text-body-secondary mb-1">IA confiável (ISACA): {{ r.isaca }}{% if r.pk %} · v{{ r.version }} por {{ r.assessed_by }} em {{ r.assessed_at|date:"d/m/Y H:i" }}{% endif %}</div>
+    {% if r.measures %}<div class="mb-1">{{ r.measures }}</div>{% endif %}
+    {% if r.accountable %}<div class="mb-1">Humano responsável: <strong>{{ r.accountable }}</strong></div>{% endif %}
+    {% if can_assess %}
+    <form method="post" class="mt-auto">{% csrf_token %}<input type="hidden" name="factor" value="{{ r.factor }}">
+      <div class="d-flex gap-2 mb-1">
+        <select name="status" class="form-select form-select-sm" aria-label="Situação">{% for v,l in statuses %}<option value="{{ v }}" {% if r.status == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select>
+        <select name="accountable" class="form-select form-select-sm" aria-label="Humano responsável"><option value="">Humano responsável…</option>{% for p in people %}<option value="{{ p.pk }}" {% if r.accountable_id == p.pk %}selected{% endif %}>{{ p }}</option>{% endfor %}</select>
+      </div>
+      <textarea name="measures" class="form-control form-control-sm mb-1" rows="2" placeholder="Medidas adotadas ou justificativa (≥ 20 caracteres)" aria-label="Medidas">{{ r.measures }}</textarea>
+      <button class="btn btn-outline-primary btn-sm" type="submit">Salvar</button>
+    </form>{% endif %}
+  </div></div>
+{% endfor %}
+</div>
+{% endblock %}

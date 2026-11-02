@@ -2,27 +2,21 @@
 {% block title %}Visão geral{% endblock %}
 {% block breadcrumb %}<li class="breadcrumb-item active">Visão geral</li>{% endblock %}
 {% block content %}
-<h1 class="h3 mb-3">Visão geral do portfólio</h1>
-{% if not organizations %}
-  <div class="alert alert-info">Você ainda não possui vínculo com nenhuma organização. Solicite acesso ao administrador.</div>
-{% endif %}
-<div class="row g-3 mb-4">
-  <div class="col-6 col-lg-3"><div class="card kpi p-3"><div class="label">Organizações</div><div class="value">{{ organizations|length }}</div></div></div>
-  <div class="col-6 col-lg-3"><div class="card kpi p-3"><div class="label">Projetos visíveis</div><div class="value">{{ project_count }}</div></div></div>
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
+  <h1 class="h3 mb-0">Visão geral do portfólio</h1>
+  {% if organizations|length > 1 %}<form method="get" class="d-flex gap-2"><label class="visually-hidden" for="org">Organização</label><select id="org" name="organizacao" class="form-select form-select-sm"><option value="">Todas</option>{% for o in organizations %}<option value="{{ o.pk }}" {% if selected_org == o.pk|stringformat:"s" %}selected{% endif %}>{{ o.name }}</option>{% endfor %}</select><button class="btn btn-outline-primary btn-sm" type="submit">Filtrar</button></form>{% endif %}
 </div>
+{% if not organizations %}<div class="alert alert-info">Você ainda não possui vínculo com nenhuma organização. Solicite acesso ao administrador.</div>{% endif %}
+{% include "analytics/_kpis.html" %}
 <div class="card">
-  <div class="card-header d-flex justify-content-between align-items-center"><span class="fw-semibold">Projetos atualizados recentemente</span><a href="{% url 'projects:list' %}" class="small">Ver todos</a></div>
-  <div class="table-responsive">
-  <table class="table table-sm mb-0">
-    <thead><tr><th>Código</th><th>Projeto</th><th>Organização</th><th>Gerente</th><th>Status</th></tr></thead>
-    <tbody>
-    {% for p in projects %}
-      <tr><td><a href="{% url 'projects:detail' p.pk %}">{{ p.code }}</a></td><td>{{ p.name }}</td><td>{{ p.organization }}{% if p.organization.is_demo %} <span class="badge text-bg-warning">demo</span>{% endif %}</td><td>{{ p.manager }}</td><td>{{ p.get_status_display }}</td></tr>
-    {% empty %}
-      <tr><td colspan="5" class="text-body-secondary">Sem projetos no seu escopo.</td></tr>
-    {% endfor %}
-    </tbody>
-  </table>
-  </div>
+  <div class="card-header d-flex justify-content-between"><span class="fw-semibold">Projetos e fase corrente</span><a href="{% url 'projects:list' %}" class="small">Ver todos</a></div>
+  <div class="table-responsive"><table class="table table-sm mb-0 small">
+    <thead><tr><th>Código</th><th>Projeto</th><th>Organização</th><th>Fase corrente</th><th>Checklist da fase</th><th>Prazo</th><th>Status</th></tr></thead>
+    <tbody>{% for row in rows %}{% with p=row.project %}<tr><td><a href="{% url 'projects:detail' p.pk %}">{{ p.code }}</a></td><td>{{ p.name }}</td><td>{{ p.organization }}{% if p.organization.is_demo %} <span class="badge text-bg-warning">demo</span>{% endif %}</td>
+      <td>{% if row.stage %}{{ row.stage.order }}. {{ row.stage.name }} <span class="text-body-secondary">({{ row.stage.get_status_display }})</span>{% else %}—{% endif %}</td>
+      <td>{% if row.progress.percent is None %}Sem dados{% else %}{{ row.progress.done }}/{{ row.progress.total }} ({{ row.progress.percent }}%){% endif %}</td>
+      <td>{{ p.due_date|date:"d/m/Y"|default:"—" }}</td><td>{{ p.get_status_display }}</td></tr>{% endwith %}
+    {% empty %}<tr><td colspan="7" class="text-body-secondary">Sem projetos no seu escopo.</td></tr>{% endfor %}</tbody>
+  </table></div>
 </div>
 {% endblock %}

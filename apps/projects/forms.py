@@ -9,7 +9,8 @@ from .models import Portfolio, Project
 
 PROJECT_FIELDS = [
     "code", "name", "portfolio", "description", "business_case", "business_objectives", "target_indicators",
-    "platform_type", "deployment_approach", "technology_metadata", "sponsor", "manager", "technical_lead",
+    "platform_type", "deployment_approach", "development_approach",
+    "ai_adoption_strategy", "technology_metadata", "sponsor", "manager", "technical_lead",
     "priority", "criticality", "data_classification", "start_date", "due_date", "planned_cost", "currency",
 ]
 

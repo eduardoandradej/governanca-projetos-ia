@@ -204,10 +204,47 @@ def framework(request):
             ),
         )
     )
-    return render(request, "governance/framework.html", {"objectives": objectives})
+    from .models import FrameworkMapping, FrameworkReference
+
+    pmbok = FrameworkReference.objects.prefetch_related(
+        Prefetch("mappings", queryset=FrameworkMapping.objects.select_related(
+            "requirement_template__stage_template__template_version"
+        ).exclude(requirement_template__stage_template__template_version__status="retired"))
+    )
+    return render(request, "governance/framework.html", {"objectives": objectives, "pmbok": pmbok})
 
 
 def Q_retired():  # noqa: N802 - helper de filtro
     from django.db.models import Q
 
     return Q(requirement_template__stage_template__template_version__status="retired")
+
+
+@login_required
+def responsible_ai(request, project_id):
+    from apps.risks.views import project_people
+
+    from .models import ISACA_ELEMENT_FOR_FACTOR, FactorStatus
+
+    project = get_project_or_404(request.user, project_id)
+    can_assess = rbac.has_perm(request.user, "responsible_ai.assess", project.organization, project) \
+        and not project.is_terminal
+    if request.method == "POST":
+        people = project_people(project)
+        accountable = people.filter(pk=request.POST.get("accountable") or None).first()
+        try:
+            services.assess_responsible_ai(project, actor=request.user, factor=request.POST.get("factor", ""),
+                                           status=request.POST.get("status", ""),
+                                           measures=request.POST.get("measures", ""), accountable=accountable)
+        except (ValidationError, PermissionDenied) as exc:
+            messages.error(request, _errors(exc))
+        else:
+            messages.success(request, "Avaliação registrada.")
+        return redirect("governance:responsible_ai", project_id=project.pk)
+    rows = services.responsible_ai_rows(project)
+    for r in rows:
+        r.isaca = ISACA_ELEMENT_FOR_FACTOR.get(r.factor, "")
+    return render(request, "governance/responsible_ai.html", {
+        "project": project, "rows": rows, "can_assess": can_assess, "statuses": FactorStatus.choices,
+        "people": project_people(project), "pending": sum(1 for r in rows if r.status == "pending"),
+    })

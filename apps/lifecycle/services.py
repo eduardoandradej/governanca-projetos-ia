@@ -57,7 +57,8 @@ def instantiate_lifecycle(project, *, actor) -> list[StageInstance]:
         stage = StageInstance.objects.create(
             project=project, stage_template=st, order=st.order, code=st.code, name=st.name, objective=st.objective,
             cobit_refs=st.cobit_refs, requires_segregation=st.requires_segregation,
-            block_on_critical_risk=st.block_on_critical_risk, has_exit_gate=st.has_exit_gate, created_by=actor,
+            block_on_critical_risk=st.block_on_critical_risk, has_exit_gate=st.has_exit_gate,
+            requires_responsible_ai=st.requires_responsible_ai, created_by=actor,
         )
         RequirementInstance.objects.bulk_create(
             [

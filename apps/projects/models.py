@@ -49,6 +49,22 @@ class DeploymentApproach(models.TextChoices):
     EDGE = "edge", "Borda (edge)"
 
 
+class DevelopmentApproach(models.TextChoices):
+    """PMBOK 8, The Standard, 4.2 Project Development Approaches (p. 58–65)."""
+
+    PREDICTIVE = "predictive", "Preditiva"
+    ADAPTIVE = "adaptive", "Adaptativa"
+    HYBRID = "hybrid", "Híbrida"
+
+
+class AIAdoptionStrategy(models.TextChoices):
+    """PMBOK 8, Apêndice X3.1.1 (p. 237–238): nível de complexidade e de supervisão humana do uso de IA."""
+
+    AUTOMATION = "automation", "Automação (baixa complexidade, pouca intervenção humana)"
+    ASSISTANCE = "assistance", "Assistência (saída exige revisão humana)"
+    AUGMENTATION = "augmentation", "Ampliação (tarefas estratégicas, iteração humana intensa)"
+
+
 class Level(models.TextChoices):
     LOW = "low", "Baixa"
     MEDIUM = "medium", "Média"
@@ -105,6 +121,12 @@ class Project(BaseModel):
     platform_type = models.CharField("tipo de plataforma", max_length=20, choices=PlatformType.choices)
     deployment_approach = models.CharField(
         "abordagem de implantação", max_length=20, choices=DeploymentApproach.choices
+    )
+    development_approach = models.CharField(
+        "abordagem de desenvolvimento", max_length=12, choices=DevelopmentApproach.choices, blank=True
+    )
+    ai_adoption_strategy = models.CharField(
+        "estratégia de adoção de IA (supervisão humana)", max_length=14, choices=AIAdoptionStrategy.choices, blank=True
     )
     technology_metadata = models.JSONField(
         "tecnologias/fornecedores (opcional)", default=dict, blank=True, validators=[validate_technology_metadata]

@@ -19,4 +19,12 @@
   </div></div>
 {% endfor %}
 </div>
+<h2 class="h4 mt-5">PMI PMBOK Guide 8ª edição (2025)</h2>
+<div class="alert alert-light border small">Referências apenas por seção e página (sem reprodução de texto do PMI). Tabela separada do COBIT:
+as <em>Project Management Focus Areas</em> do PMBOK 8 não equivalem às <em>focus areas</em> do COBIT 2019. A numeração de páginas de <em>The Standard</em> e do <em>PMBOK Guide</em> é independente.</div>
+<div class="card"><div class="table-responsive"><table class="table table-sm mb-0 small">
+  <thead><tr><th>Seção</th><th>Título (original / tradução)</th><th>Parte · páginas</th><th>Uso no sistema (análise da equipe)</th><th>Mapeamentos</th></tr></thead>
+  <tbody>{% for r in pmbok %}<tr><td>{{ r.section }}</td><td>{{ r.title }}<div class="text-body-secondary">{{ r.title_pt }} · {{ r.get_kind_display }}</div></td><td>{{ r.part }} · p. {{ r.pages }}</td><td>{{ r.analysis }}</td>
+    <td>{% for m in r.mappings.all %}{% if m.requirement_template %}{{ m.requirement_template.code }}{% else %}{{ m.feature }}{% endif %}{% if not forloop.last %}; {% endif %}{% endfor %}</td></tr>{% endfor %}</tbody>
+</table></div></div>
 {% endblock %}

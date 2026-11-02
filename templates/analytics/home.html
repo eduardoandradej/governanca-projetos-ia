@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Dados e inteligência{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active">Dados e inteligência</li>{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
+  <h1 class="h3 mb-0">Dados → informação → conhecimento</h1>
+  <form method="get" class="d-flex gap-2"><label class="visually-hidden" for="org">Organização</label>
+    <select id="org" name="organizacao" class="form-select form-select-sm"><option value="">Todas as organizações</option>{% for o in organizations %}<option value="{{ o.pk }}" {% if selected_org == o.pk|stringformat:"s" %}selected{% endif %}>{{ o.name }}</option>{% endfor %}</select>
+    <button class="btn btn-outline-primary btn-sm" type="submit">Filtrar</button></form>
+</div>
+<h2 class="h5">Informação: indicadores</h2>
+{% include "analytics/_kpis.html" %}
+{% with dist=results.K11.details.distribution %}{% if dist %}<p class="small">Distribuição por abordagem de implantação (K11): {% for k, v in dist.items %}<span class="badge text-bg-light">{{ k }}: {{ v }}</span> {% endfor %}</p>{% endif %}{% endwith %}
+<div class="row g-3">
+  <div class="col-lg-7"><div class="card"><div class="card-header d-flex justify-content-between"><span class="fw-semibold">Conhecimento: insights abertos</span><a class="small" href="{% url 'analytics:insights' %}">Todos</a></div>
+    <ul class="list-group list-group-flush small">{% for i in open_insights %}<li class="list-group-item"><a href="{% url 'analytics:insight' i.pk %}">{{ i.title }}</a> <span class="badge text-bg-light">{{ i.rule_code }}</span> <span class="badge text-bg-secondary">{{ i.get_status_display }}</span>{% if i.is_demo %} <span class="badge text-bg-warning">demo</span>{% endif %}</li>{% empty %}<li class="list-group-item text-body-secondary">Nenhum insight aberto. Execute as regras para analisar os dados atuais.</li>{% endfor %}</ul></div></div>
+  <div class="col-lg-5">
+    {% for o in reviewable_orgs %}
+    <div class="card p-3 mb-2 small"><div class="fw-semibold mb-1">{{ o.name }}</div>
+      <div class="d-flex gap-2">
+        <form method="post" action="{% url 'analytics:run_insights' %}">{% csrf_token %}<input type="hidden" name="organizacao" value="{{ o.pk }}"><button class="btn btn-primary btn-sm" type="submit">Executar regras de insight</button></form>
+        <form method="post" action="{% url 'analytics:capture' %}">{% csrf_token %}<input type="hidden" name="organizacao" value="{{ o.pk }}"><button class="btn btn-outline-secondary btn-sm" type="submit">Registrar snapshot</button></form>
+      </div></div>
+    {% endfor %}
+    <div class="card p-3 small"><a href="{% url 'analytics:lessons' %}">Base de lições aprendidas</a> · <a href="{% url 'governance:framework' %}">Rastreabilidade COBIT/PMBOK</a>
+      <div class="text-body-secondary mt-1">Insights são sugestões geradas por regras determinísticas e explicáveis (sem IA generativa); só viram recomendação após revisão e aprovação humanas.</div></div>
+  </div>
+</div>
+{% endblock %}

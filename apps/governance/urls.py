@@ -9,6 +9,7 @@ P = "projetos/<uuid:project_id>/fases/<uuid:stage_id>/"
 urlpatterns = [
     path("gates/", views.approval_queue, name="queue"),
     path("governanca/", views.framework, name="framework"),
+    path("projetos/<uuid:project_id>/uso-responsavel-ia/", views.responsible_ai, name="responsible_ai"),
     path(P + "gate/solicitar/", views.gate_request, name="request"),
     path(P + "gate/aprovar/", views.gate_approve, name="approve"),
     path(P + "gate/rejeitar/", views.gate_reject, name="reject"),

@@ -30,13 +30,12 @@ def healthz(request):
 
 @login_required
 def dashboard(request):
-    from apps.projects.models import Project
+    from apps.analytics.services import portfolio_dashboard
 
     organizations = rbac.organizations_for(request.user)
-    projects = (
-        Project.objects.filter(rbac.visible_project_filter(request.user))
-        .select_related("organization", "manager")
-        .order_by("-updated_at")
-    )
-    context = {"organizations": organizations, "projects": projects[:10], "project_count": projects.count()}
+    org_id = request.GET.get("organizacao") or None
+    if org_id and org_id not in {str(o.pk) for o in organizations}:
+        org_id = None
+    context = portfolio_dashboard(request.user, organization_id=org_id)
+    context.update({"organizations": organizations, "selected_org": org_id})
     return render(request, "core/dashboard.html", context)

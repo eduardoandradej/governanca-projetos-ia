@@ -104,9 +104,21 @@ def complete_stage_requirements(setup: OrgSetup, stage, *, skip=()):
         lc.validate_requirement(req.pk, actor=setup.security, decision="approved", comment="Validado.")
 
 
+def complete_responsible_ai(setup: OrgSetup, project):
+    from apps.governance import services as gov
+    from apps.governance.models import ResponsibleAIFactor
+
+    for factor in ResponsibleAIFactor.values:
+        gov.assess_responsible_ai(project, actor=setup.security, factor=factor, status="addressed",
+                                  measures=f"Medidas sintéticas registradas para o fator {factor}.",
+                                  accountable=setup.sponsor)
+
+
 def pass_gate(setup: OrgSetup, stage):
     from apps.governance import services as gov
 
+    if stage.requires_responsible_ai:
+        complete_responsible_ai(setup, stage.project)
     complete_stage_requirements(setup, stage)
     gate = gov.request_gate(stage.pk, actor=setup.manager)
     return gov.approve_gate(stage.pk, actor=setup.approver, justification="Critérios atendidos.",

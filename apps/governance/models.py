@@ -180,3 +180,96 @@ class ControlMapping(models.Model):
                 condition=Q(requirement_template__isnull=False) | ~Q(feature=""), name="mapping_has_target"
             ),
         ]
+
+
+# ------------------------------------------------------------------ Referências PMBOK 8 (separadas do COBIT)
+
+
+class FrameworkReference(models.Model):
+    """Referência a seção do PMI PMBOK Guide 8ª ed. (2025). Apenas título da seção e página; sem texto protegido.
+
+    Mantida em tabela própria para não confundir conceitos PMBOK com objetivos COBIT (ex.: "Focus Areas" do
+    PMBOK 8 ≠ "focus areas" do COBIT 2019).
+    """
+
+    framework = models.CharField(max_length=20, default="PMBOK8")
+    code = models.CharField(max_length=20, unique=True)
+    kind = models.CharField(max_length=20, choices=[
+        ("domain", "Domínio de desempenho"), ("principle", "Princípio"), ("process", "Processo"),
+        ("concept", "Conceito"), ("appendix", "Apêndice"), ("lifecycle", "Ciclo de vida/abordagem"),
+    ])
+    section = models.CharField("seção", max_length=20)
+    title = models.CharField("título da seção (original)", max_length=150)
+    title_pt = models.CharField("tradução livre", max_length=150)
+    part = models.CharField("parte", max_length=30, help_text="The Standard ou PMBOK Guide (numeração própria).")
+    pages = models.CharField("páginas", max_length=20)
+    analysis = models.TextField("análise da equipe (texto original)", blank=True)
+
+    class Meta:
+        ordering = ["code"]
+        verbose_name = "referência PMBOK"
+
+    def __str__(self):
+        return f"{self.section} {self.title}"
+
+
+class FrameworkMapping(models.Model):
+    reference = models.ForeignKey(FrameworkReference, on_delete=models.PROTECT, related_name="mappings")
+    requirement_template = models.ForeignKey(
+        "lifecycle.RequirementTemplate", on_delete=models.CASCADE, null=True, blank=True, related_name="pmbok_mappings"
+    )
+    feature = models.CharField("funcionalidade do sistema", max_length=150, blank=True)
+    note = models.CharField(max_length=255, blank=True)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(condition=Q(requirement_template__isnull=False) | ~Q(feature=""),
+                                   name="pmbok_mapping_has_target"),
+        ]
+
+
+# ------------------------------------------------------------------ Uso responsável de IA (PMBOK 8 X3.3 + ISACA)
+
+
+class ResponsibleAIFactor(models.TextChoices):
+    """Fatores éticos de PMBOK 8, Apêndice X3.3 (p. 238 e 242), com elemento de IA confiável da ISACA (2025)."""
+
+    BIAS = "bias", "Viés"
+    PRIVACY = "privacy", "Privacidade"
+    ACCOUNTABILITY = "accountability", "Responsabilização (humano responsável por cada decisão)"
+    RELIABILITY = "reliability", "Confiabilidade das saídas"
+    SAFETY = "safety", "Segurança (safety)"
+    TRANSPARENCY = "transparency", "Transparência"
+    COPYRIGHT = "copyright", "Direitos autorais"
+    SUSTAINABILITY = "sustainability", "Sustentabilidade (energia, água, recursos)"
+
+
+ISACA_ELEMENT_FOR_FACTOR = {
+    "bias": "Ética e integridade", "privacy": "Segurança e privacidade", "accountability": "Transparência e honestidade",
+    "reliability": "Qualidade", "safety": "Qualidade; Resiliência", "transparency": "Transparência e honestidade",
+    "copyright": "Conformidade (MEA03)", "sustainability": "Ética e integridade (impacto ambiental, EDM01)",
+}
+
+
+class FactorStatus(models.TextChoices):
+    PENDING = "pending", "Pendente"
+    ADDRESSED = "addressed", "Tratado"
+    NOT_APPLICABLE = "not_applicable", "Não aplicável (justificado)"
+
+
+class ResponsibleAIAssessment(BaseModel):
+    project = models.ForeignKey("projects.Project", on_delete=models.PROTECT, related_name="responsible_ai")
+    factor = models.CharField(max_length=20, choices=ResponsibleAIFactor.choices)
+    status = models.CharField(max_length=15, choices=FactorStatus.choices, default=FactorStatus.PENDING)
+    measures = models.TextField("medidas adotadas / justificativa", blank=True)
+    accountable = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, null=True, blank=True,
+                                    related_name="+", verbose_name="humano responsável")
+    assessed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, null=True, blank=True,
+                                    related_name="+")
+    assessed_at = models.DateTimeField(null=True, blank=True)
+    version = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        ordering = ["project", "factor"]
+        verbose_name = "avaliação de uso responsável de IA"
+        constraints = [models.UniqueConstraint(fields=["project", "factor"], name="uniq_rai_factor")]

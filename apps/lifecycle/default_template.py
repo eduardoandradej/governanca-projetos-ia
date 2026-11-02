@@ -196,10 +196,13 @@ def install(apps, *, organization=None, number=1, stages=None, source_reference=
     if not created:
         return version
     for st in stages or STAGES:
+        extra = {}
+        if st.get("requires_responsible_ai"):  # campo inexistente em estados históricos anteriores à v3
+            extra["requires_responsible_ai"] = True
         stage = StageTemplate.objects.create(
             template_version=version, order=st["order"], code=st["code"], name=st["name"],
             objective=st["objective"], cobit_refs=st["cobit_refs"], pmbok_refs=st["pmbok_refs"],
-            has_exit_gate=st.get("has_exit_gate", True),
+            has_exit_gate=st.get("has_exit_gate", True), **extra,
         )
         for i, (code, title, desc, mand, ev, kind, val, legal, cobit) in enumerate(st["requirements"], start=1):
             RequirementTemplate.objects.create(
@@ -207,3 +210,31 @@ def install(apps, *, organization=None, number=1, stages=None, source_reference=
                 requires_evidence=ev, evidence_kind=kind, requires_validation=val, is_legal=legal, cobit_ref=cobit,
             )
     return version
+
+
+# ---------------------------------------------------------------------------------------------- Versão 3
+# Incorpora PMI PMBOK Guide 8ª ed. (2025): Apêndice X3 (IA) — avaliação de uso responsável exigida no gate de
+# homologação (fase 6); Governance Performance Domain 2.1.6.6 (Manage Project Knowledge) — lições na fase 7.
+SOURCE_REFERENCE_V3 = (
+    "Interpretação da equipe: COBIT 2019; ISACA (2025) p. 11–16; PMI PMBOK Guide 8ª ed. (2025): 2.1, 2.7, 4.2, X3."
+)
+
+
+def stages_v3():
+    stages = stages_v2()
+    for st in stages:
+        if st["order"] == 6:
+            st["requires_responsible_ai"] = True
+            st["requirements"] = list(st["requirements"]) + [
+                ("F6-R7", "Avaliação de uso responsável de IA concluída",
+                 "Viés, privacidade, responsabilização, confiabilidade, segurança, transparência, direitos autorais e "
+                 "sustentabilidade tratados ou justificados como não aplicáveis, com humano responsável definido.",
+                 True, False, "", True, False, "EDM01"),
+            ]
+        if st["order"] == 1:
+            st["requirements"] = list(st["requirements"]) + [
+                ("F1-R6", "Abordagem de desenvolvimento e estratégia de adoção de IA definidas",
+                 "Abordagem preditiva, adaptativa ou híbrida e nível de supervisão humana (automação, assistência "
+                 "ou ampliação) registrados no projeto.", True, False, "", True, False, "BAI11"),
+            ]
+    return stages

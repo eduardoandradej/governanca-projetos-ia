@@ -37,6 +37,7 @@ Segregação de funções (solicitante ≠ aprovador; quem atende ≠ quem valid
 | `project.view_sensitive` | ✔ | ✔ | ✔ | ✔ |  | ✔ |  | ✔ |  |
 | `requirement.fulfill` |  |  |  | ✔ | ✔ | ✔ |  |  |  |
 | `requirement.validate` |  |  |  | ✔ |  | ✔ | ✔ |  |  |
+| `responsible_ai.assess` |  |  |  | ✔ |  | ✔ |  |  |  |
 | `risk.accept_residual` |  |  | ✔ |  |  |  |  |  |  |
 | `risk.manage` |  |  |  | ✔ | ✔ | ✔ |  |  |  |
 | `roles.manage` | ✔ |  |  |  |  |  |  |  |  |

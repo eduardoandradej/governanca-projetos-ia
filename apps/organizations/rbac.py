@@ -51,6 +51,7 @@ PERMISSIONS: dict[str, frozenset[str]] = {
     "gate.approve": frozenset({R.GATE_APPROVER, R.SPONSOR}),
     "gate.exception.grant": frozenset({R.SPONSOR, R.ORG_ADMIN}),
     "gate.exception.security_ack": frozenset({R.SECURITY_COMPLIANCE}),
+    "responsible_ai.assess": frozenset({R.PROJECT_MANAGER, R.SECURITY_COMPLIANCE}),
     # Evidências
     "evidence.upload": frozenset({R.PROJECT_MANAGER, R.TECH_EXECUTOR, R.SECURITY_COMPLIANCE}),
     "evidence.review": frozenset({R.SECURITY_COMPLIANCE, R.GATE_APPROVER, R.PROJECT_MANAGER}),

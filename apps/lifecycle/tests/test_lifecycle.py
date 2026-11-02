@@ -50,7 +50,7 @@ def test_cannot_fulfill_requirement_of_not_started_stage(org_a, project_a):
 
 def test_stage_progress_without_requirements_reports_no_data(org_a, project_a):
     stage = _stage1(project_a)
-    assert services.stage_progress(stage) == {"total": 5, "done": 0, "percent": 0}
+    assert services.stage_progress(stage) == {"total": 6, "done": 0, "percent": 0}
     stage.requirements.update(mandatory=False)
     assert services.stage_progress(stage)["percent"] is None  # "Sem dados", nunca 100% (T-028)
 

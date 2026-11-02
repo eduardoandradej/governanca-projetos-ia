@@ -22,7 +22,17 @@ from apps.lifecycle.services import DomainError, ensure_project_writable, transi
 from apps.organizations import rbac
 from apps.projects.models import DataClassification
 
-from .models import ExceptionStatus, Gate, GateDecision, GateDecisionType, GateException, GateStatus
+from .models import (
+    ExceptionStatus,
+    FactorStatus,
+    Gate,
+    GateDecision,
+    GateDecisionType,
+    GateException,
+    GateStatus,
+    ResponsibleAIAssessment,
+    ResponsibleAIFactor,
+)
 
 MAX_EXCEPTION_DAYS = 180
 
@@ -87,6 +97,8 @@ def evaluate(stage: StageInstance, *, ignore_own_revalidation: bool = False) -> 
                 )
             else:
                 ev.blockers.extend(f"Risco crítico sem tratamento: {r}" for r in risks)
+    if stage.requires_responsible_ai:
+        ev.blockers.extend(responsible_ai_blockers(stage.project))
     previous = stage.project.stages.filter(order=stage.order - 1).first()
     if previous is not None:
         if previous.status not in (StageStatus.APPROVED, StageStatus.COMPLETED):
@@ -338,3 +350,51 @@ def revoke_exception(exception_id, *, actor, reason: str) -> GateException:
     audit.record("gate.exception_revoke", actor=actor, organization_id=project.organization_id,
                  project_id=project.pk, entity=exc, after={"status": exc.status}, reason=reason)
     return exc
+
+
+# ------------------------------------------------------------- Uso responsável de IA (PMBOK 8 X3.3 + ISACA 2025)
+
+
+def responsible_ai_rows(project) -> list[ResponsibleAIAssessment]:
+    existing = {a.factor: a for a in ResponsibleAIAssessment.objects.filter(project=project).select_related(
+        "accountable", "assessed_by")}
+    return [existing.get(f) or ResponsibleAIAssessment(project=project, factor=f) for f in ResponsibleAIFactor.values]
+
+
+def responsible_ai_blockers(project) -> list[str]:
+    out = []
+    for row in responsible_ai_rows(project):
+        if row.status == FactorStatus.PENDING:
+            out.append(f"Uso responsável de IA: fator '{row.get_factor_display()}' pendente de avaliação")
+    return out
+
+
+@audit.atomic_service
+def assess_responsible_ai(project, *, actor, factor: str, status: str, measures: str, accountable=None):
+    """Registra a avaliação de um fator. Tratado/não aplicável exige justificativa e humano responsável."""
+    from apps.projects.models import Project
+
+    project = Project.objects.select_for_update().select_related("organization").get(pk=project.pk)
+    rbac.require_perm(actor, "responsible_ai.assess", project.organization, project, entity=project)
+    ensure_project_writable(project)
+    if factor not in ResponsibleAIFactor.values or status not in FactorStatus.values:
+        raise DomainError("Fator ou situação inválidos.")
+    if status != FactorStatus.PENDING:
+        if len((measures or "").strip()) < 20:
+            raise DomainError("Descreva as medidas adotadas ou a justificativa (mínimo de 20 caracteres).")
+        if accountable is None or not rbac.roles_for(accountable, project.organization, project):
+            raise DomainError("Indique o humano responsável, com papel ativo no projeto (PMBOK 8 X3.3).")
+    row, created = ResponsibleAIAssessment.objects.get_or_create(
+        project=project, factor=factor, defaults={"created_by": actor})
+    before = {"status": row.status, "version": row.version}
+    row.status, row.measures, row.accountable = status, (measures or "").strip(), accountable
+    row.assessed_by, row.assessed_at = actor, timezone.now()
+    if not created:
+        row.version += 1
+    row.save()
+    audit.record("responsible_ai.assess", actor=actor, organization_id=project.organization_id, project_id=project.pk,
+                 entity=row, entity_version=row.version, before=before,
+                 after={"factor": factor, "status": status, "accountable": accountable.username if accountable else None})
+    for stage in project.stages.filter(requires_responsible_ai=True):
+        flag_revalidation(stage, actor=actor, cause=f"Avaliação de uso responsável de IA alterada ({factor})")
+    return row

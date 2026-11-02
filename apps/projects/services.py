@@ -13,7 +13,8 @@ from .models import TERMINAL_STATUSES, Portfolio, Project, ProjectStatus, Projec
 
 AUDITED_FIELDS = [
     "code", "name", "description", "business_case", "business_objectives", "target_indicators", "platform_type",
-    "deployment_approach", "technology_metadata", "sponsor_id", "manager_id", "technical_lead_id", "priority",
+    "deployment_approach", "development_approach", "ai_adoption_strategy",
+    "technology_metadata", "sponsor_id", "manager_id", "technical_lead_id", "priority",
     "criticality", "data_classification", "start_date", "due_date", "planned_cost", "currency", "portfolio_id",
 ]
 

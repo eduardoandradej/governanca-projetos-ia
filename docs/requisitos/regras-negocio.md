@@ -16,17 +16,17 @@ Situação: **Implementada** = código + teste automatizado executado com sucess
 | RN-009 | Exceção exige justificativa, validade, responsável e aceite de risco | `grant_exception` (≤ 180 dias, nunca legal, ciência de segurança em projetos confidenciais), revogação lógica | `test_T011_*`, `test_exception_never_applies_to_legal_requirement`, `test_expired_exception_does_not_unblock`, `test_confidential_project_exception_requires_security_ack` | Implementada |
 | RN-010 | Mudança após aprovação força revalidação | `flag_revalidation` (requisito ou evidência alterada/arquivada) bloqueia gate seguinte até `revalidate_gate` | `test_T009_change_after_approval_requires_revalidation`, `test_requirement_change_after_approval_flags_revalidation` | Implementada |
 | RN-011 | Projeto encerrado/cancelado não avança nem é alterado silenciosamente | `ensure_project_writable`; `change_status` (reabertura exige papel + `DecisionRecord` aprovado de tema reabertura) | `test_RN011_*`, `test_closed_project_blocks_requirement_and_task_changes` | Implementada |
-| RN-012 | Métricas de registros persistidos com período/escopo | `stage_progress` retorna `None` sem denominador | `test_stage_progress_without_requirements_reports_no_data` | Parcial (M5) |
-| RN-013 | Insights preservam regra, entradas e revisão humana | — | — | Pendente (M5) |
+| RN-012 | Métricas de registros persistidos com período/escopo | `analytics.metrics` (12 KPIs; `None` sem denominador; linhagem), escopo por `scoped_projects` | `test_T018_*`, `test_T028_*`, `test_cost_and_overdue_metrics_exact` | Implementada |
+| RN-013 | Insights preservam regra, entradas, origem e revisão humana | `Insight` (regra, parâmetros, dados de sustentação, fingerprint), `InsightReview`, revisor ≠ aprovador | `test_T019_data_to_information_to_knowledge_cycle` | Implementada |
 | RN-014 | Exportação autorizada, filtrada, sanitizada e auditada | Modelo `ExportRecord` | — | Pendente (M6) |
 | RN-015 | Alteração de papéis registrada, sem autoelevação | `organizations.services.assign_role/revoke_role` | `test_no_self_elevation_even_for_org_admin`, `test_T014_*`, `test_org_admin_assigns_and_revokes_role_with_history` | Implementada |
 | RN-016 | Custos Decimal com moeda e datas consistentes | `CostEntry` Decimal(14,2) + CHECK > 0; `add_cost` recusa float, usa moeda do projeto | `test_T016_costs_use_decimal_and_totals_are_exact`, `test_costs_reject_float_negative_and_unauthorized` | Implementada |
 | RN-017 | Anexos sem URL pública nem acesso sem permissão | `PRIVATE_MEDIA_ROOT` (0600, nome aleatório), `authorize_download`, quarentena | `test_download_scope_quarantine_and_audit`, `test_valid_upload_stored_privately_with_hash` | Implementada |
-| RN-018 | Dados classificados não vão para base pública sem autorização | — | — | Pendente (M5) |
+| RN-018 | Dados classificados não vão para base pública sem autorização | `approve_lesson` exige justificativa para divulgar lição de projeto confidencial/restrito; `visible_lessons` nunca cruza organizações | `test_RN018_classified_lesson_needs_disclosure_and_never_crosses_orgs` | Implementada |
 | RN-019 | Decisões e evidências aprovadas versionadas | `EvidenceVersion`; `revise_decision` cria nova versão e só substitui a anterior quando aprovada | `test_new_version_keeps_history`, `test_decision_lifecycle_versioning_and_segregation` | Implementada |
 | RN-020 | Repetição de solicitação de gate não duplica decisões | Idempotência em `request_gate`; `UniqueConstraint` de decisão final por solicitação; `select_for_update` | `test_T025_resubmitting_request_does_not_duplicate`, `test_T012_concurrent_approvals_single_advance` | Implementada |
 | RN-021 | Vínculos multiorganização validados em cada operação | `_check_people_in_org`, validações de portfólio, equipe, fase e projeto nos serviços | `test_required_fields_and_people_from_same_org`, `test_cannot_assign_role_to_non_member_or_cross_org_project`, `test_task_assignment_restricted_to_project_scope` | Implementada (M1–M2) |
-| RN-022 | Derivados de `seed_demo` explicitam que são demonstrativos | `Organization.is_demo`; aviso na tela do projeto | inspeção visual (`docs/evidencias/m2/04-projeto-detalhe.png`) | Parcial (indicadores: M5) |
+| RN-022 | Derivados de `seed_demo` explicitam que são demonstrativos | `is_demo` em organização, insight, snapshot e lição; avisos no painel, KPIs, insights e projeto | `test_RN022_demo_flag_propagates` | Implementada |
 
 ## Regras adicionais implementadas
 
@@ -44,3 +44,6 @@ Situação: **Implementada** = código + teste automatizado executado com sucess
 | RN-032 | Classificação de risco por P×I com limiares configuráveis por organização (padrão: crítico ≥ 20, alto ≥ 12, médio ≥ 6) | `RiskPolicy`, `classify` | `test_T017_*` |
 | RN-033 | Aceite de risco residual somente pelo patrocinador, com justificativa | `accept_residual` | `test_residual_acceptance_requires_sponsor` |
 | RN-034 | Quem propõe uma decisão não a aprova | `decide` | `test_proposer_cannot_approve_own_decision` |
+| RN-035 | Regras de insight são idempotentes: recálculo não duplica insight aberto para o mesmo alvo | `UniqueConstraint` parcial em `Insight.fingerprint` | `test_T019_*` |
+| RN-036 | Linhagem só entre ativos da mesma organização e sem ciclos | `add_lineage`, `_reaches` | `test_T019_*`, `test_catalog_requires_permission_and_same_org` |
+| RN-037 | Gate da fase 6 (template v3) exige os 8 fatores de uso responsável de IA tratados ou justificados, cada um com humano responsável (PMBOK 8 X3.3) | `assess_responsible_ai`, `responsible_ai_blockers` | `test_gate_6_requires_responsible_ai_assessment` |
