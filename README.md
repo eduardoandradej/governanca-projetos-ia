@@ -1,9 +1,11 @@
-# NexFase — Governança e gestão de projetos de IA
+# BalizaVale — Plataforma Integrada de Governança e Gestão de Projetos de Inteligência Artificial
 
-Plataforma integrada para conduzir projetos de inteligência artificial da prova de conceito à produção,
-centralizando etapas, pessoas, riscos, evidências, decisões e inteligência gerencial.
+*Governança para orientar. Inteligência para transformar.*
 
-Identificação técnica: `APP_SHORT_NAME = "NexFase"` (configurável por variável de ambiente, assim como
+O nome une **Baliza** (os critérios, controles, evidências e decisões que orientam cada etapa dos projetos de IA) e
+**Vale** (a origem regional e acadêmica da iniciativa, no Vale do Café).
+
+Identificação técnica: `APP_SHORT_NAME = "BalizaVale"` (configurável por variável de ambiente, assim como
 `APP_FULL_NAME` e `APP_TAGLINE`).
 
 MVP acadêmico (IV SIEEG 2026, Tema 37 — COBIT 2019, PMBOK e ágil) que coordena o **projeto de implantação**

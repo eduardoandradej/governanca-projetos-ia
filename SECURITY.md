@@ -1,6 +1,6 @@
 # Política de Segurança
 
-Este repositório contém o **NexFase — Governança e gestão de projetos de IA** (código, documentação e templates).
+Este repositório contém o **BalizaVale — Plataforma Integrada de Governança e Gestão de Projetos de Inteligência Artificial** (código, documentação e templates).
 Ele é **privado** e deve conter apenas dados sintéticos — nunca dados reais, credenciais ou materiais licenciados
 (como os PDFs do PMBOK ou da ISACA).
 

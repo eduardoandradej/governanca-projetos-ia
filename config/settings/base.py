@@ -163,12 +163,9 @@ LOGGING = {
 }
 
 # Identidade do produto exibida na interface (configurável por variável de ambiente).
-APP_SHORT_NAME = env("APP_SHORT_NAME", default="NexFase")
-APP_FULL_NAME = env("APP_FULL_NAME", default="Governança e gestão de projetos de IA")
-APP_TAGLINE = env(
-    "APP_TAGLINE",
-    default="Plataforma integrada para conduzir projetos de inteligência artificial da prova de conceito à produção.",
-)
+APP_SHORT_NAME = env("APP_SHORT_NAME", default="BalizaVale")
+APP_FULL_NAME = env("APP_FULL_NAME", default="Plataforma Integrada de Governança e Gestão de Projetos de Inteligência Artificial")
+APP_TAGLINE = env("APP_TAGLINE", default="Governança para orientar. Inteligência para transformar.")
 
 # Identificação do ambiente exibida na interface (ex.: "Desenvolvimento", "Demonstração").
 APP_ENVIRONMENT_LABEL = env("APP_ENVIRONMENT_LABEL", default="")

@@ -9,7 +9,7 @@
 Ver `docs/status-implementacao.md` (fonte da verdade) e `git log`.
 
 ## Estado (2026-11-02)
-M0–M8 concluídos no escopo de laboratório; 139 testes verdes. Identidade: NexFase. Banco de demonstração local `govia_demo` (pode ser recriado).
+M0–M8 concluídos no escopo de laboratório; 139 testes verdes. Identidade: BalizaVale. Banco de demonstração local `govia_demo` (pode ser recriado).
 
 ## Primeira ação inequívoca da retomada
 Executar `./scripts/test.sh`. Se verde, escolher entre as pendências listadas em `docs/status-implementacao.md`
