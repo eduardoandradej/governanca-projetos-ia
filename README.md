@@ -12,7 +12,7 @@ A aplicação **não** executa treinamento/inferência nem substitui Kubernetes,
 ferramentas de MLOps: é uma camada independente de fornecedor para responsabilidades, fases, riscos,
 evidências, aprovações, decisões e conhecimento gerencial.
 
-> Situação atual: incrementos M0–M8 concluídos em laboratório, com **138 testes automatizados aprovados em
+> Situação atual: incrementos M0–M8 concluídos em laboratório, com **139 testes automatizados aprovados em
 > PostgreSQL** e roteiro de demonstração executado em navegador. Detalhes e pendências em
 > [`docs/status-implementacao.md`](docs/status-implementacao.md).
 

@@ -58,6 +58,6 @@ Atualizado a cada incremento. "Concluído" = implementado **e** coberto por test
 - Ver `docs/seguranca/riscos-residuais.md` e `docs/pesquisa/limitacoes.md`.
 
 ## Inventário funcional
-138 testes automatizados (PostgreSQL), 37 regras de negócio implementadas, 12 indicadores, 6 regras de insight,
+139 testes automatizados (PostgreSQL), 37 regras de negócio implementadas, 12 indicadores, 6 regras de insight,
 22 objetivos COBIT e 26 referências PMBOK 8 mapeados, template de 7 fases v3 (41 requisitos), API v1, exportações CSV,
 backup/restauração verificados.
