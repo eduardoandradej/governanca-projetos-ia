@@ -21,7 +21,8 @@ def app_context(request):
                 continue
     return {
         "APP_NAME": settings.APP_SHORT_NAME,
-        "APP_FULL_NAME": "Governança de Projetos de Plataformas de IA",
+        "APP_FULL_NAME": settings.APP_FULL_NAME,
+        "APP_TAGLINE": settings.APP_TAGLINE,
         "APP_ENVIRONMENT_LABEL": settings.APP_ENVIRONMENT_LABEL,
         "NAV_MODULES": nav,
     }

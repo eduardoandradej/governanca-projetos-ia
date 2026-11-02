@@ -1,7 +1,8 @@
 # Política de Segurança
 
-Este repositório contém o **Modelo Integrado de Governança e Gestão de Projetos de IA**.
-Ele é **privado** e deve conter apenas documentação, políticas e templates — nunca dados reais.
+Este repositório contém o **NexFase — Governança e gestão de projetos de IA** (código, documentação e templates).
+Ele é **privado** e deve conter apenas dados sintéticos — nunca dados reais, credenciais ou materiais licenciados
+(como os PDFs do PMBOK ou da ISACA).
 
 ## O que NUNCA deve ser gravado aqui
 

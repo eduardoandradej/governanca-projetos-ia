@@ -1,7 +1,10 @@
-# TrilhaIA — Governança de Projetos de Plataformas de IA
+# NexFase — Governança e gestão de projetos de IA
 
-Governança e gestão de projetos de implantação de plataformas corporativas de IA, da prova de conceito à produção.
-O nome curto é configurável por `APP_SHORT_NAME` (padrão `TrilhaIA`).
+Plataforma integrada para conduzir projetos de inteligência artificial da prova de conceito à produção,
+centralizando etapas, pessoas, riscos, evidências, decisões e inteligência gerencial.
+
+Identificação técnica: `APP_SHORT_NAME = "NexFase"` (configurável por variável de ambiente, assim como
+`APP_FULL_NAME` e `APP_TAGLINE`).
 
 MVP acadêmico (IV SIEEG 2026, Tema 37 — COBIT 2019, PMBOK e ágil) que coordena o **projeto de implantação**
 de plataformas corporativas de IA, do caso de negócio ao aceite operacional e à melhoria contínua.
