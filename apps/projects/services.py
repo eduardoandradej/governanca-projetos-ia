@@ -104,7 +104,7 @@ _STATUS_PERMS = {
 
 
 @audit.atomic_service
-def change_status(project_id, *, actor, to_status: str, reason: str) -> Project:
+def change_status(project_id, *, actor, to_status: str, reason: str, decision_id=None) -> Project:
     """Encerramento, cancelamento, suspensão, arquivamento e reabertura (reabertura exige decisão formal)."""
     project = Project.objects.select_for_update().select_related("organization").get(pk=project_id)
     if to_status not in ProjectStatus.values:
@@ -120,8 +120,13 @@ def change_status(project_id, *, actor, to_status: str, reason: str) -> Project:
         raise DomainError("Informe a justificativa/decisão formal (mínimo de 10 caracteres).")
     if from_status == ProjectStatus.ARCHIVED and not reopening:
         raise DomainError("Projeto arquivado só pode ser reaberto por decisão formal.")
-    # Reabertura: exige papel `project.reopen` + justificativa formal registrada no histórico.
-    # Vínculo obrigatório a um DecisionRecord aprovado é adicionado no incremento M4 (decisões).
+    if reopening:  # reabertura exige decisão formal aprovada (tema "reabertura") do próprio projeto
+        from apps.risks.services import approved_reopen_decision
+
+        decision = approved_reopen_decision(project, decision_id) if decision_id else None
+        if decision is None:
+            raise DomainError("A reabertura exige uma decisão formal aprovada (tema: reabertura de projeto).")
+        reason = f"{reason} [decisão {decision.code} v{decision.version}]"
     project.status = to_status
     project.version += 1
     project.save(update_fields=["status", "version", "updated_at"])

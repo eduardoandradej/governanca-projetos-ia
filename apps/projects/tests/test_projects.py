@@ -126,7 +126,15 @@ def test_RN011_closed_project_is_read_only_and_reopen_requires_authority(org_a, 
         services.change_status(project_a.pk, actor=org_a.portfolio, to_status="active", reason="Reabrir sem papel")
     with pytest.raises(ValidationError, match="justificativa"):
         services.change_status(project_a.pk, actor=org_a.sponsor, to_status="active", reason="curta")
-    services.change_status(project_a.pk, actor=org_a.sponsor, to_status="active", reason="Decisão do comitê nº 12")
+    with pytest.raises(ValidationError, match="decisão formal aprovada"):
+        services.change_status(project_a.pk, actor=org_a.sponsor, to_status="active", reason="Decisão do comitê nº 12")
+    from apps.risks import services as rs
+
+    d = rs.propose_decision(actor=org_a.manager, project=project_a, topic="reopen", agenda="Reabrir projeto",
+                            alternatives="Manter encerrado; reabrir", decision="Reabrir", rationale="Nova demanda")
+    rs.decide(d.pk, actor=org_a.sponsor, approve=True, note="Aprovado em comitê")
+    services.change_status(project_a.pk, actor=org_a.sponsor, to_status="active", reason="Decisão do comitê nº 12",
+                           decision_id=d.pk)
     statuses = list(project_a.status_history.order_by("created_at").values_list("to_status", flat=True))
     assert statuses == ["active", "closed", "active"]
 

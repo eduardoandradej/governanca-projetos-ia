@@ -82,7 +82,15 @@ class ProjectForm(BootstrapMixin, forms.ModelForm):
 class StatusChangeForm(BootstrapMixin, forms.Form):
     to_status = forms.ChoiceField(label="Novo status")
     reason = forms.CharField(label="Justificativa / decisão formal", widget=forms.Textarea(attrs={"rows": 3}), min_length=10)
+    decision = forms.ChoiceField(label="Decisão aprovada (obrigatória para reabrir)", required=False)
 
-    def __init__(self, *args, choices, **kwargs):
+    def __init__(self, *args, choices, project=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["to_status"].choices = choices
+        options = [("", "—")]
+        if project is not None:
+            from apps.risks.models import DecisionRecord
+
+            options += [(str(d.pk), f"{d.code} v{d.version} — {d.agenda}") for d in DecisionRecord.objects.filter(
+                project=project, topic="reopen", status="approved")]
+        self.fields["decision"].choices = options

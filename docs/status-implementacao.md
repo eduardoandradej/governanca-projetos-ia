@@ -8,7 +8,7 @@ Atualizado a cada incremento. "Concluído" = implementado **e** coberto por test
 | M1 Fundação (auth, organizações, RBAC, auditoria, layout, seed) | Concluído | `apps/accounts`, `apps/organizations`, `apps/auditlog`; testes `test_auth.py`, `test_rbac.py` |
 | M2 Projetos e ciclo de vida | Concluído | `apps/projects`, `apps/lifecycle`; testes `test_projects.py`, `test_lifecycle.py`; capturas `docs/evidencias/m2/` |
 | M3 Governança e gates | Concluído | `apps/governance`, `apps/evidence`; testes `test_gates.py`, `test_concurrency.py`, `test_evidence.py`; catálogo COBIT com base em ISACA (2025); template v2 |
-| M4 Riscos, custos e decisões | Pendente | — |
+| M4 Riscos, custos e decisões | Concluído | `apps/risks` (matriz 5×5, categorias de risco de IA ISACA fig. 5, custos Decimal, decisões versionadas, ações); `test_risks.py` |
 | M5 Dados → informação → conhecimento | Pendente | — |
 | M6 Interface completa e API | Pendente | — |
 | M7 Qualidade, segurança e instalação | Pendente | — |
@@ -36,6 +36,10 @@ Atualizado a cada incremento. "Concluído" = implementado **e** coberto por test
 | T-015 | Parcial | download de evidência por outra organização → 404 (`test_download_scope_quarantine_and_audit`); exportação: M6 |
 | T-021 | Aprovado | `test_T021_invalid_uploads_are_refused_without_storing` (7 casos), `test_T021_oversized_upload_refused` |
 | T-024 | Parcial | `test_T024_full_flow_reaches_operation` (fases 1→7 via gates); riscos/relatório: M4–M6 |
+| T-010 | Aprovado | `test_T010_gate_blocked_by_untreated_critical_risk`, `test_T010_exception_can_cover_critical_risk_with_security_ack` |
+| T-016 | Aprovado | `test_T016_costs_use_decimal_and_totals_are_exact` |
+| T-017 | Aprovado | `test_T017_default_policy_classification` (12 casos), `test_T017_policy_configurable_per_organization` |
+| T-026 | Parcial | serviço recusa aprovação de decisão sem papel (`test_decision_lifecycle_versioning_and_segregation`); API: M6 |
 | T-027 | Aprovado | `test_T027_new_template_version_does_not_change_started_projects` |
 | T-028 | Parcial | `test_stage_progress_without_requirements_reports_no_data` |
 | Demais | Pendentes | — |
@@ -43,4 +47,3 @@ Atualizado a cada incremento. "Concluído" = implementado **e** coberto por test
 ## Pendências conhecidas
 - MFA para perfis privilegiados: não implementado (obrigatório antes de produção institucional).
 - Telas de administração de templates de ciclo de vida por organização: somente via admin técnico.
-- Reabertura de projeto ainda não exige vínculo a `DecisionRecord` (virá no M4).

@@ -111,7 +111,7 @@ def project_detail(request, project_id):
             "can_view_sensitive": perms["project.view_sensitive"],
             "can_change_status": perms["project.edit"] or perms["project.close"] or perms["project.reopen"],
             "history": project.status_history.select_related("changed_by")[:20],
-            "status_form": StatusChangeForm(choices=status_choices), "StageStatus": StageStatus,
+            "status_form": StatusChangeForm(choices=status_choices, project=project), "StageStatus": StageStatus,
             "tasks_open": project.tasks.exclude(status=TaskStatus.DONE).count(),
         },
     )
@@ -122,12 +122,12 @@ def project_status(request, project_id):
     project = get_project_or_404(request.user, project_id)
     if request.method != "POST":
         return redirect("projects:detail", project_id=project.pk)
-    form = StatusChangeForm(request.POST, choices=ProjectStatus.choices)
+    form = StatusChangeForm(request.POST, choices=ProjectStatus.choices, project=project)
     if form.is_valid():
         try:
             services.change_status(
                 project.pk, actor=request.user, to_status=form.cleaned_data["to_status"],
-                reason=form.cleaned_data["reason"],
+                reason=form.cleaned_data["reason"], decision_id=form.cleaned_data["decision"] or None,
             )
         except (ValidationError, PermissionDenied) as exc:
             messages.error(request, _errors(exc))

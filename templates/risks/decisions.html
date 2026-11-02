@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Decisões · {{ project.code }}{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item"><a href="{% url 'projects:list' %}">Projetos</a></li><li class="breadcrumb-item"><a href="{% url 'projects:detail' project.pk %}">{{ project.code }}</a></li><li class="breadcrumb-item active">Decisões</li>{% endblock %}
+{% block content %}
+<h1 class="h3">{{ project.code }} — Decisões e ações</h1>
+{% include "projects/_tabs.html" with tab="decisoes" %}
+<div class="row g-3">
+  <div class="col-lg-8">
+    {% for d in decisions %}
+    <div class="card p-3 mb-2 small {% if d.status == 'superseded' %}opacity-75{% endif %}">
+      <div class="d-flex justify-content-between"><strong>{{ d.code }} v{{ d.version }} — {{ d.agenda }}</strong><span class="badge text-bg-secondary">{{ d.get_status_display }}</span></div>
+      <div class="text-body-secondary">{{ d.get_topic_display }} · proposta por {{ d.proposed_by }} em {{ d.created_at|date:"d/m/Y" }}{% if d.decided_by %} · decidida por {{ d.decided_by }} em {{ d.decided_at|date:"d/m/Y" }}{% endif %}{% if d.supersedes %} · substitui v{{ d.supersedes.version }}{% endif %}</div>
+      <div><strong>Alternativas:</strong> {{ d.alternatives }}</div>
+      <div><strong>Decisão:</strong> {{ d.decision }}</div>
+      <div><strong>Motivação:</strong> {{ d.rationale }}</div>
+      {% if d.risks_considered %}<div><strong>Riscos considerados:</strong> {{ d.risks_considered }}</div>{% endif %}
+      {% if d.decision_note %}<div><strong>Parecer:</strong> {{ d.decision_note }}</div>{% endif %}
+      {% if d.status == 'proposed' and can_decide and d.proposed_by != user %}
+      <form method="post" action="{% url 'risks:decide' d.pk %}" class="d-flex gap-2 mt-2">{% csrf_token %}
+        <input name="note" class="form-control form-control-sm" placeholder="Parecer" aria-label="Parecer" required>
+        <button class="btn btn-success btn-sm" name="approve" value="1" type="submit">Aprovar</button>
+        <button class="btn btn-outline-danger btn-sm" name="approve" value="0" type="submit">Rejeitar</button>
+      </form>{% endif %}
+      {% if d.status == 'approved' and can_record %}
+      <details class="mt-2"><summary>Revisar (gera nova versão)</summary>
+        <form method="post" action="{% url 'risks:revise' d.pk %}" class="mt-2">{% csrf_token %}
+          <textarea name="decision" class="form-control form-control-sm mb-1" rows="2" placeholder="Nova decisão" aria-label="Nova decisão" required></textarea>
+          <textarea name="rationale" class="form-control form-control-sm mb-1" rows="2" placeholder="Motivação da revisão" aria-label="Motivação" required></textarea>
+          <button class="btn btn-outline-primary btn-sm" type="submit">Propor nova versão</button>
+        </form></details>{% endif %}
+    </div>
+    {% empty %}<div class="text-body-secondary">Nenhuma decisão registrada.</div>{% endfor %}
+    <div class="card mt-3"><div class="card-header fw-semibold">Ações</div>
+      <ul class="list-group list-group-flush small">{% for a in actions %}<li class="list-group-item">{{ a.title }} · {{ a.owner }} · {{ a.get_status_display }}{% if a.due_date %} · prazo {{ a.due_date|date:"d/m/Y" }}{% endif %}{% if a.origin %} · origem: {{ a.origin }}{% endif %}</li>{% empty %}<li class="list-group-item text-body-secondary">Sem ações.</li>{% endfor %}</ul>
+    </div>
+  </div>
+  <div class="col-lg-4">{% if form %}<div class="card p-3"><h2 class="h6">Registrar decisão (proposta)</h2><form method="post" novalidate>{% csrf_token %}{% include "partials/form_fields.html" %}<button class="btn btn-primary btn-sm" type="submit">Registrar</button></form></div>{% endif %}</div>
+</div>
+{% endblock %}

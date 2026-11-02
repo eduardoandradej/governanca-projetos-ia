@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}{{ risk.code }}{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item"><a href="{% url 'projects:detail' project.pk %}">{{ project.code }}</a></li><li class="breadcrumb-item"><a href="{% url 'risks:project' project.pk %}">Riscos</a></li><li class="breadcrumb-item active">{{ risk.code }}</li>{% endblock %}
+{% block content %}
+<h1 class="h3">{{ risk.code }} — {{ risk.title }} <span class="badge risk-{{ risk.level }} text-dark fs-6">{{ risk.get_level_display }}</span></h1>
+<p class="small text-body-secondary">{{ risk.get_category_display }}{% if risk.ai_category %} · IA: {{ risk.get_ai_category_display }}{% endif %} · P{{ risk.probability }}×I{{ risk.impact }} = {{ risk.score }} · {{ risk.get_status_display }} · proprietário {{ risk.owner }}{% if risk.review_date %} · revisão {{ risk.review_date|date:"d/m/Y" }}{% endif %}</p>
+<div class="row g-3">
+  <div class="col-lg-7">
+    <div class="card p-3 mb-3 small"><dl class="row mb-0">
+      <dt class="col-3">Descrição</dt><dd class="col-9">{{ risk.description|default:"—" }}</dd>
+      <dt class="col-3">Causa</dt><dd class="col-9">{{ risk.cause|default:"—" }}</dd>
+      <dt class="col-3">Consequência</dt><dd class="col-9">{{ risk.consequence|default:"—" }}</dd>
+      <dt class="col-3">Risco residual</dt><dd class="col-9">{% if risk.residual_score %}{{ risk.residual_probability }}×{{ risk.residual_impact }}={{ risk.residual_score }} — aceito por {{ risk.residual_accepted_by }} em {{ risk.residual_accepted_at|date:"d/m/Y" }}{% else %}—{% endif %}</dd>
+    </dl></div>
+    <div class="card"><div class="card-header fw-semibold">Tratamentos</div>
+      <ul class="list-group list-group-flush small">{% for t in treatments %}<li class="list-group-item"><strong>{{ t.get_strategy_display }}</strong> · {{ t.get_status_display }} · {{ t.owner }} · prazo {{ t.due_date|date:"d/m/Y" }}<div>{{ t.description }}</div></li>{% empty %}<li class="list-group-item text-body-secondary">Sem plano de tratamento.</li>{% endfor %}</ul>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    {% if can_manage %}
+    <form method="post" action="{% url 'risks:treatment' risk.pk %}" class="card p-3 mb-3 small">{% csrf_token %}
+      <h2 class="h6">Adicionar tratamento</h2>
+      <label class="form-label" for="t-s">Estratégia</label><select id="t-s" name="strategy" class="form-select form-select-sm mb-2">{% for v,l in strategies %}<option value="{{ v }}">{{ l }}</option>{% endfor %}</select>
+      <label class="form-label" for="t-d">Medida</label><textarea id="t-d" name="description" class="form-control form-control-sm mb-2" rows="2" required></textarea>
+      <label class="form-label" for="t-o">Responsável</label><select id="t-o" name="owner" class="form-select form-select-sm mb-2">{% for p in people %}<option value="{{ p.pk }}">{{ p }}</option>{% endfor %}</select>
+      <label class="form-label" for="t-p">Prazo</label><input id="t-p" type="date" name="due_date" class="form-control form-control-sm mb-2" required>
+      <button class="btn btn-primary btn-sm" type="submit">Registrar tratamento</button>
+    </form>
+    <form method="post" action="{% url 'risks:reassess' risk.pk %}" class="card p-3 mb-3 small">{% csrf_token %}
+      <h2 class="h6">Reavaliar</h2>
+      <div class="d-flex gap-2 mb-2"><input name="probability" type="number" min="1" max="5" value="{{ risk.probability }}" class="form-control form-control-sm" aria-label="Probabilidade"><input name="impact" type="number" min="1" max="5" value="{{ risk.impact }}" class="form-control form-control-sm" aria-label="Impacto"></div>
+      <input name="reason" class="form-control form-control-sm mb-2" placeholder="Motivo" aria-label="Motivo">
+      <button class="btn btn-outline-primary btn-sm" type="submit">Reavaliar</button>
+    </form>
+    {% endif %}
+    {% if can_accept and risk.status != 'accepted' %}
+    <form method="post" action="{% url 'risks:accept' risk.pk %}" class="card p-3 small">{% csrf_token %}
+      <h2 class="h6">Aceite formal de risco residual</h2>
+      <div class="d-flex gap-2 mb-2"><input name="residual_probability" type="number" min="1" max="5" class="form-control form-control-sm" placeholder="P residual" aria-label="Probabilidade residual" required><input name="residual_impact" type="number" min="1" max="5" class="form-control form-control-sm" placeholder="I residual" aria-label="Impacto residual" required></div>
+      <textarea name="justification" class="form-control form-control-sm mb-2" rows="2" placeholder="Justificativa" aria-label="Justificativa" required></textarea>
+      <button class="btn btn-outline-warning btn-sm" type="submit">Aceitar risco residual</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

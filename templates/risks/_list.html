@@ -1,0 +1,9 @@
+<div class="table-responsive"><table class="table table-sm mb-0 small">
+  <thead><tr><th>Código</th>{% if show_project %}<th>Projeto</th>{% endif %}<th>Risco</th><th>Categoria</th><th>IA (ISACA)</th><th>P×I</th><th>Nível</th><th>Proprietário</th><th>Status</th></tr></thead>
+  <tbody>{% for r in risks %}<tr>
+    <td><a href="{% url 'risks:detail' r.pk %}">{{ r.code }}</a></td>{% if show_project %}<td>{{ r.project.code }}</td>{% endif %}
+    <td>{{ r.title }}</td><td>{{ r.get_category_display }}</td><td>{{ r.get_ai_category_display|default:"—"|truncatechars:28 }}</td>
+    <td>{{ r.probability }}×{{ r.impact }}={{ r.score }}</td><td><span class="badge risk-{{ r.level }} text-dark">{{ r.get_level_display }}</span></td>
+    <td>{{ r.owner }}</td><td>{{ r.get_status_display }}</td></tr>
+  {% empty %}<tr><td colspan="9" class="text-body-secondary">Sem riscos registrados.</td></tr>{% endfor %}</tbody>
+</table></div>
