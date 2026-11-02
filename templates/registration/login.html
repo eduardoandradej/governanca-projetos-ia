@@ -5,9 +5,11 @@
 <div class="row justify-content-center">
   <div class="col-sm-10 col-md-6 col-lg-4">
     <div class="card p-4">
-      <h1 class="h4 mb-1">{{ APP_NAME }}</h1>
-      <p class="fw-semibold small mb-1">{{ APP_FULL_NAME }}</p>
-      <p class="text-body-secondary small">{{ APP_TAGLINE }}</p>
+      <div class="text-center mb-3">
+        <h1 class="h3 mb-1">{{ APP_NAME }}</h1>
+        <p class="fw-semibold small mb-2">{{ APP_FULL_NAME }}</p>
+        <p class="text-body-secondary small mb-0">{{ APP_TAGLINE }}</p>
+      </div>
       <form method="post" novalidate>{% csrf_token %}
         {% if form.non_field_errors %}<div class="alert alert-danger" role="alert">{% for e in form.non_field_errors %}{{ e }}{% endfor %}</div>{% endif %}
         <div class="mb-3">
