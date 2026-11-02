@@ -1,0 +1,76 @@
+{% load static %}<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ APP_NAME }}{% endblock %} · {{ APP_NAME }}</title>
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+<a class="visually-hidden-focusable position-absolute m-2 btn btn-light" href="#conteudo">Pular para o conteúdo</a>
+<div class="d-flex min-vh-100">
+  {% if user.is_authenticated %}
+  <nav class="sidebar d-none d-md-flex flex-column flex-shrink-0 p-3" aria-label="Navegação principal">
+    <a href="{% url 'core:dashboard' %}" class="brand mb-3 text-decoration-none">
+      <span class="fs-5 fw-semibold">{{ APP_NAME }}</span>
+      <small class="d-block">{{ APP_FULL_NAME }}</small>
+    </a>
+    {% with path=request.path %}
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li><a class="nav-link {% if path == '/' %}active{% endif %}" href="{% url 'core:dashboard' %}">Visão geral</a></li>
+      <li><a class="nav-link {% if '/projetos/' in path %}active{% endif %}" href="{% url 'projects:list' %}">Projetos</a></li>
+      {% block nav_extra %}{% endblock %}
+      {% for item in NAV_MODULES %}<li><a class="nav-link {% if item.prefix in path %}active{% endif %}" href="{{ item.url }}">{{ item.label }}</a></li>{% endfor %}
+      <li><a class="nav-link {% if '/organizacoes/' in path %}active{% endif %}" href="{% url 'organizations:list' %}">Organizações e papéis</a></li>
+      <li><a class="nav-link {% if '/auditoria/' in path %}active{% endif %}" href="{% url 'auditlog:list' %}">Auditoria</a></li>
+    </ul>
+    {% endwith %}
+    <hr>
+    <div class="small">
+      <div class="fw-semibold">{{ user.display_name }}</div>
+      <a href="{% url 'accounts:password_change' %}">Alterar senha</a>
+      <form method="post" action="{% url 'accounts:logout' %}" class="d-inline">{% csrf_token %}
+        <button class="btn btn-link btn-sm p-0 ms-2 align-baseline" type="submit">Sair</button>
+      </form>
+    </div>
+  </nav>
+  {% endif %}
+  <div class="flex-grow-1 d-flex flex-column min-w-0">
+    <header class="topbar px-3 px-md-4 py-2 d-flex align-items-center gap-2">
+      {% if user.is_authenticated %}
+      <div class="dropdown d-md-none">
+        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Menu</button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="{% url 'core:dashboard' %}">Visão geral</a></li>
+          <li><a class="dropdown-item" href="{% url 'projects:list' %}">Projetos</a></li>
+          {% for item in NAV_MODULES %}<li><a class="dropdown-item" href="{{ item.url }}">{{ item.label }}</a></li>{% endfor %}
+          <li><a class="dropdown-item" href="{% url 'organizations:list' %}">Organizações e papéis</a></li>
+          <li><a class="dropdown-item" href="{% url 'auditlog:list' %}">Auditoria</a></li>
+        </ul>
+      </div>
+      {% endif %}
+      <nav aria-label="breadcrumb" class="flex-grow-1 min-w-0">
+        <ol class="breadcrumb mb-0 small">{% block breadcrumb %}<li class="breadcrumb-item active">{{ APP_NAME }}</li>{% endblock %}</ol>
+      </nav>
+      {% if APP_ENVIRONMENT_LABEL %}<span class="badge text-bg-warning" title="Ambiente">{{ APP_ENVIRONMENT_LABEL }}</span>{% endif %}
+    </header>
+    <main id="conteudo" class="px-3 px-md-4 py-4 flex-grow-1">
+      <div id="mensagens" aria-live="polite">
+      {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags|default:'info' }}{% endif %} alert-dismissible fade show" role="alert">
+          {{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+        </div>
+      {% endfor %}
+      </div>
+      {% block content %}{% endblock %}
+    </main>
+    <footer class="px-4 py-2 small text-body-secondary border-top">
+      MVP acadêmico · associações a COBIT 2019/PMBOK são interpretação da equipe, não certificação.
+    </footer>
+  </div>
+</div>
+<script src="{% static 'vendor/bootstrap/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'vendor/htmx/htmx.min.js' %}"></script>
+</body>
+</html>

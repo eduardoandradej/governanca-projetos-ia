@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Fase {{ stage.order }} · {{ project.code }}{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item"><a href="{% url 'projects:list' %}">Projetos</a></li><li class="breadcrumb-item"><a href="{% url 'projects:detail' project.pk %}">{{ project.code }}</a></li><li class="breadcrumb-item active">Fase {{ stage.order }}</li>{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between gap-2 mb-2">
+  <div>
+    <h1 class="h3 mb-0">Fase {{ stage.order }} — {{ stage.name }}</h1>
+    <div class="small text-body-secondary">Estado: <span class="badge text-bg-secondary">{{ stage.get_status_display }}</span> · COBIT 2019 (interpretação): {{ stage.cobit_refs }} · versão {{ stage.version }}</div>
+  </div>
+  <div class="text-end small">
+    Requisitos obrigatórios validados:
+    <strong>{% if progress.percent is None %}Sem dados{% else %}{{ progress.done }}/{{ progress.total }} ({{ progress.percent }}%){% endif %}</strong>
+  </div>
+</div>
+<p class="small">{{ stage.objective }}</p>
+{% if can_resume %}
+<form method="post" action="{% url 'lifecycle:stage_resume' project.pk stage.pk %}" class="mb-3">{% csrf_token %}<button class="btn btn-outline-primary btn-sm" type="submit">Retomar fase para retrabalho</button></form>
+{% endif %}
+
+{% block gate %}{% if gate_template %}{% include gate_template %}{% endif %}{% endblock %}
+
+<div class="card mb-4">
+  <div class="card-header fw-semibold">Requisitos e critérios de aceite</div>
+  <div class="list-group list-group-flush">
+  {% for r in requirements %}
+    <div class="list-group-item">
+      <div class="d-flex flex-wrap justify-content-between gap-2">
+        <div>
+          <span class="fw-semibold">{{ r.code }}</span> {{ r.title }}
+          {% if r.mandatory %}<span class="badge text-bg-dark">obrigatório</span>{% else %}<span class="badge text-bg-light">opcional</span>{% endif %}
+          {% if r.is_legal %}<span class="badge text-bg-danger" title="Não admite exceção">legal</span>{% endif %}
+          {% if r.requires_evidence %}<span class="badge text-bg-info">exige evidência aprovada: {{ r.get_evidence_kind_display }}</span>{% endif %}
+          {% if r.cobit_ref %}<span class="badge text-bg-light">{{ r.cobit_ref }}</span>{% endif %}
+          <div class="small text-body-secondary">{{ r.description }}</div>
+        </div>
+        <span class="badge align-self-start {% if r.status == 'validated' %}text-bg-success{% elif r.status == 'rejected' %}text-bg-danger{% elif r.status == 'fulfilled' %}text-bg-warning{% else %}text-bg-secondary{% endif %}">{{ r.get_status_display }}</span>
+      </div>
+      {% if r.fulfillment_note %}<div class="small mt-1"><strong>Atendimento</strong> ({{ r.fulfilled_by }}, {{ r.fulfilled_at|date:"d/m/Y H:i" }}, v{{ r.version }}): {{ r.fulfillment_note }}</div>{% endif %}
+      {% for v in r.validations.all %}<div class="small text-body-secondary">Validação v{{ v.requirement_version }} por {{ v.validator }} em {{ v.created_at|date:"d/m/Y H:i" }}: <strong>{{ v.get_decision_display }}</strong> — {{ v.comment }}</div>{% endfor %}
+      <div class="row g-2 mt-1">
+        {% if can_fulfill %}
+        <form class="col-md-7 d-flex gap-2" method="post" action="{% url 'lifecycle:requirement_fulfill' project.pk stage.pk r.pk %}">{% csrf_token %}
+          <label class="visually-hidden" for="note-{{ r.pk }}">Registro de atendimento</label>
+          <input id="note-{{ r.pk }}" class="form-control form-control-sm" name="note" minlength="10" required placeholder="Registre como o requisito foi atendido">
+          <button class="btn btn-outline-primary btn-sm text-nowrap" type="submit">Registrar atendimento</button>
+        </form>
+        {% endif %}
+        {% if can_validate and r.status == 'fulfilled' %}
+        <form class="col-md-5 d-flex gap-2" method="post" action="{% url 'lifecycle:requirement_validate' project.pk stage.pk r.pk %}">{% csrf_token %}
+          <label class="visually-hidden" for="cm-{{ r.pk }}">Parecer</label>
+          <input id="cm-{{ r.pk }}" class="form-control form-control-sm" name="comment" required placeholder="Parecer">
+          <button class="btn btn-success btn-sm" name="decision" value="approved" type="submit">Validar</button>
+          <button class="btn btn-outline-danger btn-sm" name="decision" value="rejected" type="submit">Recusar</button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+  {% empty %}<div class="list-group-item text-body-secondary">Sem requisitos configurados.</div>{% endfor %}
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between"><span class="fw-semibold">Tarefas da fase (execução paralela entre equipes)</span><a class="small" href="{% url 'lifecycle:tasks' project.pk %}?fase={{ stage.order }}">Kanban</a></div>
+      <div class="table-responsive"><table class="table table-sm mb-0 small">
+        <thead><tr><th>Tarefa</th><th>Responsável</th><th>Equipe</th><th>Prazo</th><th>Status</th></tr></thead>
+        <tbody>{% for t in tasks %}<tr><td>{{ t.title }}</td><td>{{ t.assignee|default:"—" }}</td><td>{{ t.team|default:"—" }}</td><td>{{ t.due_date|date:"d/m/Y"|default:"—" }}</td><td>{{ t.get_status_display }}</td></tr>{% empty %}<tr><td colspan="5" class="text-body-secondary">Sem tarefas.</td></tr>{% endfor %}</tbody>
+      </table></div>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    {% if task_form %}
+    <div class="card p-3 mb-3">
+      <h2 class="h6">Nova tarefa</h2>
+      <form method="post" action="{% url 'lifecycle:task_create' project.pk stage.pk %}" novalidate>{% csrf_token %}{% with form=task_form %}{% include "partials/form_fields.html" %}{% endwith %}<button class="btn btn-primary btn-sm" type="submit">Criar tarefa</button></form>
+    </div>
+    {% endif %}
+    <div class="card"><div class="card-header fw-semibold">Histórico da fase</div>
+      <ul class="list-group list-group-flush small">{% for h in history %}<li class="list-group-item">{{ h.created_at|date:"d/m/Y H:i" }} — {{ h.get_from_status_display|default:"—" }} → <strong>{{ h.get_to_status_display }}</strong> ({{ h.changed_by|default:"sistema" }}){% if h.reason %}: {{ h.reason }}{% endif %}</li>{% endfor %}</ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

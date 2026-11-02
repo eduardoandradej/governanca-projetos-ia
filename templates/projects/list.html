@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Projetos{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active">Projetos</li>{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <h1 class="h3 mb-0">Projetos</h1>
+  {% if creatable_orgs %}
+  <div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Novo projeto</button>
+    <ul class="dropdown-menu dropdown-menu-end">{% for o in creatable_orgs %}<li><a class="dropdown-item" href="{% url 'projects:create' o.pk %}">em {{ o.name }}</a></li>{% endfor %}</ul>
+  </div>
+  {% endif %}
+</div>
+<form class="row g-2 mb-3" method="get">
+  <div class="col-md-3"><label class="form-label small" for="q">Busca</label><input id="q" class="form-control form-control-sm" name="q" value="{{ filters.q }}" placeholder="Código ou nome"></div>
+  <div class="col-md-2"><label class="form-label small" for="fo">Organização</label><select id="fo" class="form-select form-select-sm" name="organizacao"><option value="">Todas</option>{% for o in organizations %}<option value="{{ o.slug }}" {% if filters.organizacao == o.slug %}selected{% endif %}>{{ o.name }}</option>{% endfor %}</select></div>
+  <div class="col-md-2"><label class="form-label small" for="fs">Status</label><select id="fs" class="form-select form-select-sm" name="status"><option value="">Todos</option>{% for v,l in statuses %}<option value="{{ v }}" {% if filters.status == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select></div>
+  <div class="col-md-2"><label class="form-label small" for="fp">Plataforma</label><select id="fp" class="form-select form-select-sm" name="plataforma"><option value="">Todas</option>{% for v,l in platforms %}<option value="{{ v }}" {% if filters.plataforma == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select></div>
+  <div class="col-md-2"><label class="form-label small" for="fi">Implantação</label><select id="fi" class="form-select form-select-sm" name="implantacao"><option value="">Todas</option>{% for v,l in approaches %}<option value="{{ v }}" {% if filters.implantacao == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select></div>
+  <div class="col-md-1 d-flex align-items-end"><button class="btn btn-outline-primary btn-sm w-100" type="submit">Filtrar</button></div>
+</form>
+<div class="card"><div class="table-responsive"><table class="table table-sm table-hover mb-0">
+  <thead><tr><th>Código</th><th>Nome</th><th>Organização</th><th>Implantação</th><th>Prioridade</th><th>Prazo</th><th>Tarefas abertas</th><th>Status</th></tr></thead>
+  <tbody>
+  {% for p in page %}
+    <tr><td><a href="{% url 'projects:detail' p.pk %}">{{ p.code }}</a></td><td>{{ p.name }}</td><td>{{ p.organization }}</td><td>{{ p.get_deployment_approach_display }}</td><td>{{ p.get_priority_display }}</td><td>{{ p.due_date|date:"d/m/Y"|default:"—" }}</td><td>{{ p.open_tasks }}</td><td>{{ p.get_status_display }}</td></tr>
+  {% empty %}<tr><td colspan="8" class="text-body-secondary">Nenhum projeto encontrado no seu escopo.</td></tr>{% endfor %}
+  </tbody>
+</table></div></div>
+{% include "partials/pagination.html" %}
+{% endblock %}

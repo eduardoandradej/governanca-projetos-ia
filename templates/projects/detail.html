@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}{{ project.code }}{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item"><a href="{% url 'projects:list' %}">Projetos</a></li><li class="breadcrumb-item active">{{ project.code }}</li>{% endblock %}
+{% block content %}
+{% if project.organization.is_demo %}<div class="demo-banner p-2 mb-3 small rounded">Dados demonstrativos (seed_demo) — não representam organização real.</div>{% endif %}
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+  <div>
+    <h1 class="h3 mb-0">{{ project.code }} — {{ project.name }}</h1>
+    <div class="text-body-secondary small">{{ project.organization }} · {{ project.get_platform_type_display }} · {{ project.get_deployment_approach_display }} · <span class="badge text-bg-secondary">{{ project.get_status_display }}</span></div>
+  </div>
+  <div class="d-flex gap-2">{% if can_edit %}<a class="btn btn-outline-primary btn-sm" href="{% url 'projects:edit' project.pk %}">Editar</a>{% endif %}</div>
+</div>
+{% include "projects/_tabs.html" with tab="resumo" %}
+<h2 class="h5">Ciclo de vida (versão do template: {{ project.lifecycle_version }})</h2>
+<div class="stage-timeline mb-4">
+  {% for s in stages %}
+  <a href="{% url 'lifecycle:stage' project.pk s.pk %}" class="stage-box text-decoration-none text-body status-{{ s.status }} {% if current_stage and s.pk == current_stage.pk %}current{% endif %}">
+    <div class="fw-semibold">{{ s.order }}. {{ s.name }}</div>
+    <div class="small">{{ s.get_status_display }}</div>
+    <div class="small text-body-secondary">Requisitos: {% if s.progress.percent is None %}Sem dados{% else %}{{ s.progress.done }}/{{ s.progress.total }} ({{ s.progress.percent }}%){% endif %}</div>
+    <div class="small text-body-secondary">COBIT: {{ s.cobit_refs }}</div>
+  </a>
+  {% endfor %}
+</div>
+<div class="row g-3">
+  <div class="col-lg-7">
+    <div class="card p-3 mb-3">
+      <h2 class="h6">Caso de negócio</h2><p class="small mb-2">{{ project.business_case|linebreaksbr }}</p>
+      <h2 class="h6">Descrição</h2><p class="small mb-2">{{ project.description|linebreaksbr }}</p>
+      {% if project.business_objectives %}<h2 class="h6">Objetivos de negócio</h2><p class="small mb-2">{{ project.business_objectives|linebreaksbr }}</p>{% endif %}
+      {% if project.target_indicators %}<h2 class="h6">Indicadores-alvo</h2><p class="small mb-0">{{ project.target_indicators|linebreaksbr }}</p>{% endif %}
+    </div>
+    <div class="card"><div class="card-header fw-semibold">Histórico de status</div>
+      <ul class="list-group list-group-flush small">{% for h in history %}<li class="list-group-item">{{ h.created_at|date:"d/m/Y H:i" }} — {{ h.get_from_status_display|default:"—" }} → <strong>{{ h.get_to_status_display }}</strong> por {{ h.changed_by|default:"sistema" }}{% if h.reason %}: {{ h.reason }}{% endif %}</li>{% endfor %}</ul>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <div class="card p-3 mb-3 small">
+      <dl class="row mb-0">
+        <dt class="col-5">Patrocinador</dt><dd class="col-7">{{ project.sponsor }}</dd>
+        <dt class="col-5">Gerente</dt><dd class="col-7">{{ project.manager }}</dd>
+        <dt class="col-5">Responsável técnico</dt><dd class="col-7">{{ project.technical_lead|default:"—" }}</dd>
+        <dt class="col-5">Prioridade</dt><dd class="col-7">{{ project.get_priority_display }}</dd>
+        <dt class="col-5">Criticidade</dt><dd class="col-7">{{ project.get_criticality_display }}</dd>
+        <dt class="col-5">Classificação</dt><dd class="col-7">{{ project.get_data_classification_display }}</dd>
+        <dt class="col-5">Período</dt><dd class="col-7">{{ project.start_date|date:"d/m/Y"|default:"—" }} a {{ project.due_date|date:"d/m/Y"|default:"—" }}</dd>
+        {% if can_view_sensitive %}<dt class="col-5">Custo planejado</dt><dd class="col-7">{{ project.currency }} {{ project.planned_cost }}</dd>{% else %}<dt class="col-5">Custos</dt><dd class="col-7 text-body-secondary">Restrito ao seu perfil</dd>{% endif %}
+        <dt class="col-5">Tarefas abertas</dt><dd class="col-7">{{ tasks_open }}</dd>
+        {% if project.technology_metadata %}<dt class="col-5">Tecnologias</dt><dd class="col-7">{% for k,v in project.technology_metadata.items %}{{ k }}: {{ v }}<br>{% endfor %}</dd>{% endif %}
+      </dl>
+    </div>
+    {% if can_change_status %}
+    <div class="card p-3">
+      <h2 class="h6">Alterar status do projeto</h2>
+      <p class="small text-body-secondary">Encerramento, cancelamento e reabertura exigem justificativa formal e ficam no histórico.</p>
+      <form method="post" action="{% url 'projects:status' project.pk %}" novalidate>{% csrf_token %}{% with form=status_form %}{% include "partials/form_fields.html" %}{% endwith %}<button class="btn btn-outline-danger btn-sm" type="submit">Registrar alteração</button></form>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

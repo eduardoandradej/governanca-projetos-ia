@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Organizações{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active">Organizações</li>{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">Organizações</h1>
+<div class="list-group">
+{% for org in organizations %}
+  <a class="list-group-item list-group-item-action" href="{% url 'organizations:detail' org.pk %}">
+    <span class="fw-semibold">{{ org.name }}</span>{% if org.is_demo %} <span class="badge text-bg-warning">dados demonstrativos</span>{% endif %}
+    <div class="small text-body-secondary">{{ org.description|default:"—" }}</div>
+  </a>
+{% empty %}
+  <div class="text-body-secondary">Nenhuma organização vinculada ao seu usuário.</div>
+{% endfor %}
+</div>
+{% endblock %}
