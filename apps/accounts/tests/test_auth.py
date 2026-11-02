@@ -70,7 +70,8 @@ def test_password_policy_rejects_short_password(client):
 def test_brand_identity_is_configurable(client, settings):
     body = client.get(reverse("accounts:login")).content.decode()
     assert "NexFase" in body and "Governança e gestão de projetos de IA" in body
-    assert "da prova de conceito à produção" in body
+    assert "Plataforma integrada para conduzir projetos de inteligência artificial da prova de conceito à produção." in body
+    assert "centralizando" not in body
     assert "GovIA" not in body and "TrilhaIA" not in body
     settings.APP_SHORT_NAME = "OutroNome"
     assert "OutroNome" in client.get(reverse("accounts:login")).content.decode()
