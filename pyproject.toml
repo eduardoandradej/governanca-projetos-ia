@@ -44,5 +44,3 @@ ignore = ["S101", "DJ008", "DJ012"]
 [tool.ruff.lint.per-file-ignores]
 "**/tests/**" = ["S105", "S106"]
 "**/migrations/**" = ["E501"]
-# Script utilitário com HTML/JS embutido; lambdas são executadas imediatamente dentro do laço.
-"scripts/export_static_prototype.py" = ["E501", "B023"]

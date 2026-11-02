@@ -64,6 +64,3 @@ __pycache__/
 .venv/
 venv/
 node_modules/
-
-# Dados locais da aplicação (anexos privados, exportações geradas)
-var/
