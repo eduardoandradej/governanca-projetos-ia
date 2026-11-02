@@ -11,6 +11,7 @@ urlpatterns = [
     path("", include("apps.evidence.urls")),
     path("", include("apps.risks.urls")),
     path("", include("apps.analytics.urls")),
+    path("api/v1/", include("apps.api.urls")),
     path("auditoria/", include("apps.auditlog.urls")),
     path("admin-tecnico/", admin.site.urls),
 ]

@@ -22,7 +22,7 @@
         <form method="post" action="{% url 'analytics:capture' %}">{% csrf_token %}<input type="hidden" name="organizacao" value="{{ o.pk }}"><button class="btn btn-outline-secondary btn-sm" type="submit">Registrar snapshot</button></form>
       </div></div>
     {% endfor %}
-    <div class="card p-3 small"><a href="{% url 'analytics:lessons' %}">Base de lições aprendidas</a> · <a href="{% url 'governance:framework' %}">Rastreabilidade COBIT/PMBOK</a>
+    <div class="card p-3 small"><a href="{% url 'analytics:lessons' %}">Base de lições aprendidas</a> · <a href="{% url 'analytics:export_projects' %}{% if selected_org %}?organizacao={{ selected_org }}{% endif %}">Exportar relatório de projetos (CSV)</a> · <a href="{% url 'governance:framework' %}">Rastreabilidade COBIT/PMBOK</a>
       <div class="text-body-secondary mt-1">Insights são sugestões geradas por regras determinísticas e explicáveis (sem IA generativa); só viram recomendação após revisão e aprovação humanas.</div></div>
   </div>
 </div>

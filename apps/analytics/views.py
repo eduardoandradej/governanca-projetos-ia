@@ -264,3 +264,32 @@ def project_knowledge(request, project_id):
         "can_approve": rbac.has_perm(request.user, "lesson.approve", project.organization, project),
         "visibilities": LessonVisibility.choices,
     })
+
+
+@login_required
+def export_projects(request):
+    """Relatório gerencial de projetos (CSV). Exige `export.data` na organização e respeita o escopo."""
+    from apps.core.exports import csv_response
+
+    org = _org_for_action(request) if request.GET.get("organizacao") else None
+    orgs = [org] if org else [o for o in rbac.organizations_for(request.user)]
+    allowed = [o for o in orgs if rbac.has_perm(request.user, "export.data", o)]
+    if not allowed:
+        rbac.require_perm(request.user, "export.data", orgs[0] if orgs else None)
+        raise PermissionDenied
+    projects = services.scoped_projects(request.user).filter(organization__in=allowed).select_related(
+        "organization", "manager")
+    rows = []
+    for p in projects.order_by("organization__name", "code"):
+        st = p.current_stage
+        rows.append([p.organization.name, p.code, p.name, p.get_status_display(),
+                     f"{st.order}. {st.name}" if st else "", p.get_deployment_approach_display(),
+                     p.manager.display_name, p.due_date.isoformat() if p.due_date else "",
+                     "sim" if p.organization.is_demo else "não"])
+    return csv_response(
+        user=request.user, report="projetos", organization_id=org.pk if org else None,
+        filters={"organizacao": str(org.pk) if org else "todas permitidas"}, filename="projetos.csv",
+        header=["Organização", "Código", "Projeto", "Status", "Fase corrente", "Implantação", "Gerente", "Prazo",
+                "Dados demonstrativos"],
+        rows=rows,
+    )

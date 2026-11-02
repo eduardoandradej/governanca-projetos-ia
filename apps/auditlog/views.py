@@ -47,3 +47,22 @@ def event_list(request):
     return render(
         request, "auditlog/list.html", {"page": page, "filters": filters, "results": AuditResult.choices}
     )
+
+
+@login_required
+def export_events(request):
+    """Exportação autorizada da trilha (auditor/segurança/admin org), limitada ao escopo e auditada."""
+    from apps.core.exports import csv_response
+
+    org_ids = auditable_org_ids(request.user)
+    if not org_ids:
+        from apps.auditlog import services as audit
+
+        audit.record("authz.denied", actor=request.user, result=AuditResult.DENIED, reason="Permissão ausente: audit.view")
+        raise PermissionDenied("Exportação de auditoria restrita a perfis autorizados.")
+    qs = AuditEvent.objects.filter(organization_id__in=org_ids).order_by("-occurred_at")[:5000]
+    rows = ([e.occurred_at.isoformat(), e.actor_repr, e.action, e.entity_type, e.entity_id, e.result, e.reason,
+             e.correlation_id] for e in qs)
+    return csv_response(user=request.user, report="auditoria", filters={"orgs": [str(o) for o in org_ids]},
+                        header=["Instante (UTC)", "Ator", "Ação", "Entidade", "ID", "Resultado", "Motivo", "Correlação"],
+                        rows=rows, filename="auditoria.csv")

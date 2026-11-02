@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     "apps.governance",
     "apps.risks",
     "apps.analytics",
+    "apps.integrations",
+    "apps.api",
 ]
 
 MIDDLEWARE = [
