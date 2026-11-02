@@ -20,7 +20,7 @@ def app_context(request):
             except NoReverseMatch:
                 continue
     return {
-        "APP_NAME": "GovIA",
+        "APP_NAME": settings.APP_SHORT_NAME,
         "APP_FULL_NAME": "Governança de Projetos de Plataformas de IA",
         "APP_ENVIRONMENT_LABEL": settings.APP_ENVIRONMENT_LABEL,
         "NAV_MODULES": nav,

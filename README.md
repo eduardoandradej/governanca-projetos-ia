@@ -1,4 +1,7 @@
-# GovIA — Governança e gestão de projetos de implantação de plataformas corporativas de IA
+# TrilhaIA — Governança de Projetos de Plataformas de IA
+
+Governança e gestão de projetos de implantação de plataformas corporativas de IA, da prova de conceito à produção.
+O nome curto é configurável por `APP_SHORT_NAME` (padrão `TrilhaIA`).
 
 MVP acadêmico (IV SIEEG 2026, Tema 37 — COBIT 2019, PMBOK e ágil) que coordena o **projeto de implantação**
 de plataformas corporativas de IA, do caso de negócio ao aceite operacional e à melhoria contínua.

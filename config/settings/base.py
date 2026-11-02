@@ -162,5 +162,8 @@ LOGGING = {
     "root": {"handlers": ["console"], "level": env("DJANGO_LOG_LEVEL", default="INFO")},
 }
 
+# Nome curto exibido na interface (marca). O nome extenso é fixo: "Governança de Projetos de Plataformas de IA".
+APP_SHORT_NAME = env("APP_SHORT_NAME", default="TrilhaIA")
+
 # Identificação do ambiente exibida na interface (ex.: "Desenvolvimento", "Demonstração").
 APP_ENVIRONMENT_LABEL = env("APP_ENVIRONMENT_LABEL", default="")

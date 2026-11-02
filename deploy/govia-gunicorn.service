@@ -1,6 +1,6 @@
 # /etc/systemd/system/govia-gunicorn.service — exemplo; ajuste caminhos e usuário.
 [Unit]
-Description=GovIA (Gunicorn)
+Description=TrilhaIA - Governança de Projetos de Plataformas de IA (Gunicorn)
 After=network.target postgresql.service
 
 [Service]
