@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Insights{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item"><a href="{% url 'analytics:home' %}">Dados e inteligência</a></li><li class="breadcrumb-item active">Insights</li>{% endblock %}
+{% block content %}
+<h1 class="h3">Insights gerenciais</h1>
+<form class="d-flex gap-2 mb-3" method="get"><select name="status" class="form-select form-select-sm w-auto" aria-label="Status"><option value="">Todos</option>{% for v,l in statuses %}<option value="{{ v }}" {% if status == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select><button class="btn btn-outline-primary btn-sm" type="submit">Filtrar</button></form>
+<div class="card"><table class="table table-sm mb-0 small"><thead><tr><th>Insight</th><th>Regra</th><th>Projeto</th><th>Calculado</th><th>Status</th></tr></thead>
+<tbody>{% for i in insights %}<tr><td><a href="{% url 'analytics:insight' i.pk %}">{{ i.title }}</a>{% if i.is_demo %} <span class="badge text-bg-warning">demo</span>{% endif %}</td><td>{{ i.rule_code }}</td><td>{{ i.project.code }}</td><td>{{ i.computed_at|date:"d/m/Y H:i" }}</td><td>{{ i.get_status_display }}</td></tr>{% empty %}<tr><td colspan="5" class="text-body-secondary">Sem insights.</td></tr>{% endfor %}</tbody></table></div>
+<h2 class="h6 mt-4">Regras disponíveis</h2>
+<ul class="small">{% for code, r in rules.items %}<li><strong>{{ code }}</strong> {{ r.name }} — {{ r.description }} Parâmetros: {{ r.params }}. Análogo PMBOK 8 X3: {{ r.pmbok_x3 }}.</li>{% endfor %}</ul>
+{% endblock %}

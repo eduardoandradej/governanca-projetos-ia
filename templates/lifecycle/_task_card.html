@@ -1,0 +1,12 @@
+<div class="card p-2 mb-2 small" id="task-{{ task.pk }}">
+  <div class="fw-semibold">{{ task.title }}</div>
+  <div class="text-body-secondary">Fase {{ task.stage.order }} · {{ task.assignee|default:"sem responsável" }}{% if task.due_date %} · prazo {{ task.due_date|date:"d/m/Y" }}{% endif %}</div>
+  {% if can_manage %}
+  <form method="post" action="{% url 'lifecycle:task_status' project.pk task.pk %}" hx-post="{% url 'lifecycle:task_status' project.pk task.pk %}" hx-target="#task-{{ task.pk }}" hx-swap="outerHTML" class="mt-1 d-flex gap-1">
+    {% csrf_token %}
+    <label class="visually-hidden" for="st-{{ task.pk }}">Status</label>
+    <select id="st-{{ task.pk }}" name="status" class="form-select form-select-sm">{% for v,l in statuses %}<option value="{{ v }}" {% if task.status == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select>
+    <button class="btn btn-outline-secondary btn-sm" type="submit">OK</button>
+  </form>
+  {% else %}<span class="badge text-bg-light">{{ task.get_status_display }}</span>{% endif %}
+</div>

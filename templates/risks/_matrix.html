@@ -1,0 +1,9 @@
+<table class="table table-bordered risk-matrix mb-1" aria-label="Matriz de riscos 5 por 5">
+  <caption class="small">Linhas: impacto (5→1). Colunas: probabilidade (1→5). Células: quantidade de riscos.</caption>
+  <tbody>
+  {% for row in matrix %}
+    <tr>{% for cell in row %}{% if forloop.first %}<th scope="row" class="small">I{{ cell.impact }}</th>{% endif %}<td class="risk-{{ cell.level }}" title="P{{ cell.probability }} × I{{ cell.impact }}">{% if cell.count %}{{ cell.count }}{% endif %}</td>{% endfor %}</tr>
+  {% endfor %}
+  <tr><th></th>{% for p in "12345" %}<th class="small text-center">P{{ p }}</th>{% endfor %}</tr>
+  </tbody>
+</table>

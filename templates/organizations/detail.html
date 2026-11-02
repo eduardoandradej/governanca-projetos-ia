@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}{{ org.name }}{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item"><a href="{% url 'organizations:list' %}">Organizações</a></li><li class="breadcrumb-item active">{{ org.name }}</li>{% endblock %}
+{% block content %}
+<h1 class="h3">{{ org.name }} {% if org.is_demo %}<span class="badge text-bg-warning fs-6">dados demonstrativos</span>{% endif %}</h1>
+<p class="text-body-secondary">{{ org.description }}</p>
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header fw-semibold">Papéis atribuídos (RBAC com escopo)</div>
+      <div class="table-responsive"><table class="table table-sm mb-0">
+        <thead><tr><th>Usuário</th><th>Papel</th><th>Escopo</th><th>Concedido por</th><th>Situação</th><th></th></tr></thead>
+        <tbody>
+        {% for a in assignments %}
+          <tr class="{% if a.revoked_at %}text-body-secondary{% endif %}">
+            <td>{{ a.user }}</td><td>{{ a.get_role_display }}</td>
+            <td>{% if a.project %}{{ a.project.code }}{% else %}Organização{% endif %}</td>
+            <td>{{ a.granted_by|default:"sistema" }}</td>
+            <td>{% if a.revoked_at %}Revogado {{ a.revoked_at|date:"d/m/Y" }}{% else %}Ativo{% endif %}</td>
+            <td>{% if can_manage and not a.revoked_at and a.user != user %}
+              <form method="post" action="{% url 'organizations:revoke_role' org.pk a.pk %}">{% csrf_token %}
+                <input type="hidden" name="reason" value="Revogação pela interface">
+                <button class="btn btn-outline-danger btn-sm" type="submit">Revogar</button></form>{% endif %}</td>
+          </tr>
+        {% empty %}<tr><td colspan="6">Nenhum papel atribuído.</td></tr>{% endfor %}
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <div class="card mb-3">
+      <div class="card-header fw-semibold">Membros</div>
+      <ul class="list-group list-group-flush">
+        {% for m in memberships %}<li class="list-group-item d-flex justify-content-between"><span>{{ m.user }} <small class="text-body-secondary">{{ m.job_title }}</small></span><span class="badge text-bg-light">{{ m.get_status_display }}</span></li>{% endfor %}
+      </ul>
+    </div>
+    {% if form %}
+    <div class="card p-3">
+      <h2 class="h6">Conceder papel</h2>
+      <p class="small text-body-secondary">Não é permitido conceder papéis a si mesmo. Toda concessão é auditada.</p>
+      <form method="post" novalidate>{% csrf_token %}{% include "partials/form_fields.html" %}<button class="btn btn-primary btn-sm" type="submit">Conceder</button></form>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

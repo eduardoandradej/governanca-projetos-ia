@@ -1,0 +1,66 @@
+# =========================================================
+# Segurança: nunca versionar credenciais ou segredos
+# =========================================================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+id_rsa*
+id_ed25519*
+credentials*.json
+service-account*.json
+*secret*
+*token*
+.aws/
+.azure/
+.gcloud/
+.npmrc
+.pypirc
+
+# =========================================================
+# Dados: nunca versionar dados reais ou pessoais (LGPD)
+# =========================================================
+data/
+dados/
+datasets/
+*.csv
+*.parquet
+*.xlsx
+*.xls
+*.sqlite
+*.db
+*.dump
+*.bak
+!templates/**/*.csv
+!templates/**/*.xlsx
+
+# Modelos treinados e artefatos pesados
+*.pkl
+*.joblib
+*.h5
+*.onnx
+*.pt
+*.pth
+*.safetensors
+mlruns/
+
+# =========================================================
+# Sistema operacional e editores
+# =========================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+~$*
+
+# Ambientes e dependências
+__pycache__/
+.venv/
+venv/
+node_modules/

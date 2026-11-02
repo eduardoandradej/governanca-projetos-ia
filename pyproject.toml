@@ -1,0 +1,46 @@
+[project]
+name = "govia"
+version = "0.1.0"
+description = "MVP de governança e gestão de projetos de implantação de plataformas corporativas de IA (COBIT 2019 + PMBOK)."
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = { file = "LICENSE" }
+dependencies = [
+    "django>=5.2,<5.3",
+    "psycopg[binary]>=3.2,<3.3",
+    "djangorestframework>=3.18.2,<3.19",
+    "django-environ>=0.12,<0.13",
+    "gunicorn>=23",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "pytest-django>=4.9",
+    "factory-boy>=3.3",
+    "ruff>=0.6",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.test"
+python_files = ["test_*.py"]
+addopts = "-ra --strict-markers"
+markers = [
+    "e2e: fluxo ponta a ponta",
+]
+
+[tool.ruff]
+line-length = 130
+target-version = "py312"
+extend-exclude = [".venv", "static/vendor"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "DJ", "S"]
+ignore = ["S101", "DJ008", "DJ012"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**" = ["S105", "S106"]
+"**/migrations/**" = ["E501"]

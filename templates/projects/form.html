@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{% if creating %}Novo projeto{% else %}Editar {{ project.code }}{% endif %}{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item"><a href="{% url 'projects:list' %}">Projetos</a></li>{% if project %}<li class="breadcrumb-item"><a href="{% url 'projects:detail' project.pk %}">{{ project.code }}</a></li>{% endif %}<li class="breadcrumb-item active">{% if creating %}Novo{% else %}Editar{% endif %}</li>{% endblock %}
+{% block content %}
+<h1 class="h3">{% if creating %}Novo projeto em {{ org.name }}{% else %}Editar {{ project.code }}{% endif %}</h1>
+{% if creating %}<p class="text-body-secondary small">Ao salvar, o projeto recebe as sete fases do template publicado e inicia na fase 1.</p>{% endif %}
+<form method="post" class="card p-3" novalidate>{% csrf_token %}
+  {% if project %}<input type="hidden" name="version" value="{{ project.version }}">{% endif %}
+  <div class="row">{% include "partials/form_fields.html" with col="col-md-6" %}</div>
+  <div><button class="btn btn-primary" type="submit">Salvar</button> <a class="btn btn-link" href="{% if project %}{% url 'projects:detail' project.pk %}{% else %}{% url 'projects:list' %}{% endif %}">Cancelar</a></div>
+</form>
+{% endblock %}

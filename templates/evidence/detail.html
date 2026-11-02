@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}{{ artifact.title }}{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item"><a href="{% url 'projects:detail' project.pk %}">{{ project.code }}</a></li><li class="breadcrumb-item"><a href="{% url 'evidence:project' project.pk %}">Evidências</a></li><li class="breadcrumb-item active">{{ artifact.title|truncatechars:40 }}</li>{% endblock %}
+{% block content %}
+<h1 class="h3">{{ artifact.title }} <span class="badge text-bg-secondary fs-6">{{ artifact.get_status_display }}</span></h1>
+<p class="small text-body-secondary">{{ artifact.get_kind_display }} · classificação {{ artifact.get_classification_display|lower }} · responsável {{ artifact.responsible }}{% if artifact.stage %} · <a href="{% url 'lifecycle:stage' project.pk artifact.stage.pk %}">fase {{ artifact.stage.order }}</a>{% endif %}{% if artifact.requirement %} · requisito {{ artifact.requirement.code }}{% endif %}</p>
+{% if artifact.description %}<p class="small">{{ artifact.description }}</p>{% endif %}
+<div class="row g-3">
+  <div class="col-lg-7">
+    <div class="card mb-3"><div class="card-header fw-semibold">Versões (substituição gera nova versão)</div>
+      <div class="table-responsive"><table class="table table-sm mb-0 small">
+        <thead><tr><th>v</th><th>Conteúdo</th><th>SHA-256</th><th>Quarentena</th><th>Enviada por</th><th></th></tr></thead>
+        <tbody>{% for v in versions %}<tr>
+          <td>{{ v.number }}</td>
+          <td>{% if v.original_name %}{{ v.original_name }} ({{ v.size|filesizeformat }}){% else %}{{ v.external_reference }}{% endif %}{% if v.change_note %}<div class="text-body-secondary">{{ v.change_note }}</div>{% endif %}</td>
+          <td><code title="{{ v.sha256 }}">{{ v.sha256|truncatechars:14|default:"—" }}</code></td>
+          <td>{{ v.get_scan_status_display }}{% if v.inspected_by %}<div class="text-body-secondary">{{ v.inspected_by }} {{ v.inspected_at|date:"d/m/Y H:i" }}</div>{% endif %}</td>
+          <td>{{ v.uploaded_by }}<div class="text-body-secondary">{{ v.created_at|date:"d/m/Y H:i" }}</div></td>
+          <td>{% if can_download and v.original_name %}<a class="btn btn-outline-secondary btn-sm" href="{% url 'evidence:download' artifact.pk v.number %}">Baixar</a>{% endif %}</td>
+        </tr>{% endfor %}</tbody>
+      </table></div>
+    </div>
+    <div class="card"><div class="card-header fw-semibold">Revisões</div>
+      <ul class="list-group list-group-flush small">{% for r in reviews %}<li class="list-group-item">v{{ r.version_number }} · <strong>{{ r.get_decision_display }}</strong> por {{ r.reviewer }} em {{ r.created_at|date:"d/m/Y H:i" }}: {{ r.comment }}</li>{% empty %}<li class="list-group-item text-body-secondary">Sem revisões.</li>{% endfor %}</ul>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    {% if can_inspect %}
+    <div class="card p-3 mb-3 small">
+      <h2 class="h6">Inspeção de quarentena</h2>
+      <p class="text-body-secondary">Sem antivírus no ambiente, arquivos ficam bloqueados para distribuição até inspeção manual registrada.</p>
+      <form method="post" action="{% url 'evidence:inspect' artifact.pk %}" class="d-flex gap-2">{% csrf_token %}
+        <input name="note" class="form-control form-control-sm" placeholder="Observação" aria-label="Observação">
+        <button class="btn btn-success btn-sm" name="release" value="1" type="submit">Liberar</button>
+        <button class="btn btn-outline-danger btn-sm" name="release" value="0" type="submit">Bloquear</button>
+      </form>
+    </div>
+    {% endif %}
+    {% if can_review %}
+    <div class="card p-3 mb-3 small">
+      <h2 class="h6">Parecer de revisão (v{{ artifact.current_version }})</h2>
+      <form method="post" action="{% url 'evidence:review' artifact.pk %}">{% csrf_token %}
+        <label class="form-label" for="rv-c">Parecer</label><textarea id="rv-c" name="comment" class="form-control form-control-sm mb-2" rows="2" required></textarea>
+        <button class="btn btn-success btn-sm" name="decision" value="approved" type="submit">Aprovar</button>
+        <button class="btn btn-outline-danger btn-sm" name="decision" value="rejected" type="submit">Rejeitar</button>
+      </form>
+    </div>
+    {% endif %}
+    {% if can_upload %}
+    <div class="card p-3 mb-3 small">
+      <h2 class="h6">Nova versão</h2>
+      <form method="post" enctype="multipart/form-data" action="{% url 'evidence:new_version' artifact.pk %}">{% csrf_token %}
+        <label class="form-label" for="nv-f">Arquivo</label><input id="nv-f" type="file" name="file" class="form-control form-control-sm mb-2" accept=".pdf,.png,.jpg,.jpeg,.txt">
+        <label class="form-label" for="nv-r">ou referência externa</label><input id="nv-r" name="external_reference" class="form-control form-control-sm mb-2">
+        <label class="form-label" for="nv-n">Nota da versão</label><input id="nv-n" name="change_note" class="form-control form-control-sm mb-2">
+        <button class="btn btn-outline-primary btn-sm" type="submit">Enviar nova versão</button>
+      </form>
+    </div>
+    {% endif %}
+    {% if can_archive %}
+    <form method="post" action="{% url 'evidence:archive' artifact.pk %}" class="card p-3 small">{% csrf_token %}
+      <label class="form-label" for="ar-r">Arquivar (não exclui; justifique)</label><input id="ar-r" name="reason" class="form-control form-control-sm mb-2" minlength="10" required>
+      <button class="btn btn-outline-secondary btn-sm" type="submit">Arquivar</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

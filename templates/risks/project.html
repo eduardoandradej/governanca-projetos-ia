@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Riscos · {{ project.code }}{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item"><a href="{% url 'projects:list' %}">Projetos</a></li><li class="breadcrumb-item"><a href="{% url 'projects:detail' project.pk %}">{{ project.code }}</a></li><li class="breadcrumb-item active">Riscos</li>{% endblock %}
+{% block content %}
+<h1 class="h3">{{ project.code }} — Riscos</h1>
+{% include "projects/_tabs.html" with tab="riscos" %}
+{% if untreated %}<div class="alert alert-danger small"><strong>{{ untreated|length }} risco(s) crítico(s) sem tratamento</strong> — bloqueiam a passagem de gate conforme a política. {% for r in untreated %}{{ r.code }}{% if not forloop.last %}, {% endif %}{% endfor %}</div>{% endif %}
+<div class="row g-3 mb-3">
+  <div class="col-lg-4"><div class="card p-3">{% include "risks/_matrix.html" %}
+    <div class="small text-body-secondary">Política de classificação (pontuação P×I): crítico ≥ {{ thresholds.0 }}, alto ≥ {{ thresholds.1 }}, médio ≥ {{ thresholds.2 }}, baixo abaixo. Limiares configuráveis por organização; não constituem alinhamento automático a normas.</div></div></div>
+  <div class="col-lg-8"><div class="card">{% include "risks/_list.html" %}</div></div>
+</div>
+{% if form %}
+<div class="card p-3"><h2 class="h6">Registrar risco</h2>
+  <form method="post" class="row" novalidate>{% csrf_token %}{% include "partials/form_fields.html" with col="col-md-4" %}<div class="col-12"><button class="btn btn-primary btn-sm" type="submit">Registrar</button></div></form>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,12 @@
+<ul class="nav nav-tabs mb-3">
+  <li class="nav-item"><a class="nav-link {% if tab == 'resumo' %}active{% endif %}" href="{% url 'projects:detail' project.pk %}">Resumo e fases</a></li>
+  <li class="nav-item"><a class="nav-link {% if tab == 'tarefas' %}active{% endif %}" href="{% url 'lifecycle:tasks' project.pk %}">Tarefas</a></li>
+  <li class="nav-item"><a class="nav-link {% if tab == 'evidencias' %}active{% endif %}" href="{% url 'evidence:project' project.pk %}">Evidências</a></li>
+  <li class="nav-item"><a class="nav-link {% if tab == 'riscos' %}active{% endif %}" href="{% url 'risks:project' project.pk %}">Riscos</a></li>
+  <li class="nav-item"><a class="nav-link {% if tab == 'custos' %}active{% endif %}" href="{% url 'risks:costs' project.pk %}">Custos</a></li>
+  <li class="nav-item"><a class="nav-link {% if tab == 'decisoes' %}active{% endif %}" href="{% url 'risks:decisions' project.pk %}">Decisões</a></li>
+  <li class="nav-item"><a class="nav-link {% if tab == 'dados' %}active{% endif %}" href="{% url 'analytics:project_data' project.pk %}">Dados</a></li>
+  <li class="nav-item"><a class="nav-link {% if tab == 'conhecimento' %}active{% endif %}" href="{% url 'analytics:project_knowledge' project.pk %}">Conhecimento</a></li>
+  <li class="nav-item"><a class="nav-link {% if tab == 'rai' %}active{% endif %}" href="{% url 'governance:responsible_ai' project.pk %}">Uso responsável de IA</a></li>
+  {% for t in PROJECT_TABS %}<li class="nav-item"><a class="nav-link {% if tab == t.key %}active{% endif %}" href="{{ t.url }}">{{ t.label }}</a></li>{% endfor %}
+</ul>

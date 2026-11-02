@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Dados · {{ project.code }}{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item"><a href="{% url 'projects:list' %}">Projetos</a></li><li class="breadcrumb-item"><a href="{% url 'projects:detail' project.pk %}">{{ project.code }}</a></li><li class="breadcrumb-item active">Dados</li>{% endblock %}
+{% block content %}
+<h1 class="h3">{{ project.code }} — Catálogo de dados e artefatos de IA</h1>
+{% include "projects/_tabs.html" with tab="dados" %}
+<p class="small text-body-secondary">O catálogo registra metadados e linhagem; o MVP não ingere datasets, dados pessoais nem bases corporativas.</p>
+<div class="card mb-3"><div class="table-responsive"><table class="table table-sm mb-0 small"><thead><tr><th>Ativo</th><th>Tipo</th><th>Proprietário</th><th>Origem</th><th>Classificação</th><th>Versão</th><th>Qualidade</th><th>Dados pessoais</th><th>Linhagem</th></tr></thead>
+<tbody>{% for a in assets %}<tr><td>{{ a.name }}<div class="text-body-secondary">{{ a.purpose }}</div></td><td>{{ a.get_kind_display }}</td><td>{{ a.owner }}</td><td>{{ a.source_system|default:"—" }}</td><td>{{ a.get_classification_display }}</td><td>{{ a.current_version }}</td><td>{{ a.get_declared_quality_display }}</td><td>{% if a.contains_personal_data %}Sim{% else %}Não{% endif %}</td>
+<td>{% for e in a.upstream.all %}← {{ e.source.name }}<br>{% endfor %}{% for e in a.downstream.all %}→ {{ e.target.name }}<br>{% endfor %}</td></tr>{% empty %}<tr><td colspan="9" class="text-body-secondary">Nenhum ativo catalogado.</td></tr>{% endfor %}</tbody></table></div></div>
+{% if edges %}<div class="card p-3 mb-3 small"><h2 class="h6">Linhagem (origem → transformação → saída)</h2><ul class="mb-0">{% for e in edges %}<li>{{ e.source.name }} → <em>{{ e.transformation }}</em> → {{ e.target.name }}</li>{% endfor %}</ul></div>{% endif %}
+{% if can_manage %}
+<div class="row g-3"><div class="col-lg-8"><div class="card p-3"><h2 class="h6">Catalogar ativo</h2><form method="post" class="row" novalidate>{% csrf_token %}<input type="hidden" name="form" value="asset">{% include "partials/form_fields.html" with col="col-md-4" %}<div class="col-12"><button class="btn btn-primary btn-sm" type="submit">Catalogar</button></div></form></div></div>
+<div class="col-lg-4"><form method="post" class="card p-3 small">{% csrf_token %}<input type="hidden" name="form" value="lineage"><h2 class="h6">Registrar linhagem</h2>
+  <label class="form-label" for="ls">Origem</label><select id="ls" name="source" class="form-select form-select-sm mb-2">{% for a in lineage_sources %}<option value="{{ a.pk }}">{{ a.project.code }} · {{ a.name }}</option>{% endfor %}</select>
+  <label class="form-label" for="lt">Saída (deste projeto)</label><select id="lt" name="target" class="form-select form-select-sm mb-2">{% for a in assets %}<option value="{{ a.pk }}">{{ a.name }}</option>{% endfor %}</select>
+  <label class="form-label" for="ltr">Transformação</label><input id="ltr" name="transformation" class="form-control form-control-sm mb-2" required>
+  <button class="btn btn-outline-primary btn-sm" type="submit">Registrar</button></form></div></div>
+{% endif %}
+{% endblock %}

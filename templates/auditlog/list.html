@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Auditoria{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active">Auditoria</li>{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center"><h1 class="h3">Trilha de auditoria</h1><a class="btn btn-outline-secondary btn-sm" href="{% url 'auditlog:export' %}">Exportar CSV</a></div>
+<p class="small text-body-secondary">Registros append-only (edição e exclusão bloqueadas na aplicação e por gatilho no PostgreSQL). Horários exibidos em America/Sao_Paulo; armazenados em UTC.</p>
+<form class="row g-2 mb-3" method="get">
+  <div class="col-md-3"><label class="form-label small" for="f-acao">Ação</label><input id="f-acao" class="form-control form-control-sm" name="acao" value="{{ filters.acao }}" placeholder="ex.: gate"></div>
+  <div class="col-md-2"><label class="form-label small" for="f-res">Resultado</label><select id="f-res" class="form-select form-select-sm" name="resultado"><option value="">Todos</option>{% for v,l in results %}<option value="{{ v }}" {% if filters.resultado == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select></div>
+  <div class="col-md-3"><label class="form-label small" for="f-usu">Usuário</label><input id="f-usu" class="form-control form-control-sm" name="usuario" value="{{ filters.usuario }}"></div>
+  <div class="col-md-3"><label class="form-label small" for="f-proj">ID do projeto</label><input id="f-proj" class="form-control form-control-sm" name="projeto" value="{{ filters.projeto }}"></div>
+  <div class="col-md-1 d-flex align-items-end"><button class="btn btn-outline-primary btn-sm w-100" type="submit">Filtrar</button></div>
+</form>
+<div class="card"><div class="table-responsive"><table class="table table-sm mb-0 small">
+  <thead><tr><th>Instante</th><th>Ator</th><th>Ação</th><th>Entidade</th><th>Resultado</th><th>Motivo</th><th>Correlação</th></tr></thead>
+  <tbody>
+  {% for e in page %}
+    <tr><td class="text-nowrap">{{ e.occurred_at|date:"d/m/Y H:i:s" }}</td><td>{{ e.actor_repr|default:e.get_actor_type_display }}</td><td><code>{{ e.action }}</code></td>
+      <td>{{ e.entity_type }}{% if e.entity_version %} v{{ e.entity_version }}{% endif %}</td>
+      <td><span class="badge {% if e.result == 'success' %}text-bg-success{% elif e.result == 'denied' %}text-bg-danger{% else %}text-bg-warning{% endif %}">{{ e.get_result_display }}</span></td>
+      <td>{{ e.reason|truncatechars:80 }}</td><td><code class="small">{{ e.correlation_id|truncatechars:12 }}</code></td></tr>
+  {% empty %}<tr><td colspan="7">Sem eventos para os filtros.</td></tr>{% endfor %}
+  </tbody>
+</table></div></div>
+{% include "partials/pagination.html" %}
+{% endblock %}

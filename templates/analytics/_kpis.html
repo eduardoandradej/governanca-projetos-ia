@@ -1,0 +1,15 @@
+{% load govia %}{% load humanize %}
+{% if has_demo %}<div class="demo-banner p-2 mb-3 small rounded">Os indicadores incluem <strong>dados demonstrativos</strong> (seed_demo); não representam organização real.</div>{% endif %}
+<div class="row g-3 mb-3">
+{% for code, r in results.items %}{% with d=definitions|dictget:code %}
+  {% if code != "K11" %}
+  <div class="col-6 col-md-4 col-xl-3"><a class="text-decoration-none text-body" href="{% url 'analytics:metric' code %}{% if selected_org %}?organizacao={{ selected_org }}{% endif %}">
+    <div class="card kpi p-3 h-100">
+      <div class="label">{{ d.name }}</div>
+      <div class="value">{% if r.value is None %}<span class="fs-6 text-body-secondary">Sem dados</span>{% else %}{{ r.value }}{% if d.unit == "%" %}%{% endif %}{% endif %}</div>
+      <div class="small text-body-secondary">{{ code }} · {% if d.indicator_type == "leading" %}tendência{% else %}resultado{% endif %}{% if r.denominator %} · {{ r.numerator }}/{{ r.denominator }}{% endif %}</div>
+    </div></a></div>
+  {% endif %}
+{% endwith %}{% endfor %}
+</div>
+<p class="small text-body-secondary">Calculado do PostgreSQL em {{ computed_at|date:"d/m/Y H:i" }} sobre {{ project_count }} projeto(s) do seu escopo. Clique em um indicador para ver a ficha técnica e a linhagem.</p>

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}{{ code }} {{ definition.name }}{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item"><a href="{% url 'analytics:home' %}">Dados e inteligência</a></li><li class="breadcrumb-item active">{{ code }}</li>{% endblock %}
+{% block content %}
+<h1 class="h3">{{ code }} — {{ definition.name }}</h1>
+{% if has_demo %}<div class="demo-banner p-2 mb-3 small rounded">Inclui dados demonstrativos.</div>{% endif %}
+<div class="row g-3">
+  <div class="col-lg-5"><div class="card kpi p-3 mb-3"><div class="label">Valor atual ({{ definition.unit }})</div>
+    <div class="value">{% if result.value is None %}Sem dados{% else %}{{ result.value }}{% endif %}</div>
+    {% if result.denominator is not None %}<div class="small">Numerador {{ result.numerator }} / denominador {{ result.denominator }}</div>{% endif %}
+    <div class="small text-body-secondary">Escopo: {{ project_count }} projeto(s) visíveis{% if selected_org %} da organização filtrada{% endif %}.</div></div>
+    <div class="card p-3 small"><h2 class="h6">Linhagem do indicador</h2><dl class="mb-0">{% for k, v in result.lineage.items %}<dt>{{ k }}</dt><dd>{{ v }}</dd>{% endfor %}{% for k, v in result.details.items %}<dt>{{ k }}</dt><dd>{{ v }}</dd>{% endfor %}</dl></div>
+  </div>
+  <div class="col-lg-7"><div class="card p-3 small"><h2 class="h6">Ficha técnica</h2><dl class="row mb-0">
+    <dt class="col-4">Definição</dt><dd class="col-8">{{ definition.definition }}</dd>
+    <dt class="col-4">Numerador</dt><dd class="col-8">{{ definition.numerator|default:"—" }}</dd>
+    <dt class="col-4">Denominador</dt><dd class="col-8">{{ definition.denominator|default:"—" }}</dd>
+    <dt class="col-4">Regra de cálculo</dt><dd class="col-8"><code>{{ definition.calculation }}</code></dd>
+    <dt class="col-4">Filtros</dt><dd class="col-8">{{ definition.filters }}</dd>
+    <dt class="col-4">Fonte</dt><dd class="col-8">{{ definition.source }}</dd>
+    <dt class="col-4">Periodicidade</dt><dd class="col-8">{{ definition.periodicity }}</dd>
+    <dt class="col-4">Tipo</dt><dd class="col-8">{% if definition.indicator_type == "leading" %}De tendência (leading){% else %}De resultado (lagging){% endif %} — {{ definition.pmbok_ref }}</dd>
+    <dt class="col-4">COBIT</dt><dd class="col-8">{{ definition.cobit_ref }} (interpretação da equipe)</dd>
+    <dt class="col-4">Limitações</dt><dd class="col-8">{{ definition.limitations }}</dd></dl></div>
+    <div class="card mt-3"><div class="card-header fw-semibold small">Snapshots</div><table class="table table-sm mb-0 small"><thead><tr><th>Quando</th><th>Organização</th><th>Valor</th><th>Num/Den</th></tr></thead><tbody>{% for s in snapshots %}<tr><td>{{ s.computed_at|date:"d/m/Y H:i" }}</td><td>{{ s.organization }}{% if s.is_demo %} <span class="badge text-bg-warning">demo</span>{% endif %}</td><td>{{ s.value|default:"Sem dados" }}</td><td>{{ s.numerator|default:"—" }}/{{ s.denominator|default:"—" }}</td></tr>{% empty %}<tr><td colspan="4" class="text-body-secondary">Sem snapshots.</td></tr>{% endfor %}</tbody></table></div>
+  </div>
+</div>
+{% endblock %}

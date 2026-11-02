@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Tarefas · {{ project.code }}{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item"><a href="{% url 'projects:list' %}">Projetos</a></li><li class="breadcrumb-item"><a href="{% url 'projects:detail' project.pk %}">{{ project.code }}</a></li><li class="breadcrumb-item active">Tarefas</li>{% endblock %}
+{% block content %}
+<h1 class="h3">{{ project.code }} — Tarefas</h1>
+{% include "projects/_tabs.html" with tab="tarefas" %}
+<form class="d-flex flex-wrap gap-2 mb-3" method="get">
+  <label class="visually-hidden" for="ff">Fase</label>
+  <select id="ff" name="fase" class="form-select form-select-sm w-auto"><option value="">Todas as fases</option>{% for s in stages %}<option value="{{ s.order }}" {% if stage_filter == s.order|stringformat:"d" %}selected{% endif %}>{{ s.order }}. {{ s.name }}</option>{% endfor %}</select>
+  <select name="visao" class="form-select form-select-sm w-auto" aria-label="Visão"><option value="kanban" {% if view != 'lista' %}selected{% endif %}>Kanban</option><option value="lista" {% if view == 'lista' %}selected{% endif %}>Lista</option></select>
+  <button class="btn btn-outline-primary btn-sm" type="submit">Aplicar</button>
+</form>
+{% if view == 'lista' %}
+<div class="card"><div class="table-responsive"><table class="table table-sm mb-0 small">
+  <thead><tr><th>Fase</th><th>Tarefa</th><th>Responsável</th><th>Equipe</th><th>Prioridade</th><th>Prazo</th><th>Status</th></tr></thead>
+  <tbody>{% for t in tasks %}<tr><td>{{ t.stage.order }}</td><td>{{ t.title }}</td><td>{{ t.assignee|default:"—" }}</td><td>{{ t.team|default:"—" }}</td><td>{{ t.get_priority_display }}</td><td>{{ t.due_date|date:"d/m/Y"|default:"—" }}</td><td>{{ t.get_status_display }}</td></tr>{% empty %}<tr><td colspan="7">Sem tarefas.</td></tr>{% endfor %}</tbody>
+</table></div></div>
+{% else %}
+<div class="kanban">
+  {% for value, label, items in columns %}
+  <section class="kanban-col" aria-label="{{ label }}">
+    <h2 class="h6">{{ label }} <span class="badge text-bg-light">{{ items|length }}</span></h2>
+    {% for task in items %}{% include "lifecycle/_task_card.html" %}{% empty %}<div class="small text-body-secondary">Vazio</div>{% endfor %}
+  </section>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

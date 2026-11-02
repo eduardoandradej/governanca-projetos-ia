@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Lições aprendidas{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item"><a href="{% url 'analytics:home' %}">Dados e inteligência</a></li><li class="breadcrumb-item active">Lições aprendidas</li>{% endblock %}
+{% block content %}
+<h1 class="h3">Base de lições aprendidas</h1>
+<p class="small text-body-secondary">Mostra lições dos projetos do seu escopo e lições aprovadas para divulgação na sua organização. Nunca exibe conteúdo de outras organizações.</p>
+<form class="row g-2 mb-3" method="get">
+  <div class="col-md-3"><label class="form-label small" for="lq">Busca</label><input id="lq" name="q" value="{{ filters.q }}" class="form-control form-control-sm"></div>
+  <div class="col-md-3"><label class="form-label small" for="lt">Tipo de projeto</label><select id="lt" name="tipo" class="form-select form-select-sm"><option value="">Todos</option>{% for v,l in platforms %}<option value="{{ v }}" {% if filters.tipo == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select></div>
+  <div class="col-md-2"><label class="form-label small" for="le">Etapa</label><input id="le" name="etapa" value="{{ filters.etapa }}" class="form-control form-control-sm" inputmode="numeric"></div>
+  <div class="col-md-3"><label class="form-label small" for="lr">Risco</label><select id="lr" name="risco" class="form-select form-select-sm"><option value="">Todos</option>{% for v,l in risks %}<option value="{{ v }}" {% if filters.risco == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select></div>
+  <div class="col-md-1 d-flex align-items-end"><button class="btn btn-outline-primary btn-sm w-100" type="submit">Filtrar</button></div>
+</form>
+{% for l in lessons %}
+<div class="card p-3 mb-2 small"><div class="d-flex justify-content-between"><strong>{{ l.title }}</strong><span><span class="badge text-bg-secondary">{{ l.get_status_display }}</span> <span class="badge text-bg-light">{{ l.get_visibility_display }}</span>{% if l.is_demo %} <span class="badge text-bg-warning">demo</span>{% endif %}</span></div>
+  <div class="text-body-secondary">{{ l.project.code }} · {{ l.organization }}{% if l.stage_order %} · etapa {{ l.stage_order }}{% endif %} · {{ l.get_knowledge_type_display }}{% if l.source_insight %} · origem: insight {{ l.source_insight.rule_code }}{% endif %}</div>
+  <div><strong>Contexto:</strong> {{ l.context }}</div><div><strong>Lição:</strong> {{ l.lesson }}</div><div><strong>Recomendação:</strong> {{ l.recommendation }}</div>
+</div>
+{% empty %}<div class="text-body-secondary">Nenhuma lição encontrada.</div>{% endfor %}
+{% endblock %}

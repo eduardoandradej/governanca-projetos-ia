@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Gates e aprovações{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active">Gates e aprovações</li>{% endblock %}
+{% block content %}
+<h1 class="h3">Fila de aprovação</h1>
+<p class="small text-body-secondary">Solicitações de passagem e revalidações pendentes nos projetos em que você pode aprovar. Você não pode aprovar solicitações feitas por você (segregação de funções).</p>
+<div class="card"><div class="table-responsive"><table class="table table-sm mb-0">
+  <thead><tr><th>Projeto</th><th>Fase</th><th>Situação</th><th>Solicitante</th><th>Desde</th><th></th></tr></thead>
+  <tbody>
+  {% for g in gates %}
+  <tr><td>{{ g.stage.project.code }}{% if g.stage.project.organization.is_demo %} <span class="badge text-bg-warning">demo</span>{% endif %}</td><td>{{ g.stage.order }}. {{ g.stage.name }}</td>
+    <td>{% if g.revalidation_required %}<span class="badge text-bg-warning">Revalidação</span>{% else %}<span class="badge text-bg-info">{{ g.get_status_display }} nº {{ g.request_number }}</span>{% endif %}</td>
+    <td>{{ g.requested_by|default:"—" }}{% if g.requested_by == user %} <small class="text-danger">(você)</small>{% endif %}</td><td>{{ g.requested_at|date:"d/m/Y H:i"|default:"—" }}</td>
+    <td><a class="btn btn-outline-primary btn-sm" href="{% url 'lifecycle:stage' g.stage.project_id g.stage_id %}">Analisar</a></td></tr>
+  {% empty %}<tr><td colspan="6" class="text-body-secondary">Nenhuma pendência na sua fila.</td></tr>{% endfor %}
+  </tbody>
+</table></div></div>
+{% endblock %}

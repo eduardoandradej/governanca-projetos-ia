@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Governança{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active">Governança (COBIT 2019)</li>{% endblock %}
+{% block content %}
+<h1 class="h3">Objetivos COBIT 2019 e rastreabilidade</h1>
+<div class="alert alert-light border small">
+  Associações entre objetivos COBIT e funcionalidades são <strong>interpretação da equipe</strong>; os marcados como
+  <span class="badge text-bg-primary">ISACA 2025</span> são citados em ISACA, <em>Leveraging COBIT for Effective AI System Governance</em> (2025), com indicação de página.
+  O sistema não certifica conformidade com COBIT. Ciclo de vida de IA (ISACA 2025, p. 13–14): design → EDM; desenvolvimento → APO; implantação → BAI; operação → DSS; monitoramento → MEA.
+</div>
+<div class="row g-3">
+{% for o in objectives %}
+  <div class="col-lg-6"><div class="card h-100 p-3 small">
+    <div class="d-flex justify-content-between"><h2 class="h6 mb-1">{{ o.code }} — {{ o.name }}</h2><span class="badge text-bg-light">{{ o.get_domain_display }}</span></div>
+    <div class="text-body-secondary mb-1">{{ o.name_pt }} · fase de IA: {{ o.ai_lifecycle_phase|default:"—" }}{% if o.trustworthy_ai %} · IA confiável: {{ o.trustworthy_ai }}{% endif %}</div>
+    <p class="mb-1">{{ o.ai_relevance }}</p>
+    <div class="text-body-secondary mb-2">Fonte: {{ o.source }}{% if o.source_pages %} p. {{ o.source_pages }}{% endif %}</div>
+    <ul class="mb-0">{% for m in o.mappings.all %}<li>{% if m.requirement_template %}{{ m.requirement_template.code }} {{ m.requirement_template.title }} <span class="text-body-secondary">(template v{{ m.requirement_template.stage_template.template_version.number }})</span>{% else %}{{ m.feature }}{% endif %} {% if m.basis == 'isaca_ai_2025' %}<span class="badge text-bg-primary">ISACA 2025</span>{% else %}<span class="badge text-bg-light">equipe</span>{% endif %}</li>{% empty %}<li class="text-body-secondary">Sem mapeamentos.</li>{% endfor %}</ul>
+  </div></div>
+{% endfor %}
+</div>
+<h2 class="h4 mt-5">PMI PMBOK Guide 8ª edição (2025)</h2>
+<div class="alert alert-light border small">Referências apenas por seção e página (sem reprodução de texto do PMI). Tabela separada do COBIT:
+as <em>Project Management Focus Areas</em> do PMBOK 8 não equivalem às <em>focus areas</em> do COBIT 2019. A numeração de páginas de <em>The Standard</em> e do <em>PMBOK Guide</em> é independente.</div>
+<div class="card"><div class="table-responsive"><table class="table table-sm mb-0 small">
+  <thead><tr><th>Seção</th><th>Título (original / tradução)</th><th>Parte · páginas</th><th>Uso no sistema (análise da equipe)</th><th>Mapeamentos</th></tr></thead>
+  <tbody>{% for r in pmbok %}<tr><td>{{ r.section }}</td><td>{{ r.title }}<div class="text-body-secondary">{{ r.title_pt }} · {{ r.get_kind_display }}</div></td><td>{{ r.part }} · p. {{ r.pages }}</td><td>{{ r.analysis }}</td>
+    <td>{% for m in r.mappings.all %}{% if m.requirement_template %}{{ m.requirement_template.code }}{% else %}{{ m.feature }}{% endif %}{% if not forloop.last %}; {% endif %}{% endfor %}</td></tr>{% endfor %}</tbody>
+</table></div></div>
+{% endblock %}

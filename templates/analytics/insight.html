@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Insight{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item"><a href="{% url 'analytics:insights' %}">Insights</a></li><li class="breadcrumb-item active">{{ ins.rule_code }}</li>{% endblock %}
+{% block content %}
+<h1 class="h4">{{ ins.title }} <span class="badge text-bg-secondary fs-6">{{ ins.get_status_display }}</span></h1>
+{% if ins.is_demo %}<div class="demo-banner p-2 mb-3 small rounded">Derivado de dados demonstrativos (seed_demo).</div>{% endif %}
+<div class="alert alert-light border small">Sugestão de análise gerada pela regra determinística <strong>{{ ins.rule_code }} — {{ rule.name }}</strong>. Não é decisão oficial.</div>
+<div class="row g-3">
+  <div class="col-lg-7">
+    <div class="card p-3 small mb-3"><p>{{ ins.message }}</p>
+      <dl class="row mb-0"><dt class="col-4">Projeto</dt><dd class="col-8"><a href="{% url 'projects:detail' ins.project.pk %}">{{ ins.project }}</a></dd>
+      <dt class="col-4">Calculado em</dt><dd class="col-8">{{ ins.computed_at|date:"d/m/Y H:i" }}</dd>
+      <dt class="col-4">Parâmetros</dt><dd class="col-8"><code>{{ ins.parameters }}</code></dd>
+      <dt class="col-4">Dados de sustentação</dt><dd class="col-8"><code class="text-break">{{ ins.supporting_data }}</code></dd>
+      <dt class="col-4">Revisor / aprovador</dt><dd class="col-8">{{ ins.reviewed_by|default:"—" }} / {{ ins.approved_by|default:"—" }}</dd>
+      {% if ins.action %}<dt class="col-4">Ação corretiva</dt><dd class="col-8">{{ ins.action.title }} ({{ ins.action.owner }})</dd>{% endif %}</dl></div>
+    <div class="card"><div class="card-header small fw-semibold">Histórico de revisão</div><ul class="list-group list-group-flush small">{% for r in reviews %}<li class="list-group-item">{{ r.created_at|date:"d/m/Y H:i" }} · {{ r.reviewer }}: {{ r.get_from_status_display }} → <strong>{{ r.get_to_status_display }}</strong> — {{ r.note }}</li>{% empty %}<li class="list-group-item text-body-secondary">Ainda não revisado.</li>{% endfor %}</ul></div>
+    {% if lessons %}<div class="card mt-3 p-3 small"><strong>Lições derivadas:</strong> {% for l in lessons %}{{ l.title }} ({{ l.get_status_display }}){% if not forloop.last %}; {% endif %}{% endfor %}</div>{% endif %}
+  </div>
+  <div class="col-lg-5">
+    {% if ins.status == 'proposed' and can_review %}
+    <form method="post" action="{% url 'analytics:insight_action' ins.pk 'revisar' %}" class="card p-3 small mb-3">{% csrf_token %}<h2 class="h6">Revisar</h2><textarea name="note" class="form-control form-control-sm mb-2" rows="2" placeholder="Análise do revisor" aria-label="Análise" required></textarea><button class="btn btn-primary btn-sm" type="submit">Registrar revisão</button></form>
+    {% endif %}
+    {% if ins.status == 'reviewed' and can_approve %}
+    <form method="post" action="{% url 'analytics:insight_action' ins.pk 'aprovar' %}" class="card p-3 small mb-3">{% csrf_token %}<h2 class="h6">Aprovar como recomendação</h2>
+      <textarea name="note" class="form-control form-control-sm mb-2" rows="2" placeholder="Justificativa" aria-label="Justificativa" required></textarea>
+      <input name="action_title" class="form-control form-control-sm mb-1" placeholder="Ação corretiva (opcional)" aria-label="Ação corretiva">
+      <select name="action_owner" class="form-select form-select-sm mb-1" aria-label="Responsável pela ação"><option value="">Responsável…</option>{% for p in people %}<option value="{{ p.pk }}">{{ p }}</option>{% endfor %}</select>
+      <input type="date" name="action_due" class="form-control form-control-sm mb-2" aria-label="Prazo da ação">
+      <button class="btn btn-success btn-sm" type="submit">Aprovar</button></form>
+    {% endif %}
+    {% if ins.status != 'approved' and ins.status != 'discarded' and can_review %}
+    <form method="post" action="{% url 'analytics:insight_action' ins.pk 'descartar' %}" class="card p-3 small mb-3">{% csrf_token %}<textarea name="note" class="form-control form-control-sm mb-2" rows="2" placeholder="Justificativa do descarte" aria-label="Justificativa do descarte" required></textarea><button class="btn btn-outline-secondary btn-sm" type="submit">Descartar</button></form>
+    {% endif %}
+    {% if can_lesson and ins.status == 'approved' %}
+    <form method="post" action="{% url 'analytics:insight_action' ins.pk 'licao' %}" class="card p-3 small">{% csrf_token %}<h2 class="h6">Registrar lição aprendida</h2>
+      <input name="title" class="form-control form-control-sm mb-1" placeholder="Título" aria-label="Título" required>
+      <textarea name="lesson" class="form-control form-control-sm mb-1" rows="2" placeholder="Lição" aria-label="Lição" required></textarea>
+      <textarea name="recommendation" class="form-control form-control-sm mb-2" rows="2" placeholder="Recomendação para projetos futuros" aria-label="Recomendação" required></textarea>
+      <button class="btn btn-outline-primary btn-sm" type="submit">Registrar lição</button></form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

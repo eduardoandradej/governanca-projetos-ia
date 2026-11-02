@@ -1,0 +1,26 @@
+# Changelog
+
+## [Não publicado]
+
+### M3–M8 + incrementos ISACA/PMBOK — 2026-11-02
+- M3: evidências versionadas com quarentena e revisão segregada; Stage-Gates com bloqueios no servidor, segregação,
+  exceções formais, revalidação e controle de concorrência; catálogo COBIT com base em ISACA (2025); template v2.
+- M4: riscos 5×5 com categorias de risco de IA (ISACA fig. 5), custos Decimal, decisões versionadas; reabertura exige decisão.
+- M5: catálogo/linhagem de dados, 12 KPIs com ficha técnica, 6 regras de insight com revisão humana, lições aprendidas.
+- PMBOK 8: referências por seção/página, abordagem de desenvolvimento, estratégia de adoção de IA, avaliação de uso
+  responsável de IA no gate 6 (template v3), KPIs tendência/resultado.
+- M6: API v1, exportações CSV seguras e auditadas, integrações NoOp.
+- M7: pip-audit (DRF 3.16.1 → 3.18.3), check --deploy, backup/restauração verificados, docs de implantação e segurança.
+- M8: documentação DSR, protocolo, resultados e roteiro E2E executado em navegador; 138 testes.
+
+### M0–M2 — 2026-11-02
+- Base de segurança do repositório (.gitignore, SECURITY.md, CODEOWNERS, gitleaks).
+- Projeto Django 5.2 + PostgreSQL 16; configurações por ambiente (dev/test/prod) via `.env`.
+- Usuário próprio (UUID), login com limitação de tentativas, recuperação/alteração de senha, política de senha (≥ 12).
+- Organizações, vínculos, papéis com escopo de organização/projeto, matriz RBAC explícita e exportável.
+- Trilha de auditoria append-only (modelo + gatilho PostgreSQL), correlation_id, sanitização de dados sensíveis.
+- Portfólios e projetos com histórico de status, versão otimista e metadados de tecnologia neutros.
+- Template versionado de 7 fases (28 requisitos) instalado como dado; snapshot nas instâncias.
+- Requisitos com atendimento verificável e validação segregada; máquina de estados das fases.
+- Tarefas com dependências, Kanban/lista com HTMX, equipes e RACI (modelo).
+- `seed_demo --confirm-demo`; 44 testes automatizados em PostgreSQL.
