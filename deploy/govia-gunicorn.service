@@ -1,6 +1,6 @@
 # /etc/systemd/system/govia-gunicorn.service — exemplo; ajuste caminhos e usuário.
 [Unit]
-Description=BalizaVale - Plataforma de Governança e Gestão de Projetos de IA (Gunicorn)
+Description=TrajetórIA - Plataforma de Governança e Gestão de Projetos de IA (Gunicorn)
 After=network.target postgresql.service
 
 [Service]

@@ -163,7 +163,7 @@ LOGGING = {
 }
 
 # Identidade do produto exibida na interface (configurável por variável de ambiente).
-APP_SHORT_NAME = env("APP_SHORT_NAME", default="BalizaVale")
+APP_SHORT_NAME = env("APP_SHORT_NAME", default="TrajetórIA")
 APP_FULL_NAME = env("APP_FULL_NAME", default="Plataforma Integrada de Governança e Gestão de Projetos de Inteligência Artificial")
 APP_TAGLINE = env("APP_TAGLINE", default="Governança para orientar. Inteligência para transformar.")
 

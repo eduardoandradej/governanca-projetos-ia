@@ -1,11 +1,11 @@
-# BalizaVale — Plataforma Integrada de Governança e Gestão de Projetos de Inteligência Artificial
+# TrajetórIA — Plataforma Integrada de Governança e Gestão de Projetos de Inteligência Artificial
 
 *Governança para orientar. Inteligência para transformar.*
 
-O nome une **Baliza** (os critérios, controles, evidências e decisões que orientam cada etapa dos projetos de IA) e
-**Vale** (a origem regional e acadêmica da iniciativa, no Vale do Café).
+O nome une **Trajetória** (o percurso governado de cada projeto, da prova de conceito à produção, fase a fase e
+gate a gate) e **IA** (a inteligência artificial que é objeto desse percurso).
 
-Identificação técnica: `APP_SHORT_NAME = "BalizaVale"` (configurável por variável de ambiente, assim como
+Identificação técnica: `APP_SHORT_NAME = "TrajetórIA"` (configurável por variável de ambiente, assim como
 `APP_FULL_NAME` e `APP_TAGLINE`).
 
 MVP acadêmico (IV SIEEG 2026, Tema 37 — COBIT 2019, PMBOK e ágil) que coordena o **projeto de implantação**

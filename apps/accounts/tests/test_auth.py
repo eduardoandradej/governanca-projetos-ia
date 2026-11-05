@@ -52,7 +52,7 @@ def test_password_reset_sends_token_and_does_not_enumerate(client):
     assert r1.url == r2.url  # mesma resposta: não revela existência da conta
     assert len(mail.outbox) == 1
     assert "/contas/senha/redefinir/" in mail.outbox[0].body
-    assert "BalizaVale" in mail.outbox[0].subject
+    assert "TrajetórIA" in mail.outbox[0].subject
 
 
 def test_password_policy_rejects_short_password(client):
@@ -69,9 +69,9 @@ def test_password_policy_rejects_short_password(client):
 
 def test_brand_identity_is_configurable(client, settings):
     body = client.get(reverse("accounts:login")).content.decode()
-    assert "BalizaVale" in body and "Plataforma Integrada de Governança e Gestão de Projetos de Inteligência Artificial" in body
+    assert "TrajetórIA" in body and "Plataforma Integrada de Governança e Gestão de Projetos de Inteligência Artificial" in body
     assert "Governança para orientar. Inteligência para transformar." in body
-    assert "NexFase" not in body and "GovIA" not in body and "TrilhaIA" not in body
+    assert "BalizaVale" not in body and "NexFase" not in body and "GovIA" not in body and "TrilhaIA" not in body
     settings.APP_SHORT_NAME = "OutroNome"
     assert "OutroNome" in client.get(reverse("accounts:login")).content.decode()
 
