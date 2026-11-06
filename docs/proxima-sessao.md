@@ -1,5 +1,15 @@
 # Retomada da próxima sessão
 
+## Identificação oficial do trabalho (usar em toda a documentação)
+- Título: **Um modelo integrado de governança e gestão de projetos para implantação de plataformas corporativas de IA**
+- Produto/artefato: TrajetórIA — Plataforma Integrada de Governança e Gestão de Projetos de Inteligência Artificial
+- Alunos: Eduardo Andrade de Jesus · Matheus Fernandes Cunha · Thais Gonçalves de Alencar
+- Orientação: Prof. Dr. Ricardo Kneipp
+- IFRJ · Pós-Graduação em Gestão de Projetos e Negócios em TI
+- I Mostra de Gestão de Projetos, Governança e Gerenciamento de Serviços de TI · 2026 (eixo: COBIT 2019, PMBOK e ágil)
+- Pesquisa: questionário aberto de 04/11/2026 a 11/11/2026; análise exclui a resposta de integrante da equipe.
+- Caso dos laudos periciais (S7): sempre anonimizado.
+
 ## Ambiente
 - PostgreSQL 16 local (`service postgresql start`), banco `govia`, papel `govia` (CREATEDB). Credenciais no `.env` local (não versionado); recrie com `.env.example` + `scripts/setup_db.sh` se o container for novo.
 - Python: `uv venv --python 3.12 .venv && uv pip install --python .venv/bin/python -r requirements.lock`.

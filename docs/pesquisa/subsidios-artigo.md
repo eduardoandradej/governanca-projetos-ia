@@ -1,4 +1,4 @@
-# Subsídios para o artigo (até 5 páginas, template IV SIEEG — formatação final conforme regras da disciplina)
+# Subsídios para o artigo (até 5 páginas, template da I Mostra de Gestão de Projetos, Governança e Gerenciamento de Serviços de TI 2026 — formatação final conforme regras da disciplina)
 
 **Título provisório:** Da prova de conceito à produção: um modelo integrado de governança e gestão de projetos para
 implantação de plataformas corporativas de IA.

@@ -1,6 +1,6 @@
 # Evolução do artefato orientada pela pesquisa com profissionais
 
-Documento da equipe de pesquisa (IFRJ — Pós-Graduação em Gestão de Negócios e Projetos de TI). Contém **apenas
+Documento da equipe de pesquisa (IFRJ · Pós-Graduação em Gestão de Projetos e Negócios em TI). Contém **apenas
 resultados agregados**: nenhum dado identificável, resposta bruta ou trecho literal de participante é versionado
 neste repositório. O arquivo de respostas permanece restrito à equipe.
 

@@ -8,7 +8,8 @@ gate a gate) e **IA** (a inteligência artificial que é objeto desse percurso).
 Identificação técnica: `APP_SHORT_NAME = "TrajetórIA"` (configurável por variável de ambiente, assim como
 `APP_FULL_NAME` e `APP_TAGLINE`).
 
-MVP acadêmico (IV SIEEG 2026, Tema 37 — COBIT 2019, PMBOK e ágil) que coordena o **projeto de implantação**
+MVP acadêmico (IFRJ · Pós-Graduação em Gestão de Projetos e Negócios em TI; I Mostra de Gestão de Projetos,
+Governança e Gerenciamento de Serviços de TI · 2026; eixo COBIT 2019, PMBOK e ágil) que coordena o **projeto de implantação**
 de plataformas corporativas de IA, do caso de negócio ao aceite operacional e à melhoria contínua.
 A aplicação **não** executa treinamento/inferência nem substitui Kubernetes, OpenShift, Ansible, GitLab ou
 ferramentas de MLOps: é uma camada independente de fornecedor para responsabilidades, fases, riscos,
@@ -21,6 +22,16 @@ evidências, aprovações, decisões e conhecimento gerencial.
 Referenciais: COBIT 2019 (com o white paper ISACA, *Leveraging COBIT for Effective AI System Governance*, 2025) e PMI
 PMBOK Guide 8ª ed. (2025), incluindo o Apêndice X3 (IA). Rastreabilidade em
 [`docs/governanca/matriz-controles.md`](docs/governanca/matriz-controles.md).
+
+## Autoria
+
+Alunos: Eduardo Andrade de Jesus · Matheus Fernandes Cunha · Thais Gonçalves de Alencar  
+Orientação: Prof. Dr. Ricardo Kneipp  
+IFRJ · Pós-Graduação em Gestão de Projetos e Negócios em TI · I Mostra de Gestão de Projetos, Governança e
+Gerenciamento de Serviços de TI · 2026
+
+Título do trabalho: *Um modelo integrado de governança e gestão de projetos para implantação de plataformas
+corporativas de IA*.
 
 ## Pilha
 
