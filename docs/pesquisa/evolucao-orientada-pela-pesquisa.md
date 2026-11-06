@@ -9,46 +9,51 @@ neste repositório. O arquivo de respostas permanece restrito à equipe.
 - O MVP deste repositório foi desenvolvido como **protótipo exploratório** (teste de viabilidade técnica, com apoio de
   ferramenta de IA generativa), a partir das hipóteses preliminares da equipe. Ele **não** foi derivado da pesquisa.
 - A pesquisa (questionário acadêmico, 10 perguntas em 5 dimensões, versão 1.0) foi aplicada para **confrontar essas
-  hipóteses**. A coleta continua aberta; os números abaixo são a **rodada 1** e serão atualizados.
+  hipóteses**. A coleta vai de 04/11 a 11/11/2026; os números abaixo são um corte parcial e serão atualizados.
 - A partir desta rodada, alterações no artefato passam a exigir vínculo explícito com um achado (seção 4).
 
-## 2. Amostra da rodada 1
+## 2. Coleta e amostra
 
-- 11 respostas recebidas; **9 na análise principal**. Excluídas: 1 resposta de integrante da equipe de pesquisa
-  (viés de autor) e 1 envio de teste, conforme decisão da equipe.
-- Amostra por conveniência; 4 dos 9 relataram experiência direta em projetos de IA. Sem generalização nem inferência
+- Coleta: **04/11/2026 a 11/11/2026**. Os números abaixo são um **corte parcial em 06/11/2026** (rodada 2) e serão
+  atualizados no encerramento.
+- 13 respostas recebidas; **12 na análise principal**. Excluída 1 resposta de integrante da equipe de pesquisa (viés
+  de autor). Uma resposta antes tratada como envio de teste foi reincluída por decisão da equipe, por ser substantiva.
+- Amostra por conveniência; 7 dos 12 relataram experiência direta em projetos de IA. Sem generalização nem inferência
   estatística.
 
-## 3. Resultados agregados (n = 9; múltipla escolha soma mais de 100%)
+## 3. Resultados agregados (rodada 2, n = 12; múltipla escolha soma mais de 100%)
 
-| Dimensão | Resultado principal | Leitura |
-|---|---|---|
-| D1 Informação | Informações dispersas 5/9; falta de integração entre equipes 4/9; 2/9 sem dificuldades relevantes | Dispersão mesmo com ferramentas de gestão em uso (4/9) |
-| D2 Decisões | Registro: atas 3/9, reuniões com registros parciais 2/9, sem procedimento 2/9; impacto da falta de registro: sim 3, não 3, não vivenciou 3 | Inconclusivo |
-| D3 Riscos | Segurança 8/9, privacidade 7/9, resultados incorretos 5/9; riscos sem procedimento ou reativos 5/9 | Risco tratado de modo pouco estruturado |
-| D3 Transição | Infraestrutura insuficiente 5/9; integração 4/9; procedimentos claros de implantação 2/9 | Obstáculos de capacidade e integração à frente da governança |
-| D4 Governança | Responsabilidades "nem sempre documentadas" 4/9; percepção mais baixa em uso ético (3/8 ≤ 2) e transparência (3/8 ≤ 2) | Documentação, ética e transparência como lacunas |
-| D4 Indicadores | Custo 5/9, cronograma 5/9, benefícios 4/9, qualidade dos modelos 4/9, adoção 3/9 | Indicadores de resultado da solução ausentes no MVP |
-| D5 Prioridades | Segurança e conformidade 6/9; centralizar informações 5/9 (0 dos 4 com experiência direta); transição para produção 4/9; critérios para avançar entre fases 2/9 | Os gates não são a prioridade percebida |
+| Dimensão | Resultado principal | Rodada 1 (n = 9) | Leitura |
+|---|---|---|---|
+| D1 Informação | Informações dispersas 6/12; falta de integração 4/12; sem histórico de alterações 3/12 | 5/9; 4/9 | Dispersão mesmo com ferramentas de gestão em uso |
+| D2 Decisões | Impacto da falta de registro: sim 4, não 3, não vivenciou 4, não sabe 1 | 3 / 3 / 3 | Continua inconclusivo |
+| D3 Riscos | Privacidade 10/12, segurança 10/12, resultados incorretos 7/12; sem procedimento ou reativo 6/12 | 7, 8, 5; 5/9 | Risco tratado de modo pouco estruturado |
+| D3 Transição | Infraestrutura 7/12; integração 5/12; segurança e privacidade 4/12; desempenho 4/12; procedimentos 3/12 | 5/9; 4/9; 2/9 | Capacidade e integração à frente da governança |
+| D4 Governança | Responsabilidades "nem sempre documentadas" 4/12; uso ético e transparência com 3/11 respostas válidas ≤ 2 | 4/9; 3/8 | Documentação, ética e transparência como lacunas |
+| D4 Indicadores | Benefícios 7/12 (6 dos 7 com experiência direta), cronograma 7/12, qualidade dos modelos 6/12, custo 5/12, adoção 4/12 | 4/9; 5/9; 4/9 | Indicadores de resultado ganham peso |
+| D5 Prioridades | Centralizar informações 7/12; segurança e conformidade 6/12; transição 5/12; preservar conhecimento 5/12; critérios entre fases 3/12 | 5; 6; 4; 3; 2 | Os gates seguem atrás das demais prioridades |
+
+**Tema novo na rodada 2 (respostas abertas):** operação de soluções com LLM: custo de *tokens*, permissões de acesso a
+ferramentas (*tools*), limites contra alucinações, testes estruturados e registro de uso.
 
 ## 4. Hipóteses e decisões
 
-| Hipótese preliminar | Rodada 1 | Decisão sobre o artefato |
+| Hipótese preliminar | Rodada 2 | Decisão sobre o artefato |
 |---|---|---|
-| Informações fragmentadas | Parcialmente corroborada | Manter evidências por referência externa (já existente) |
+| Informações fragmentadas | Parcialmente corroborada (6/12) | Manter evidências por referência externa (já existente) |
 | Pouca rastreabilidade de decisões | Inconclusiva | Manter; testar nas sessões com usuários |
 | Responsabilidades difusas | Fracamente corroborada (falta de documentação, não de definição) | Manter RACI; sem ampliação |
-| Ausência de critérios de passagem como obstáculo central | **Contrariada** nesta rodada | Manter os gates sem ampliar; tratá-los como hipótese de design a avaliar |
+| Ausência de critérios de passagem como obstáculo central | **Contrariada** (infraestrutura 7/12; critérios 3/12) | Manter os gates sem ampliar; tratá-los como hipótese de design a avaliar |
 | Riscos e privacidade pouco tratados | Parcialmente corroborada | **v4: F2-R6** — avaliação preliminar de uso responsável na fase 2 (A06) |
-| (emergente) Infraestrutura e orçamento | Achado mais frequente sobre a transição | **v4: F2-R1** passa a exigir o financiamento da capacidade de produção (A02) |
-| (emergente) Letramento em IA e definição da necessidade | Achado das respostas abertas | **v4: F1-R1** exige alternativas sem IA (A09) + recomendação de capacitação (não tecnológica) |
-| (emergente) Indicadores de resultado e adoção | Valorizados e ausentes | Pendente: indicadores informados nas fases 5–7 (A08), após as sessões com usuários |
-| (emergente) Fatores político-institucionais | Achado das respostas abertas | Sem requisito de software; registrado como limite da solução |
+| (emergente) Infraestrutura e orçamento | Obstáculo mais frequente na transição | **v4: F2-R1** exige o financiamento da capacidade de produção (A02) |
+| (emergente) Letramento em IA e definição da necessidade | Respostas abertas | **v4: F1-R1** exige alternativas sem IA (A09) + capacitação (não tecnológica) |
+| (emergente) Indicadores de resultado, adoção e custo de uso de LLMs | Reforçado na rodada 2 | Pendente: indicadores informados nas fases 5–7 (A08), incluindo custo de uso de LLMs, após as sessões |
+| (emergente) Fatores político-institucionais | Respostas abertas | Sem requisito de software; registrado como limite da solução |
 
 ## 5. Verificação técnica dos ajustes
 
 `apps/projects/tests/test_projects.py::test_template_v4_incorporates_research_round1_adjustments` verifica F1-R1,
-F2-R1 e F2-R6 na v4 e a permanência da v3 (descontinuada) sem o novo requisito. Suíte completa: 140/140 (2026-11-06).
+F2-R1 e F2-R6 na v4 e a permanência da v3 (descontinuada) sem o novo requisito. Suíte completa: 142/142 (2026-11-06).
 
 ## 6. Próximo ciclo
 
