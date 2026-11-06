@@ -238,3 +238,37 @@ def stages_v3():
                  "ou ampliação) registrados no projeto.", True, False, "", True, False, "BAI11"),
             ]
     return stages
+
+
+# ---------------------------------------------------------------------------------------------- Versão 4
+# Ajustes orientados pela 1ª rodada do questionário acadêmico com profissionais (n = 9 na análise principal; ver
+# docs/pesquisa/evolucao-orientada-pela-pesquisa.md). Só texto e configuração: nenhuma regra nova de negócio.
+#   A02 — infraestrutura foi o obstáculo PoC→produção mais citado: F2-R1 passa a exigir o financiamento previsto.
+#   A06 — privacidade/segurança como riscos dominantes e uso ético pior avaliado: avaliação preliminar na fase 2.
+#   A09 — letramento e definição da necessidade: F1-R1 exige alternativas sem IA e justificativa para usar IA.
+SOURCE_REFERENCE_V4 = SOURCE_REFERENCE_V3 + " v4: ajustes derivados da pesquisa com profissionais (rodada 1)."
+
+V4_DESCRIPTIONS = {
+    "F1-R1": "Problema, benefícios, custos estimados e alternativas avaliadas, inclusive soluções sem IA, com a "
+             "justificativa para o uso de IA.",
+    "F2-R1": "Inclui a capacidade de GPU/armazenamento necessária à operação em produção e a fonte de "
+             "financiamento prevista para adquiri-la e mantê-la.",
+}
+V4_ADDITIONS = {
+    2: [("F2-R6", "Avaliação preliminar de uso responsável de IA",
+         "Riscos de privacidade, segurança, viés e transparência identificados desde a viabilidade, com humano "
+         "responsável definido; a avaliação completa continua exigida no gate de homologação.",
+         True, False, "", True, False, "EDM01")],
+}
+
+
+def stages_v4():
+    stages = stages_v3()
+    for st in stages:
+        reqs = []
+        for req in st["requirements"]:
+            if req[0] in V4_DESCRIPTIONS:
+                req = (req[0], req[1], V4_DESCRIPTIONS[req[0]], *req[3:])
+            reqs.append(req)
+        st["requirements"] = reqs + V4_ADDITIONS.get(st["order"], [])
+    return stages

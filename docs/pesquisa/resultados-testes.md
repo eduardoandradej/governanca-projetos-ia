@@ -1,5 +1,13 @@
 # Resultados de testes efetivamente executados
 
+## Rodada de 2026-11-06 (template v4)
+
+- Comando: `./scripts/test.sh` (ruff → `manage.py check` → migrações pendentes → pytest em `test_govia`), PostgreSQL 16.
+- Resultado: **140 testes, 140 aprovados, 0 falhas**. Lint sem erros; nenhuma migração pendente.
+- Novo teste: `test_template_v4_incorporates_research_round1_adjustments` (ajustes A02, A06 e A09 da pesquisa).
+- Rodada intermediária de 2026-11-05: 139/139 aprovados (identidade TrajetórIA).
+
+
 ## Rodada final — 2026-11-02
 
 - Ambiente: container Ubuntu 24.04; Python 3.12.3; Django 5.2.18; djangorestframework 3.18.3; PostgreSQL 16.15;

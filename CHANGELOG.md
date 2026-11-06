@@ -2,6 +2,16 @@
 
 ## [Não publicado]
 
+### Pesquisa com profissionais, rodada 1 — 2026-11-06
+- Template de ciclo de vida **v4** (migração `governance/0005`), com ajustes derivados da rodada 1 do questionário
+  (n = 9 na análise principal): F1-R1 exige alternativas sem IA e justificativa para usar IA (A09); F2-R1 exige a
+  fonte de financiamento da infraestrutura de produção (A02); novo F2-R6, avaliação preliminar de uso responsável de
+  IA na fase 2 (A06). Projetos existentes permanecem na versão em que foram criados; v1–v3 descontinuadas.
+- `docs/pesquisa/evolucao-orientada-pela-pesquisa.md`: resultados agregados, hipóteses e decisões de evolução.
+- Identidade do produto: TrajetórIA. 140 testes.
+- Rollback: `migrate governance 0004` não remove a v4 (RunPython sem reversão); para desfazer, reverter este commit
+  em banco novo, ou marcar a v4 como `retired` e a v3 como `published`.
+
 ### M3–M8 + incrementos ISACA/PMBOK — 2026-11-02
 - M3: evidências versionadas com quarentena e revisão segregada; Stage-Gates com bloqueios no servidor, segregação,
   exceções formais, revalidação e controle de concorrência; catálogo COBIT com base em ISACA (2025); template v2.
