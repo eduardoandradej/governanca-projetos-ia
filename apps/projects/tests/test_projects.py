@@ -30,10 +30,10 @@ def test_T003_project_receives_seven_stages_starting_at_phase_1(project_a):
     assert [s.order for s in stages] == [1, 2, 3, 4, 5, 6, 7]
     assert stages[0].status == StageStatus.IN_PROGRESS
     assert all(s.status == StageStatus.NOT_STARTED for s in stages[1:])
-    assert stages[0].requirements.count() == 6  # template v3 (F1-R5 ISACA 2025; F1-R6 PMBOK 8)
+    assert stages[0].requirements.count() == 6  # template v4 (F1-R5 ISACA 2025; F1-R6 PMBOK 8)
     assert stages[6].has_exit_gate is False
     assert project_a.current_stage == stages[0]
-    assert project_a.lifecycle_version.number == 3
+    assert project_a.lifecycle_version.number == 4
 
 
 def test_code_unique_per_organization_only(org_a, org_b):
@@ -143,15 +143,29 @@ def test_T027_new_template_version_does_not_change_started_projects(org_a, proje
     from django.apps import apps as django_apps
 
     original = list(project_a.stages.values_list("name", flat=True))
-    v2 = default_template.install(django_apps, number=4)
+    v2 = default_template.install(django_apps, number=5)
     stage1 = v2.stages.get(order=1)
-    stage1.name = "Fase 1 renomeada na versão 4"
+    stage1.name = "Fase 1 renomeada na versão 5"
     stage1.save()
     stage1.requirements.all().delete()
     project_a.refresh_from_db()
     assert list(project_a.stages.values_list("name", flat=True)) == original
     assert project_a.stages.get(order=1).requirements.count() == 6
-    assert project_a.lifecycle_version.number == 3
+    assert project_a.lifecycle_version.number == 4
     new_project = org_a.create_project(code="IA-V2")
-    assert new_project.lifecycle_version == LifecycleTemplateVersion.objects.get(number=4)
-    assert new_project.stages.get(order=1).name == "Fase 1 renomeada na versão 4"
+    assert new_project.lifecycle_version == LifecycleTemplateVersion.objects.get(number=5)
+    assert new_project.stages.get(order=1).name == "Fase 1 renomeada na versão 5"
+
+
+def test_template_v4_incorporates_research_round1_adjustments(project_a):
+    """v4: ajustes A02, A06 e A09 da 1ª rodada da pesquisa (docs/pesquisa/evolucao-orientada-pela-pesquisa.md)."""
+    assert project_a.lifecycle_version.number == 4
+    f1 = project_a.stages.get(order=1).requirements.get(code="F1-R1")
+    assert "soluções sem IA" in f1.description
+    f2 = project_a.stages.get(order=2)
+    assert "financiamento" in f2.requirements.get(code="F2-R1").description
+    prelim = f2.requirements.get(code="F2-R6")
+    assert prelim.mandatory and prelim.requires_validation
+    old = LifecycleTemplateVersion.objects.get(number=3)
+    assert old.status == "retired"
+    assert not old.stages.get(order=2).requirements.filter(code="F2-R6").exists()
