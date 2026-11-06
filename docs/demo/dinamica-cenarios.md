@@ -1,4 +1,4 @@
-# Dinâmica de avaliação: seis situações do mundo da IA
+# Dinâmica de avaliação: sete situações do mundo da IA
 
 Roteiro para sessões com participantes (ou com a turma) em que um **fato plausível** acontece num projeto e a pessoa
 resolve a situação no TrajetórIA. Serve à avaliação por tarefas da DSR: observar se o fluxo é compreensível e útil,
@@ -147,6 +147,42 @@ Cada situação está ligada a um achado da 1ª rodada da pesquisa (ver `docs/pe
 - **Achado relacionado:** A04, registro de decisões e decisão personalista.
 - **Telas:**
   - decisões do projeto;
+  - `auditor/auditoria.html`.
+
+## S7 · GOV-2026-03 — Controle de qualidade de laudos periciais com IA (setor público + universidade)
+
+- **Origem:** cenário **inspirado em um projeto real** da equipe, **anonimizado**. Nomes de instituições, datas, metas
+  estratégicas e sistemas foram retirados ou trocados por equivalentes fictícios.
+- **Contexto:** parceria entre um órgão estadual de perícia e uma universidade pública. A ideia é usar modelos
+  multimodais (texto, imagem e vídeo) como **copiloto do perito**, apontando lacunas, inconsistências e falta de
+  padronização em laudos.
+- **Situação na fase 2:** oito das dez tarefas de formalização estão concluídas:
+  - manifestação de interesse e reunião de alinhamento;
+  - minutas do termo de cooperação técnica e do plano de trabalho;
+  - pareceres jurídicos das duas instituições, cada um com uma rodada de modificações;
+  - plano de gestão de dados.
+
+  Faltam a **assinatura** e a **publicação** do acordo.
+- **Fato:** "A assinatura atrasou mais dois meses. A equipe da universidade propõe começar os testes com laudos reais
+  'só para não perder tempo', e os servidores com GPU ainda não foram comprados."
+- **Perfil:** patrocínio, que tenta conceder exceção ao requisito; depois, segurança e conformidade e, por fim,
+  auditoria.
+- **Tarefa:**
+  1. Tentar avançar a fase ou conceder exceção ao requisito F2-R4 (avaliação de privacidade/LGPD).
+  2. Consultar a decisão proposta ("usar só laudos sintéticos até a publicação").
+  3. Verificar os riscos de atraso, de dados sensíveis e de GPU.
+  4. (Auditor) localizar a tentativa negada.
+- **O que o sistema faz:**
+  - requisito **legal** não admite exceção: a tentativa é recusada e **registrada na auditoria**;
+  - o gate continua bloqueado;
+  - as tarefas mostram onde a formalização parou.
+- **Achados relacionados:**
+  - A10, fatores político-institucionais e burocracia;
+  - A02, infraestrutura;
+  - A06, privacidade.
+- **O que observar:** o participante percebe a formalização como parte do projeto de IA ou como algo "fora" dele?
+- **Telas:**
+  - `gerente/projetos.html`, depois GOV-2026-03, Tarefas e Riscos;
   - `auditor/auditoria.html`.
 
 ---

@@ -204,6 +204,60 @@ def create_scenarios(org_private, org_public, u, today):
     )
     analytics.approve_lesson(lesson.pk, actor=u["demo.portfolio"], visibility="organization")
 
+    # C7 — Controle de qualidade de laudos periciais com IA (setor público + universidade): formalização da parceria.
+    # Cenário INSPIRADO em caso real, anonimizado: nomes de instituições, datas e metas foram retirados ou trocados.
+    laudo = create_project(
+        actor=u["demo.gerente"], organization=org_public, portfolio=pf_pub, code="GOV-2026-03",
+        name="Controle de qualidade de laudos periciais com IA (parceria com universidade pública)",
+        description="Modelos multimodais (texto, imagem e vídeo) como copiloto do perito para apontar lacunas, "
+                    "inconsistências e falta de padronização em laudos, integrados ao sistema policial (fictício).",
+        business_case="Fortalecer a qualidade e a confiabilidade da prova pericial, alinhado ao procedimento operacional "
+                      "padrão do órgão e ao objetivo estratégico de controle de qualidade do laudo (fictício).",
+        business_objectives="Padronizar laudos; reduzir omissões; apoiar a revisão sem substituir o perito.",
+        target_indicators="Laudos com checklist do procedimento atendido ≥ 90%; tempo de revisão -30%.",
+        platform_type="genai", deployment_approach="on_prem", development_approach="hybrid",
+        ai_adoption_strategy="assistance", priority="high", criticality="high", data_classification="restricted",
+        start_date=today - timedelta(days=300), due_date=today + timedelta(days=420),
+        planned_cost=Decimal("1600000.00"), **common,
+    )
+    st_l2 = _advance(u, laudo, 2)
+    _complete(u, st_l2, skip=("F2-R4",))  # avaliação LGPD depende do acordo assinado: requisito LEGAL, sem exceção
+    for i, (title, status) in enumerate([
+        ("Manifestação de interesse da universidade", "done"), ("Reunião de alinhamento", "done"),
+        ("Minutas do termo de cooperação técnica e do plano de trabalho", "done"),
+        ("Parecer do jurídico da universidade", "done"), ("Elaborar modificações requisitadas (universidade)", "done"),
+        ("Parecer da assessoria jurídica do órgão", "done"), ("Elaborar o plano de gestão de dados", "done"),
+        ("Elaborar modificações requisitadas (órgão)", "done"), ("Assinatura do acordo", "todo"),
+        ("Publicação do acordo", "todo"),
+    ]):
+        t = lc.create_task(actor=u["demo.gerente"], project=laudo, stage=st_l2, title=title, assignee=u["demo.gerente"],
+                           due_date=today + timedelta(days=-90 + 12 * i))
+        if status == "done":
+            lc.update_task_status(t.pk, actor=u["demo.gerente"], status="done")
+    risks.create_risk(actor=u["demo.gerente"], project=laudo, title="Atraso na assinatura do acordo de cooperação",
+                      category="schedule", ai_category="operational", probability=4, impact=4, owner=u["demo.patrocinio"],
+                      cause="Rodadas sucessivas de pareceres jurídicos",
+                      consequence="Equipe da universidade sem acesso aos dados")
+    r_dados = risks.create_risk(actor=u["demo.gerente"], project=laudo,
+                                title="Laudos de crimes contra a vida com dados pessoais sensíveis",
+                                category="privacy", ai_category="policy", probability=4, impact=5,
+                                owner=u["demo.seguranca"], cause="Vítimas, testemunhas e imagens nos documentos",
+                                consequence="Exposição de dados sensíveis e nulidade de provas")
+    risks.add_treatment(r_dados.pk, actor=u["demo.gerente"], strategy="mitigate",
+                        description="Plano de gestão de dados com anonimização, ambiente isolado e acesso nominal",
+                        owner=u["demo.seguranca"], due_date=today + timedelta(days=30))
+    risks.create_risk(actor=u["demo.gerente"], project=laudo, title="Servidores com GPU ainda não adquiridos",
+                      category="gpu", ai_category="technology", probability=4, impact=3, owner=u["demo.tecnico"])
+    analytics.create_asset(actor=u["demo.gerente"], project=laudo, name="Acervo de laudos periciais (anonimizado, fictício)",
+                           kind="dataset", purpose="Avaliar completude e consistência dos laudos", owner=u["demo.tecnico"],
+                           source_system="Sistema policial (fictício)", contains_personal_data=True,
+                           classification="restricted")
+    risks.propose_decision(actor=u["demo.gerente"], project=laudo, topic="scope",
+                           agenda="Iniciar testes com laudos antes da assinatura do acordo?",
+                           alternatives="Aguardar a assinatura; usar só laudos sintéticos até a assinatura",
+                           decision="Usar apenas laudos sintéticos até a publicação do acordo",
+                           rationale="Sem instrumento jurídico não há base legal para compartilhar dados reais")
+
     # Situações nos dois projetos originais (C5 e C6) ficam nos estados criados por seed_demo:
     # IA-2026-01 com risco crítico sem tratamento na fase 1; IA-2026-02 parado na fase 1 sem registro de decisões.
     for org in (org_private, org_public):

@@ -6,6 +6,8 @@
 - `seed_demo` cria um órgão público fictício (Secretaria Estadual Demonstrativa Gama) e 4 novos projetos (total de 6
   visíveis aos perfis demo): aquisição de GPUs, assistente ao cidadão com RAG, detecção de fraudes e visão
   computacional na borda, cada um parado numa situação descrita em `docs/demo/dinamica-cenarios.md`.
+- Cenário GOV-2026-03 (controle de qualidade de laudos periciais com IA), inspirado em projeto real e anonimizado:
+  formalização da parceria retida na assinatura do acordo; exceção a requisito legal recusada e auditada.
 - Correção: valores monetários exibidos com separador de milhar (detalhe do projeto e custos). 142 testes.
 
 ### Pesquisa com profissionais, rodada 1 — 2026-11-06

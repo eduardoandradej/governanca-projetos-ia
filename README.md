@@ -106,7 +106,7 @@ docs/               arquitetura, requisitos, governança, dados, segurança, ope
 
 ## Demonstração e operação
 
-- Roteiro: [`docs/demo/roteiro-demonstracao.md`](docs/demo/roteiro-demonstracao.md) · Dinâmica com 6 situações: [`docs/demo/dinamica-cenarios.md`](docs/demo/dinamica-cenarios.md)
+- Roteiro: [`docs/demo/roteiro-demonstracao.md`](docs/demo/roteiro-demonstracao.md) · Dinâmica com 7 situações: [`docs/demo/dinamica-cenarios.md`](docs/demo/dinamica-cenarios.md)
 - Implantação: [`docs/operacao/deploy.md`](docs/operacao/deploy.md) · Backup: [`docs/operacao/backup-restore.md`](docs/operacao/backup-restore.md)
 - API: [`docs/architecture/api.md`](docs/architecture/api.md)
 

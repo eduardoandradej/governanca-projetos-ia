@@ -26,7 +26,7 @@ def test_seed_creates_demo_data_idempotently(monkeypatch):
     call_command("seed_demo", "--confirm-demo", "--allow-non-debug")
     call_command("seed_demo", "--confirm-demo", "--allow-non-debug")
     assert Organization.objects.filter(is_demo=True).count() == 3
-    assert Project.objects.count() == 7
+    assert Project.objects.count() == 8
     assert Risk.objects.filter(level="critical").exists()
     assert Insight.objects.exists() and all(i.is_demo for i in Insight.objects.all())
 
@@ -50,5 +50,16 @@ def test_seed_scenarios_stop_at_the_planned_situations(monkeypatch):
     assert st.order == 5 and any("crítico" in b.lower() or "critico" in b.lower() for b in gov.evaluate(st).blockers)
     p, st = stage("IA-2026-03")
     assert st.order == 6 and gov.responsible_ai_blockers(p)
+    p, st = stage("GOV-2026-03")
+    assert st.order == 2 and any("F2-R4" in b for b in gov.evaluate(st).blockers)
+    assert p.tasks.filter(status="todo").count() == 2 and p.tasks.filter(status="done").count() == 8
+    from datetime import date, timedelta
+
+    from apps.lifecycle.services import DomainError
+
+    with pytest.raises(DomainError, match="legais"):  # requisito legal (LGPD) não admite exceção
+        gov.grant_exception(st.pk, actor=p.sponsor, justification="Começar os testes antes da assinatura do acordo",
+                            residual_risk="Uso de dados sem base legal", valid_until=date.today() + timedelta(days=30),
+                            requirement=st.requirements.get(code="F2-R4"))
     p, st = stage("IA-2026-04")
     assert st.order == 7 and LessonLearned.objects.filter(project=p, status="approved").exists()
