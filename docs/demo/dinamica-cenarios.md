@@ -161,8 +161,7 @@ Cada situação está ligada a um achado da 1ª rodada da pesquisa (ver `docs/pe
   - minutas do termo de cooperação técnica e do plano de trabalho;
   - pareceres jurídicos das duas instituições, cada um com uma rodada de modificações;
   - plano de gestão de dados.
-
-  Faltam a **assinatura** e a **publicação** do acordo.
+- **Pendente:** a **assinatura** e a **publicação** do acordo.
 - **Fato:** "A assinatura atrasou mais dois meses. A equipe da universidade propõe começar os testes com laudos reais
   'só para não perder tempo', e os servidores com GPU ainda não foram comprados."
 - **Perfil:** patrocínio, que tenta conceder exceção ao requisito; depois, segurança e conformidade e, por fim,
