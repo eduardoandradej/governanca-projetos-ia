@@ -2,6 +2,12 @@
 
 ## [Não publicado]
 
+### Cenários da dinâmica de avaliação — 2026-11-06
+- `seed_demo` cria um órgão público fictício (Secretaria Estadual Demonstrativa Gama) e 4 novos projetos (total de 6
+  visíveis aos perfis demo): aquisição de GPUs, assistente ao cidadão com RAG, detecção de fraudes e visão
+  computacional na borda, cada um parado numa situação descrita em `docs/demo/dinamica-cenarios.md`.
+- Correção: valores monetários exibidos com separador de milhar (detalhe do projeto e custos). 142 testes.
+
 ### Pesquisa com profissionais, rodada 1 — 2026-11-06
 - Template de ciclo de vida **v4** (migração `governance/0005`), com ajustes derivados da rodada 1 do questionário
   (n = 9 na análise principal): F1-R1 exige alternativas sem IA e justificativa para usar IA (A09); F2-R1 exige a

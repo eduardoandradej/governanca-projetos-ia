@@ -44,7 +44,7 @@
         <dt class="col-5">Criticidade</dt><dd class="col-7">{{ project.get_criticality_display }}</dd>
         <dt class="col-5">Classificação</dt><dd class="col-7">{{ project.get_data_classification_display }}</dd>
         <dt class="col-5">Período</dt><dd class="col-7">{{ project.start_date|date:"d/m/Y"|default:"—" }} a {{ project.due_date|date:"d/m/Y"|default:"—" }}</dd>
-        {% if can_view_sensitive %}<dt class="col-5">Custo planejado</dt><dd class="col-7">{{ project.currency }} {{ project.planned_cost }}</dd>{% else %}<dt class="col-5">Custos</dt><dd class="col-7 text-body-secondary">Restrito ao seu perfil</dd>{% endif %}
+        {% if can_view_sensitive %}<dt class="col-5">Custo planejado</dt><dd class="col-7">{{ project.currency }} {{ project.planned_cost|floatformat:"2g" }}</dd>{% else %}<dt class="col-5">Custos</dt><dd class="col-7 text-body-secondary">Restrito ao seu perfil</dd>{% endif %}
         <dt class="col-5">Tarefas abertas</dt><dd class="col-7">{{ tasks_open }}</dd>
         {% if project.technology_metadata %}<dt class="col-5">Tecnologias</dt><dd class="col-7">{% for k,v in project.technology_metadata.items %}{{ k }}: {{ v }}<br>{% endfor %}</dd>{% endif %}
       </dl>

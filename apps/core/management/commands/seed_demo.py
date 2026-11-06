@@ -68,6 +68,11 @@ class Command(BaseCommand):
                 Membership.objects.create(organization=org, user=user, job_title=user.full_name)
                 bootstrap_role(organization=org, user=user, role=role, reason="seed_demo")
             self._create_projects(org, users)
+            # Órgão público fictício e cenários da dinâmica de avaliação (docs/demo/dinamica-cenarios.md).
+            from apps.core import demo_scenarios
+
+            org_gov = demo_scenarios.create_public_org(users)
+            demo_scenarios.create_scenarios(org, org_gov, {k: v[0] for k, v in users.items()}, date.today())
             # Segunda organização para demonstrar isolamento entre organizações.
             org_b = Organization.objects.create(
                 name=DEMO_ORG_B, slug="demo-beta", is_demo=True, description="Organização fictícia para teste de isolamento."
@@ -192,6 +197,4 @@ class Command(BaseCommand):
                                        kind="model", purpose="Classificar chamados", owner=u["demo.tecnico"])
         analytics.add_lineage(actor=u["demo.gerente"], source=raw, target=model,
                               transformation="Anonimização e ajuste fino")
-        org = p1.organization
-        analytics.capture_snapshots(actor=u["demo.portfolio"], organization=org)
-        analytics.generate_insights(actor=u["demo.portfolio"], organization=org)
+        # Indicadores e insights são calculados ao final de demo_scenarios.create_scenarios (todas as organizações).

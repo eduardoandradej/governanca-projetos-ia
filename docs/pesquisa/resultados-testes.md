@@ -1,5 +1,11 @@
 # Resultados de testes efetivamente executados
 
+## Rodada de 2026-11-06 (cenários da dinâmica)
+
+- **142 testes, 142 aprovados, 0 falhas** (≈ 30 s). Novos: `test_seed_scenarios_stop_at_the_planned_situations`
+  (6 projetos fictícios parados nas situações de `docs/demo/dinamica-cenarios.md`) e
+  `test_money_is_displayed_with_thousand_separator` (defeito de exibição encontrado na verificação: "2400000,00").
+
 ## Rodada de 2026-11-06 (template v4)
 
 - Comando: `./scripts/test.sh` (ruff → `manage.py check` → migrações pendentes → pytest em `test_govia`), PostgreSQL 16.

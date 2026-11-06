@@ -14,7 +14,7 @@ A aplicação **não** executa treinamento/inferência nem substitui Kubernetes,
 ferramentas de MLOps: é uma camada independente de fornecedor para responsabilidades, fases, riscos,
 evidências, aprovações, decisões e conhecimento gerencial.
 
-> Situação atual: incrementos M0–M8 concluídos em laboratório, com **140 testes automatizados aprovados em
+> Situação atual: incrementos M0–M8 concluídos em laboratório, com **142 testes automatizados aprovados em
 > PostgreSQL** e roteiro de demonstração executado em navegador. Detalhes e pendências em
 > [`docs/status-implementacao.md`](docs/status-implementacao.md).
 
@@ -106,7 +106,7 @@ docs/               arquitetura, requisitos, governança, dados, segurança, ope
 
 ## Demonstração e operação
 
-- Roteiro: [`docs/demo/roteiro-demonstracao.md`](docs/demo/roteiro-demonstracao.md)
+- Roteiro: [`docs/demo/roteiro-demonstracao.md`](docs/demo/roteiro-demonstracao.md) · Dinâmica com 6 situações: [`docs/demo/dinamica-cenarios.md`](docs/demo/dinamica-cenarios.md)
 - Implantação: [`docs/operacao/deploy.md`](docs/operacao/deploy.md) · Backup: [`docs/operacao/backup-restore.md`](docs/operacao/backup-restore.md)
 - API: [`docs/architecture/api.md`](docs/architecture/api.md)
 
