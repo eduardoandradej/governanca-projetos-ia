@@ -68,7 +68,7 @@ class Command(BaseCommand):
                 Membership.objects.create(organization=org, user=user, job_title=user.full_name)
                 bootstrap_role(organization=org, user=user, role=role, reason="seed_demo")
             self._create_projects(org, users)
-            # Órgão público fictício e cenários da dinâmica de avaliação (docs/demo/dinamica-cenarios.md).
+            # Órgão público fictício e cenários da dinâmica de avaliação (ver apps/core/demo_scenarios.py).
             from apps.core import demo_scenarios
 
             org_gov = demo_scenarios.create_public_org(users)

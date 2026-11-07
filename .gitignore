@@ -21,6 +21,10 @@ service-account*.json
 .npmrc
 .pypirc
 
+# Anexos privados e arquivos gerados em execução (nunca versionar)
+var/
+staticfiles/
+
 # =========================================================
 # Dados: nunca versionar dados reais ou pessoais (LGPD)
 # =========================================================

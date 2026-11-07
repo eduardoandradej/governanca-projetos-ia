@@ -32,7 +32,7 @@ def test_seed_creates_demo_data_idempotently(monkeypatch):
 
 
 def test_seed_scenarios_stop_at_the_planned_situations(monkeypatch):
-    """Cenários da dinâmica (docs/demo/dinamica-cenarios.md): cada projeto para num bloqueio coerente com o fato."""
+    """Cenários da dinâmica de avaliação: cada projeto para num bloqueio coerente com o fato."""
     from apps.analytics.models import LessonLearned
     from apps.governance import services as gov
 

@@ -15,13 +15,11 @@ A aplicação **não** executa treinamento/inferência nem substitui Kubernetes,
 ferramentas de MLOps: é uma camada independente de fornecedor para responsabilidades, fases, riscos,
 evidências, aprovações, decisões e conhecimento gerencial.
 
-> Situação atual: incrementos M0–M8 concluídos em laboratório, com **142 testes automatizados aprovados em
-> PostgreSQL** e roteiro de demonstração executado em navegador. Detalhes e pendências em
-> [`docs/status-implementacao.md`](docs/status-implementacao.md).
+> Situação atual: MVP funcional em laboratório, com **142 testes automatizados aprovados em PostgreSQL**.
 
 Referenciais: COBIT 2019 (com o white paper ISACA, *Leveraging COBIT for Effective AI System Governance*, 2025) e PMI
-PMBOK Guide 8ª ed. (2025), incluindo o Apêndice X3 (IA). Rastreabilidade em
-[`docs/governanca/matriz-controles.md`](docs/governanca/matriz-controles.md).
+PMBOK Guide 8ª ed. (2025), incluindo o Apêndice X3 (IA). A matriz de rastreabilidade pode ser gerada com
+`manage.py export_traceability`.
 
 ## Autoria
 
@@ -39,7 +37,7 @@ Python 3.12 · Django 5.2 LTS · PostgreSQL 16 · Django Templates + HTMX + Boot
 · Django REST Framework (API, incremento M6) · pytest/pytest-django · ruff · Gunicorn + Nginx + systemd (deploy).
 
 Arquitetura: monólito modular (`apps/`), serviços de domínio transacionais, RBAC com escopo de
-organização/projeto e trilha de auditoria append-only. Ver [`docs/architecture/`](docs/architecture/).
+organização/projeto e trilha de auditoria append-only.
 
 ## Instalação em máquina limpa (Ubuntu 24.04)
 
@@ -112,14 +110,18 @@ apps/analytics      catálogo/linhagem de dados, indicadores, insights, lições
 apps/api            API REST v1
 apps/integrations   contratos de integração (NoOp)
 deploy/             exemplos systemd e Nginx
-docs/               arquitetura, requisitos, governança, dados, segurança, operação, demo, pesquisa, evidências
+scripts/            banco, testes, backup e verificação de restauração
+docs/operacao/      implantação, backup/restauração e solução de problemas
 ```
 
-## Demonstração e operação
+## Operação
 
-- Roteiro: [`docs/demo/roteiro-demonstracao.md`](docs/demo/roteiro-demonstracao.md) · Dinâmica com 7 situações: [`docs/demo/dinamica-cenarios.md`](docs/demo/dinamica-cenarios.md)
-- Implantação: [`docs/operacao/deploy.md`](docs/operacao/deploy.md) · Backup: [`docs/operacao/backup-restore.md`](docs/operacao/backup-restore.md)
-- API: [`docs/architecture/api.md`](docs/architecture/api.md)
+- Implantação (Ubuntu + Nginx + Gunicorn + systemd): [`docs/operacao/deploy.md`](docs/operacao/deploy.md)
+- Backup e restauração: [`docs/operacao/backup-restore.md`](docs/operacao/backup-restore.md)
+- Solução de problemas: [`docs/operacao/troubleshooting.md`](docs/operacao/troubleshooting.md)
+- API REST: `/api/v1/` (autenticação por sessão; mesmas permissões das telas).
+- Dados de demonstração (`seed_demo`): 3 organizações fictícias e 8 projetos, sete deles parados em situações da
+  dinâmica de avaliação. Nunca usar em produção.
 
 ## Limitações
 

@@ -38,5 +38,6 @@ class Command(BaseCommand):
             "",
         ]
         path = Path(settings.BASE_DIR) / "docs" / "seguranca" / "matriz-rbac.md"
+        path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text("\n".join(lines), encoding="utf-8")
         self.stdout.write(self.style.SUCCESS(f"Gerado: {path}"))

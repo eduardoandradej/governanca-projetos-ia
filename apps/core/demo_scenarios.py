@@ -1,4 +1,4 @@
-"""Cenários SINTÉTICOS da dinâmica de avaliação (docs/demo/dinamica-cenarios.md).
+"""Cenários SINTÉTICOS da dinâmica de avaliação (sete situações; roteiro em PDF no material do trabalho).
 
 Cada projeto fictício fica parado num ponto em que um "fato" plausível do mundo da IA exige uma ação no sistema.
 Os situações foram escolhidas a partir dos achados da 1ª rodada da pesquisa (infraestrutura e orçamento,

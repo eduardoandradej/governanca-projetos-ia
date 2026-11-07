@@ -158,7 +158,7 @@ def test_T027_new_template_version_does_not_change_started_projects(org_a, proje
 
 
 def test_template_v4_incorporates_research_round1_adjustments(project_a):
-    """v4: ajustes A02, A06 e A09 da 1ª rodada da pesquisa (docs/pesquisa/evolucao-orientada-pela-pesquisa.md)."""
+    """v4: ajustes A02, A06 e A09 derivados da pesquisa com profissionais."""
     assert project_a.lifecycle_version.number == 4
     f1 = project_a.stages.get(order=1).requirements.get(code="F1-R1")
     assert "soluções sem IA" in f1.description

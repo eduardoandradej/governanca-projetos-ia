@@ -3,7 +3,7 @@
 Princípios: menor privilégio, somente leitura por padrão, credenciais em cofre/variáveis protegidas (nunca no
 banco em texto claro), aprovação explícita para qualquer ação externa. Implementações reais (GitLab/GitHub,
 Ansible Automation Platform/ansible-runner, Kubernetes/OpenShift, observabilidade, S3/MinIO) ficam fora do MVP.
-Ver docs/integracoes/roadmap.md.
+Integrações reais ficam para versões futuras.
 """
 
 from __future__ import annotations
