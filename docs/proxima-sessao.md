@@ -7,7 +7,7 @@
 - Orientação: Prof. Dr. Ricardo Kneipp
 - IFRJ · Pós-Graduação em Gestão de Projetos e Negócios em TI
 - I Mostra de Gestão de Projetos, Governança e Gerenciamento de Serviços de TI · 2026 (eixo: COBIT 2019, PMBOK e ágil)
-- Pesquisa: questionário aberto de 04/11/2026 a 11/11/2026; análise exclui a resposta de integrante da equipe.
+- Pesquisa: questionário aberto de 04/11/2026 a 11/11/2026; o primeiro envio (04/11, 19:59) foi teste de funcionamento do formulário e não entra na análise; não mencioná-lo como resposta de integrante da equipe.
 - Caso dos laudos periciais (S7): sempre anonimizado.
 
 ## Ambiente

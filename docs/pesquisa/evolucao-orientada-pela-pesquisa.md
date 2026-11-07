@@ -16,8 +16,8 @@ neste repositório. O arquivo de respostas permanece restrito à equipe.
 
 - Coleta: **04/11/2026 a 11/11/2026**. Os números abaixo são um **corte parcial em 06/11/2026** (rodada 2) e serão
   atualizados no encerramento.
-- 13 respostas recebidas; **12 na análise principal**. Excluída 1 resposta de integrante da equipe de pesquisa (viés
-  de autor). Uma resposta antes tratada como envio de teste foi reincluída por decisão da equipe, por ser substantiva.
+- 13 envios registrados; **12 respostas analisadas**. O primeiro envio foi um teste de funcionamento do formulário e
+  não compõe a amostra.
 - Amostra por conveniência; 7 dos 12 relataram experiência direta em projetos de IA. Sem generalização nem inferência
   estatística.
 
