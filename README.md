@@ -9,7 +9,7 @@ Identificação técnica: `APP_SHORT_NAME = "TrajetórIA"` (configurável por va
 `APP_FULL_NAME` e `APP_TAGLINE`).
 
 MVP acadêmico (IFRJ · Pós-Graduação em Gestão de Projetos e Negócios em TI; I Mostra de Gestão de Projetos,
-Governança e Gerenciamento de Serviços de TI · 2026; eixo COBIT 2019, PMBOK e ágil) que coordena o **projeto de implantação**
+Governança e Gerenciamento de Serviços de TI · 2026; eixo Governança de TI e Gestão de Projetos) que coordena o **projeto de implantação**
 de plataformas corporativas de IA, do caso de negócio ao aceite operacional e à melhoria contínua.
 A aplicação **não** executa treinamento/inferência nem substitui Kubernetes, OpenShift, Ansible, GitLab ou
 ferramentas de MLOps: é uma camada independente de fornecedor para responsabilidades, fases, riscos,
