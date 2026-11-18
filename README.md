@@ -1,5 +1,12 @@
 # TrajetórIA — Plataforma Integrada de Governança e Gestão de Projetos de Inteligência Artificial
 
+<p align="left">
+  <img alt="IFRJ: Pós-Graduação em Gestão de Projetos e Negócios em TI" src="https://img.shields.io/badge/IFRJ-P%C3%B3s--Gradua%C3%A7%C3%A3o_em_Gest%C3%A3o_de_Projetos_e_Neg%C3%B3cios_em_TI-0B1F3A?style=for-the-badge"> <img alt="I Mostra: 2026" src="https://img.shields.io/badge/I_Mostra-2026-1F5FA8?style=for-the-badge"> <img alt="Eixo: Governança de TI e Gestão de Projetos" src="https://img.shields.io/badge/Eixo-Governan%C3%A7a_de_TI_e_Gest%C3%A3o_de_Projetos-5F6B7A?style=for-the-badge"><br>
+  <img alt="Python: 3.12" src="https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white"> <img alt="Django: 5.2 LTS" src="https://img.shields.io/badge/Django-5.2_LTS-0B1F3A?style=for-the-badge&logo=django&logoColor=white"> <img alt="PostgreSQL: 16" src="https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql&logoColor=white"> <img alt="HTMX: 2" src="https://img.shields.io/badge/HTMX-2-3366CC?style=for-the-badge&logo=htmx&logoColor=white"> <img alt="Bootstrap: 5" src="https://img.shields.io/badge/Bootstrap-5-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white"><br>
+  <img alt="testes: 142 aprovados" src="https://img.shields.io/badge/testes-142_aprovados-1F5FA8?style=for-the-badge&logo=pytest&logoColor=white"> <img alt="lint: ruff" src="https://img.shields.io/badge/lint-ruff-111418?style=for-the-badge&logo=ruff&logoColor=white"> <img alt="deploy: AWS EC2 · Ubuntu" src="https://img.shields.io/badge/deploy-AWS_EC2_%C2%B7_Ubuntu-8A5A00?style=for-the-badge&logo=ubuntu&logoColor=white"> <img alt="licença: Apache 2.0" src="https://img.shields.io/badge/licen%C3%A7a-Apache_2.0-B42318?style=for-the-badge&logo=apache&logoColor=white"><br>
+  <img alt="COBIT: 2019" src="https://img.shields.io/badge/COBIT-2019-0B1F3A?style=for-the-badge"> <img alt="PMBOK: 8ª ed." src="https://img.shields.io/badge/PMBOK-8%C2%AA_ed.-1F5FA8?style=for-the-badge"> <img alt="método: Design Science Research" src="https://img.shields.io/badge/m%C3%A9todo-Design_Science_Research-5F6B7A?style=for-the-badge"> <img alt="IA: responsável" src="https://img.shields.io/badge/IA-respons%C3%A1vel-6E3FA3?style=for-the-badge"><br>
+</p>
+
 *Governança para orientar. Inteligência para transformar.*
 
 O nome une **Trajetória** (o percurso governado de cada projeto, da prova de conceito à produção, fase a fase e
