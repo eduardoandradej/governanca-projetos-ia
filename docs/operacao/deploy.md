@@ -1,5 +1,7 @@
 # Implantação em VM Ubuntu Server 24.04 (Nginx + Gunicorn + systemd + PostgreSQL 16)
 
+> Passo a passo completo para AWS EC2 com Ubuntu 24.04 (Elastic IP, HTTPS com Let's Encrypt, dados de demonstração): [guia-implantacao-aws-ubuntu-24.04.pdf](guia-implantacao-aws-ubuntu-24.04.pdf).
+
 > Situação: procedimento **documentado e parcialmente verificado** em laboratório (container Ubuntu 24.04): `check --deploy`,
 > `collectstatic`, Gunicorn com `config.settings.prod`, `healthz`, recusa de Host inválido. Nginx/TLS/systemd **não**
 > foram executados neste ambiente e precisam de validação na VM institucional.
