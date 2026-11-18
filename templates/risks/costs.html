@@ -6,20 +6,20 @@
 <h1 class="h3">{{ project.code }} — Custos</h1>
 {% include "projects/_tabs.html" with tab="custos" %}
 <div class="row g-3 mb-3">
-  <div class="col-6 col-lg-3"><div class="card kpi p-3"><div class="label">Orçamento ({{ summary.currency }})</div><div class="value">{{ summary.budget|floatformat:2 }}</div></div></div>
-  <div class="col-6 col-lg-3"><div class="card kpi p-3"><div class="label">Previsto lançado</div><div class="value">{{ summary.planned_total|floatformat:2 }}</div></div></div>
-  <div class="col-6 col-lg-3"><div class="card kpi p-3"><div class="label">Realizado</div><div class="value">{{ summary.actual_total|floatformat:2 }}</div></div></div>
+  <div class="col-6 col-lg-3"><div class="card kpi p-3"><div class="label">Orçamento ({{ summary.currency }})</div><div class="value">{{ summary.budget|floatformat:"2g" }}</div></div></div>
+  <div class="col-6 col-lg-3"><div class="card kpi p-3"><div class="label">Previsto lançado</div><div class="value">{{ summary.planned_total|floatformat:"2g" }}</div></div></div>
+  <div class="col-6 col-lg-3"><div class="card kpi p-3"><div class="label">Realizado</div><div class="value">{{ summary.actual_total|floatformat:"2g" }}</div></div></div>
   <div class="col-6 col-lg-3"><div class="card kpi p-3"><div class="label">Execução do orçamento</div><div class="value">{% if summary.execution_percent is None %}Sem dados{% else %}{{ summary.execution_percent }}%{% endif %}</div></div></div>
 </div>
 <div class="row g-3">
   <div class="col-lg-7">
     <div class="card mb-3"><div class="card-header fw-semibold">Por categoria</div>
       <table class="table table-sm mb-0 small"><thead><tr><th>Categoria</th><th class="text-end">Previsto</th><th class="text-end">Realizado</th></tr></thead>
-      <tbody>{% for key, row in summary.rows.items %}<tr><td>{{ row.label }}</td><td class="text-end">{{ row.planned|floatformat:2 }}</td><td class="text-end">{{ row.actual|floatformat:2 }}</td></tr>{% endfor %}</tbody></table>
+      <tbody>{% for key, row in summary.rows.items %}<tr><td>{{ row.label }}</td><td class="text-end">{{ row.planned|floatformat:"2g" }}</td><td class="text-end">{{ row.actual|floatformat:"2g" }}</td></tr>{% endfor %}</tbody></table>
     </div>
     <div class="card"><div class="card-header fw-semibold">Lançamentos</div>
       <div class="table-responsive"><table class="table table-sm mb-0 small"><thead><tr><th>Data</th><th>Categoria</th><th>Tipo</th><th class="text-end">Valor</th><th>Justificativa</th><th>Fonte</th></tr></thead>
-      <tbody>{% for e in entries %}<tr><td>{{ e.entry_date|date:"d/m/Y" }}</td><td>{{ e.get_category_display }}</td><td>{{ e.get_kind_display }}</td><td class="text-end">{{ e.currency }} {{ e.amount|floatformat:2 }}</td><td>{{ e.justification }}</td><td>{{ e.source_document|default:"—" }}</td></tr>{% empty %}<tr><td colspan="6" class="text-body-secondary">Sem lançamentos. Nenhum valor de mercado é estimado pelo sistema.</td></tr>{% endfor %}</tbody></table></div>
+      <tbody>{% for e in entries %}<tr><td>{{ e.entry_date|date:"d/m/Y" }}</td><td>{{ e.get_category_display }}</td><td>{{ e.get_kind_display }}</td><td class="text-end">{{ e.currency }} {{ e.amount|floatformat:"2g" }}</td><td>{{ e.justification }}</td><td>{{ e.source_document|default:"—" }}</td></tr>{% empty %}<tr><td colspan="6" class="text-body-secondary">Sem lançamentos. Nenhum valor de mercado é estimado pelo sistema.</td></tr>{% endfor %}</tbody></table></div>
     </div>
   </div>
   <div class="col-lg-5">{% if form %}<div class="card p-3"><h2 class="h6">Novo lançamento</h2><form method="post" novalidate>{% csrf_token %}{% include "partials/form_fields.html" %}<button class="btn btn-primary btn-sm" type="submit">Registrar</button></form></div>{% endif %}</div>

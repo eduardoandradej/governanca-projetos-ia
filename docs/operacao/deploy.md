@@ -18,4 +18,7 @@
 a inclusão na lista de preload é praticamente irreversível e deve ser decisão institucional.
 
 **Não usar `seed_demo` em produção.** Não declarar o ambiente pronto para dados sensíveis sem MFA, antivírus de anexos e
-avaliação de segurança independente (ver `docs/seguranca/riscos-residuais.md`).
+avaliação de segurança independente.
+
+**Trilha de auditoria:** o gatilho do PostgreSQL bloqueia `UPDATE`/`DELETE`, mas não `TRUNCATE` nem um superusuário;
+por isso revogue `TRUNCATE` do papel da aplicação e não use superusuário na conexão do Django.

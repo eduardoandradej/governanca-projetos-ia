@@ -175,3 +175,10 @@ def test_create_risk_via_web(client, org_a, project_a):
     })
     assert resp.status_code == 302
     assert Risk.objects.get(title="Ataque adversarial").level == "high"
+
+
+def test_money_is_displayed_with_thousand_separator(client, org_a):
+    project = org_a.create_project(code="IA-MONEY", planned_cost=Decimal("2400000.00"))
+    client.force_login(org_a.sponsor)
+    assert "2.400.000,00" in client.get(reverse("projects:detail", args=[project.pk])).content.decode()
+    assert "2.400.000,00" in client.get(reverse("risks:costs", args=[project.pk])).content.decode()

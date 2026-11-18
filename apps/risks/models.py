@@ -47,7 +47,7 @@ class RiskLevel(models.TextChoices):
 
 
 class RiskPolicy(models.Model):
-    """Limiares (pontuação = probabilidade × impacto, 1–25). Padrão documentado em docs/governanca/politica-riscos.md."""
+    """Limiares (pontuação = probabilidade × impacto, 1–25). Crítico ≥ 20, alto ≥ 12, médio ≥ 6, configurável por organização."""
 
     organization = models.OneToOneField("organizations.Organization", on_delete=models.CASCADE, related_name="risk_policy")
     critical_min = models.PositiveSmallIntegerField(default=20)

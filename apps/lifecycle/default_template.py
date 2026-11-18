@@ -241,8 +241,8 @@ def stages_v3():
 
 
 # ---------------------------------------------------------------------------------------------- Versão 4
-# Ajustes orientados pela 1ª rodada do questionário acadêmico com profissionais (n = 9 na análise principal; ver
-# docs/pesquisa/evolucao-orientada-pela-pesquisa.md). Só texto e configuração: nenhuma regra nova de negócio.
+# Ajustes orientados pelo questionário acadêmico com profissionais (coleta de 04 a 11/11/2026).
+# Só texto e configuração: nenhuma regra nova de negócio.
 #   A02 — infraestrutura foi o obstáculo PoC→produção mais citado: F2-R1 passa a exigir o financiamento previsto.
 #   A06 — privacidade/segurança como riscos dominantes e uso ético pior avaliado: avaliação preliminar na fase 2.
 #   A09 — letramento e definição da necessidade: F1-R1 exige alternativas sem IA e justificativa para usar IA.

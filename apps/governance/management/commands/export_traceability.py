@@ -15,6 +15,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **opts):
         base = Path(settings.BASE_DIR) / "docs"
+        (base / "governanca").mkdir(parents=True, exist_ok=True)
+        (base / "dados").mkdir(parents=True, exist_ok=True)
         version = LifecycleTemplateVersion.objects.filter(status="published", template__organization__isnull=True)\
             .order_by("-number").first()
         lines = [
