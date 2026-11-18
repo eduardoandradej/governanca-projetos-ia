@@ -258,6 +258,77 @@ def create_scenarios(org_private, org_public, u, today):
                            decision="Usar apenas laudos sintéticos até a publicação do acordo",
                            rationale="Sem instrumento jurídico não há base legal para compartilhar dados reais")
 
+    # C8 — Laboratório de visão computacional para perícia (proposta): técnica adiantada, gate institucional parado.
+    # Inspirado em projeto real de pesquisa da equipe, anonimizado (sem nomes de órgão, pessoas ou unidades).
+    from apps.evidence import services as ev
+
+    lab = create_project(
+        actor=u["demo.gerente"], organization=org_public, portfolio=pf_pub, code="GOV-2026-04",
+        name="Laboratório de visão computacional para perícia (proposta)",
+        description="Detecção de objetos em imagens e vídeos de perícia como apoio à triagem (modelo YOLO em CPU, GPU "
+                    "e borda). O modelo detecta; a interpretação do vestígio continua sendo do perito.",
+        business_case="Reduzir o tempo de triagem de grandes volumes de imagens sem retirar do perito a decisão, com "
+                      "procedimentos verificáveis: protocolo antes do teste, cadeia de custódia e revisão humana medida.",
+        business_objectives="Q1 desempenho por condição; Q2 efeito da revisão assistida e viés de automação; "
+                            "Q3 custo de execução em CPU, GPU e borda.",
+        target_indicators="Revisão assistida não inferior à manual em sensibilidade; recall por condição com IC 95%.",
+        platform_type="vision", deployment_approach="on_prem", development_approach="hybrid",
+        ai_adoption_strategy="assistance", priority="medium", criticality="high", data_classification="restricted",
+        technology_metadata={"Modelo": "YOLO (licença AGPL-3.0, ex.)", "Inferência": "ONNX Runtime / OpenVINO (ex.)"},
+        start_date=today - timedelta(days=60), due_date=today + timedelta(days=270),
+        planned_cost=Decimal("0.00"), **common,
+    )
+    st_lab = lab.stages.get(order=1)
+    _complete(u, st_lab, skip=("F1-R2",))  # sem patrocínio institucional formal: o gate 1 não fecha
+    for title, ref in [
+        ("Experimentos EXP-000 a EXP-002 com dados sintéticos (protocolos registrados antes da execução)",
+         "Repositório de pesquisa do projeto, pasta experimentos/ (fictício)"),
+        ("Arquitetura de referência e cenários de infraestrutura (CPU, GPU, borda)",
+         "Repositório de pesquisa do projeto, docs/02-infraestrutura (fictício)"),
+    ]:
+        art = ev.create_evidence(actor=u["demo.tecnico"], project=lab, stage=st_lab,
+                                 kind="test" if "EXP" in title else "architecture", title=title, external_reference=ref)
+        ev.review_evidence(art.pk, actor=u["demo.aprovador"], decision="approved",
+                           comment="Evidência técnica adiantada; não substitui os gates das fases 2 a 5 (demo).")
+    for i, (title, status) in enumerate([
+        ("Ambiente e fluxo experimental em CPU (cenário sem compra)", "done"),
+        ("Ajuste fino e avaliação por condição com dados sintéticos", "done"),
+        ("Obter patrocínio institucional e designar responsável formal", "todo"),
+        ("Definir fonte de financiamento da GPU", "todo"),
+        ("Submeter o estudo manual × assistida ao comitê de ética", "todo"),
+        ("Decidir a licença do código e analisar a AGPL do modelo", "todo"),
+    ]):
+        t = lc.create_task(actor=u["demo.gerente"], project=lab, stage=st_lab, title=title, assignee=u["demo.gerente"],
+                           due_date=today + timedelta(days=-40 + 15 * i))
+        if status == "done":
+            lc.update_task_status(t.pk, actor=u["demo.gerente"], status="done")
+    risks.create_risk(actor=u["demo.gerente"], project=lab, title="GPU sem fonte de financiamento definida",
+                      category="gpu", ai_category="technology", probability=4, impact=4, owner=u["demo.patrocinio"],
+                      cause="Pedido de aquisição sem patrocinador", consequence="Treino e testes limitados à CPU")
+    risks.create_risk(actor=u["demo.gerente"], project=lab, title="Licença AGPL-3.0 do modelo em uso institucional",
+                      category="vendor", ai_category="policy", probability=3, impact=4, owner=u["demo.seguranca"],
+                      cause="Uso em rede exige abrir o código ou contratar licença comercial",
+                      consequence="Bloqueio jurídico na homologação")
+    risks.create_risk(actor=u["demo.gerente"], project=lab, title="Viés de automação na revisão assistida",
+                      category="ethics", ai_category="ethical", probability=3, impact=4, owner=u["demo.tecnico"],
+                      cause="Perito tende a aceitar a sugestão do modelo", consequence="Vestígio não detectado passa sem revisão")
+    risks.create_risk(actor=u["demo.gerente"], project=lab, title="Desempenho medido só em cenas sintéticas",
+                      category="quality", ai_category="technology", probability=4, impact=3, owner=u["demo.tecnico"],
+                      cause="Dataset encenado ainda não existe", consequence="Resultados não valem para material real")
+    sint = analytics.create_asset(actor=u["demo.gerente"], project=lab, name="Dataset sintético v1 (gerado por código)",
+                                  kind="dataset", purpose="Validar o fluxo experimental sem dados reais",
+                                  owner=u["demo.tecnico"], source_system="Gerador determinístico (seed fixa)",
+                                  contains_personal_data=False, classification="public")
+    modelo = analytics.create_asset(actor=u["demo.gerente"], project=lab, name="Detector ajustado (experimental)",
+                                    kind="model", purpose="Triagem assistida em testes sintéticos", owner=u["demo.tecnico"])
+    analytics.add_lineage(actor=u["demo.gerente"], source=sint, target=modelo,
+                          transformation="Ajuste fino com partição por sessão e teste usado uma única vez")
+    risks.propose_decision(actor=u["demo.gerente"], project=lab, topic="architecture",
+                           agenda="Portal web agora ou ferramenta de linha de comando primeiro?",
+                           alternatives="Portal web completo; linha de comando com registro de integridade",
+                           decision="Linha de comando primeiro; portal só com requisito concreto e equipe dedicada",
+                           rationale="Valida o fluxo científico sem custo de desenvolvimento web")
+
     # Situações nos dois projetos originais (C5 e C6) ficam nos estados criados por seed_demo:
     # IA-2026-01 com risco crítico sem tratamento na fase 1; IA-2026-02 parado na fase 1 sem registro de decisões.
     for org in (org_private, org_public):

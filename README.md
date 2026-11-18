@@ -120,8 +120,8 @@ docs/operacao/      implantação, backup/restauração e solução de problemas
 - Backup e restauração: [`docs/operacao/backup-restore.md`](docs/operacao/backup-restore.md)
 - Solução de problemas: [`docs/operacao/troubleshooting.md`](docs/operacao/troubleshooting.md)
 - API REST: `/api/v1/` (autenticação por sessão; mesmas permissões das telas).
-- Dados de demonstração (`seed_demo`): 3 organizações fictícias e 8 projetos, sete deles parados em situações da
-  dinâmica de avaliação. Nunca usar em produção.
+- Dados de demonstração (`seed_demo`): 3 organizações fictícias e 9 projetos, oito deles parados em situações da
+  dinâmica de avaliação (inclusive dois casos inspirados em projetos reais e anonimizados). Nunca usar em produção.
 
 ## Limitações
 

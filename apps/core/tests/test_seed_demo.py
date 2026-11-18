@@ -26,7 +26,7 @@ def test_seed_creates_demo_data_idempotently(monkeypatch):
     call_command("seed_demo", "--confirm-demo", "--allow-non-debug")
     call_command("seed_demo", "--confirm-demo", "--allow-non-debug")
     assert Organization.objects.filter(is_demo=True).count() == 3
-    assert Project.objects.count() == 8
+    assert Project.objects.count() == 9
     assert Risk.objects.filter(level="critical").exists()
     assert Insight.objects.exists() and all(i.is_demo for i in Insight.objects.all())
 
@@ -61,5 +61,9 @@ def test_seed_scenarios_stop_at_the_planned_situations(monkeypatch):
         gov.grant_exception(st.pk, actor=p.sponsor, justification="Começar os testes antes da assinatura do acordo",
                             residual_risk="Uso de dados sem base legal", valid_until=date.today() + timedelta(days=30),
                             requirement=st.requirements.get(code="F2-R4"))
+    p, st = stage("GOV-2026-04")
+    blockers = gov.evaluate(st).blockers
+    assert st.order == 1 and any("F1-R2" in b for b in blockers) and not any("F1-R1" in b for b in blockers)
+    assert p.evidences.filter(status="approved").count() == 3  # caso de negócio + 2 evidências técnicas adiantadas
     p, st = stage("IA-2026-04")
     assert st.order == 7 and LessonLearned.objects.filter(project=p, status="approved").exists()
