@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/marca/trajetoria-logo-horizontal-negativo.svg">
+    <img alt="TrajetórIA" src="docs/marca/trajetoria-logo-horizontal.svg" width="420">
+  </picture>
+</p>
+
 # TrajetórIA — Plataforma Integrada de Governança e Gestão de Projetos de Inteligência Artificial
 
 <p align="left">
