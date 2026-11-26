@@ -29,11 +29,40 @@ A aplicação **não** executa treinamento/inferência nem substitui Kubernetes,
 ferramentas de MLOps: é uma camada independente de fornecedor para responsabilidades, fases, riscos,
 evidências, aprovações, decisões e conhecimento gerencial.
 
-> Situação atual: MVP funcional em laboratório, com **142 testes automatizados aprovados em PostgreSQL**.
+> Situação atual: MVP funcional, com **142 testes automatizados aprovados em PostgreSQL** e uma instância de
+> demonstração no ar (AWS EC2, Ubuntu 24.04).
 
 Referenciais: COBIT 2019 (com o white paper ISACA, *Leveraging COBIT for Effective AI System Governance*, 2025) e PMI
 PMBOK Guide 8ª ed. (2025), incluindo o Apêndice X3 (IA). A matriz de rastreabilidade pode ser gerada com
 `manage.py export_traceability`.
+
+## Demonstração online
+
+Endereço: **https://18-226-188-222.sslip.io** (dados fictícios; ambiente de demonstração).
+
+| Usuário | Perfil |
+|---|---|
+| `demo.gerente` | Gerente de projeto |
+| `demo.aprovador` | Aprovador de gate |
+| `demo.seguranca` | Segurança e conformidade |
+| `demo.patrocinio` | Patrocinador |
+| `demo.portfolio` | Gestor de portfólio |
+| `demo.tecnico` | Executor técnico |
+| `demo.auditor` | Auditor |
+| `demo.leitor` | Leitor |
+| `demo.admin` | Administrador organizacional |
+| `demo.beta.gerente` | Gerente em outra organização (mostra o isolamento entre organizações) |
+
+A senha de demonstração é fornecida pela equipe aos avaliadores e não fica publicada aqui, porque o repositório é
+público. O roteiro com o que mostrar em cada perfil está em
+[`docs/demonstracao/roteiro-de-acesso.pdf`](docs/demonstracao/roteiro-de-acesso.pdf).
+
+## Documentação
+
+- [Manual do Usuário](docs/manuais/manual-do-usuario.pdf): conceitos, perfis e passo a passo ilustrado de cada funcionalidade.
+- [Manual de Administração e Suporte](docs/manuais/manual-de-administracao-e-suporte.pdf): usuários e papéis, configuração, backup, monitoramento e atendimento.
+- [Manual de Implementação](docs/manuais/manual-de-implementacao.pdf): arquitetura, código, testes, instalação, extensão e plano de implantação.
+- [Guia de implantação na AWS](docs/operacao/guia-implantacao-aws-ubuntu-24.04.pdf): passo a passo para EC2 com Ubuntu 24.04.
 
 ## Autoria
 
@@ -60,7 +89,7 @@ sudo apt install -y python3.12 python3.12-venv postgresql-16
 ```
 
 ```bash
-git clone <url-do-repositorio> govia && cd govia
+git clone https://github.com/eduardoandradej/governanca-projetos-ia.git govia && cd govia
 ```
 
 ```bash
