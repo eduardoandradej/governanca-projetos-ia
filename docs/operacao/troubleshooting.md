@@ -9,3 +9,5 @@
 | Anexo não baixa | Versão em quarentena: inspeção por segurança/conformidade na página da evidência |
 | Gate não avança | Painel da fase lista os bloqueios exatos (requisito, evidência, risco crítico, revalidação, uso responsável de IA) |
 | Correlacionar erro | Cabeçalho `X-Request-ID` da resposta = `correlation_id` nos logs e na auditoria |
+| Site sem formatação (CSS não carrega) | `curl -sI https://<dominio>/static/css/app.css`: 403 = permissão (`sudo chmod 755 /var/lib/govia && sudo chmod -R o+rX /var/lib/govia/staticfiles`); 404 = refazer `collectstatic` e conferir o `alias` no Nginx |
+| `password authentication failed` / `no password supplied` | Senha do banco diferente no PostgreSQL e no `govia.env`, ou com caractere especial (`&`, `$`, `!`, aspas): use só letras, números, `-`, `_`, `.` |

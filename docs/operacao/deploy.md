@@ -7,7 +7,7 @@
 > foram executados neste ambiente e precisam de validação na VM institucional.
 
 1. Pacotes: `sudo apt install -y python3.12 python3.12-venv postgresql-16 nginx`.
-2. Usuário e diretórios: `sudo useradd --system --home /opt/govia govia`; `/opt/govia` (código), `/var/lib/govia/{staticfiles,private_media}` (dono `govia`, modo 750), `/etc/govia/govia.env` (modo 600).
+2. Usuário e diretórios: `sudo useradd --system --home /opt/govia govia`; `/opt/govia` (código), `/var/lib/govia/{staticfiles,private_media}` (dono `govia`; `staticfiles` em modo 755 para o Nginx ler, `private_media` em 750), `/etc/govia/govia.env` (modo 600).
 3. Código e dependências: clonar em `/opt/govia`; `python3.12 -m venv .venv && .venv/bin/pip install -r requirements.lock`.
 4. Banco: `DB_PASSWORD=... ./scripts/setup_db.sh`; em produção remova `CREATEDB` do papel (`ALTER ROLE govia NOCREATEDB`) e revogue `TRUNCATE` na tabela de auditoria.
 5. Variáveis (`/etc/govia/govia.env`): `DJANGO_SECRET_KEY` (aleatória, ≥ 50), `DJANGO_ALLOWED_HOSTS`, `DJANGO_CSRF_TRUSTED_ORIGINS=https://govia.exemplo.local`, `DB_*`, `PRIVATE_MEDIA_ROOT=/var/lib/govia/private_media`, `DJANGO_STATIC_ROOT=/var/lib/govia/staticfiles`, `DJANGO_EMAIL_BACKEND` (SMTP institucional), `APP_ENVIRONMENT_LABEL` (vazio em produção).
