@@ -1,7 +1,7 @@
 # Política de Segurança
 
 Este repositório contém o **TrajetórIA — Plataforma Integrada de Governança e Gestão de Projetos de Inteligência Artificial** (código, documentação e templates).
-Ele é **privado** e deve conter apenas dados sintéticos — nunca dados reais, credenciais ou materiais licenciados
+Ele é **público** e deve conter apenas dados sintéticos — nunca dados reais, credenciais ou materiais licenciados
 (como os PDFs do PMBOK ou da ISACA).
 
 ## O que NUNCA deve ser gravado aqui
@@ -17,7 +17,7 @@ Templates devem usar apenas **dados fictícios** (ex.: "Projeto Exemplo", "Fulan
 
 ## Controles adotados
 
-- Repositório **privado**, com acesso apenas a quem precisa.
+- Repositório **público**: escrita restrita à equipe; nada sensível é versionado, inclusive senhas de demonstração.
 - `.gitignore` bloqueando credenciais, dados e modelos.
 - Verificação automática de segredos (**gitleaks**) em todo *push* e *pull request*.
 - `CODEOWNERS` exigindo revisão do responsável.
